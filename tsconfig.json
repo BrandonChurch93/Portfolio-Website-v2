@@ -49,6 +49,8 @@
     "out-flags",
     "shots",
     "scripts",
-    ".next/dev"
+    ".next/dev",
+    ".next/**/* ?.ts",
+    ".next/**/* ??.ts"
   ]
 }

@@ -158,7 +158,7 @@ class PlateRenderer {
     if (!ctx) { entry.onState?.('failed'); return () => undefined; }
     const p: Plate = {
       ...entry, ctx, cssW: 0, cssH: 0, dpr: 1, mask: null, b0: null, b1: null, photoTex: null, photoAspect: 1, videoEl: null,
-      visible: false, bakeGen: 0, sig: '', tilt: { x: 0, y: 0, gx: 0, gy: 0 }, water: { x: 0, y: 0, z: 60, k: 0 },
+      visible: false, bakeGen: 0, sig: '', tilt: { x: 0, y: 0, gx: 0, gy: 0 }, water: { x: 0, y: 0, z: 26, k: 0 },
       seed: seedOf(entry.spec),
     };
     this.plates.add(p);
@@ -374,7 +374,7 @@ class PlateRenderer {
     gl.uniform3f(l.u('uLamp'), L.px, L.py, LAMP.depth * Math.max(innerWidth, innerHeight * 0.8));
     gl.uniform1f(l.u('uLampI'), 1.15 + 0.3 * L.led);
     gl.uniform3f(l.u('uWater'), p.water.x, p.water.y, p.water.z);
-    gl.uniform1f(l.u('uWaterI'), p.water.k * 2.2);
+    gl.uniform1f(l.u('uWaterI'), p.water.k * 5.0);
     gl.uniform2f(l.u('uTilt'), p.tilt.x, p.tilt.y);
     const F = FINISHES[p.spec.finish];
     gl.uniform3fv(l.u('uF0a'), F.a);

@@ -11,7 +11,7 @@ const photoSrc = (id: keyof typeof MEDIA) => MEDIA[id].srcs[MEDIA[id].srcs.lengt
 // One specimen per section, so a shot can frame each alone.
 export function MetalLab() {
   return (
-    <div className={styles.lab}>
+    <div className={styles.lab} data-water-off="">
       {(['aged', 'polished', 'bronze', 'panel'] as const).map((f) => (
         <section key={f} id={f} className={styles.spec}>
           <Plate finish={f} label={s.label} big={s.big} facts={s.facts} className={styles.plate} />

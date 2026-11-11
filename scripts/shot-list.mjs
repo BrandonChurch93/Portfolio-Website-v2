@@ -43,6 +43,23 @@ SHOTS['metal/lamp-strip'] = {
   strip: { times: [0.3, 0.357, 0.414, 0.471, 0.529, 0.586, 0.643, 0.7], frame: [['lamp', '$t', 0.42]], cols: 4, caption: (t) => `lamp at ${Math.round(t * 100)}% across` },
 };
 
+// ---- water: /lab/water, every move alone ------------------------------------------------------------
+const steps8 = (a, b) => Array.from({ length: 8 }, (_, i) => Math.round((a + ((b - a) * i) / 7) * 1000) / 1000);
+const waterMove = (name, a, b, extra = {}) => ({
+  route: '/lab/water/', vp: 'desktop', steps: [['water.move', name, a]],
+  strip: { times: steps8(a, b), frame: [['water.move', name, '$t']], cols: 4 }, ...extra,
+});
+SHOTS['water/body'] = { route: '/lab/water/', vp: 'desktop', steps: [['scrollTo', 'move-body'], ['freeze', 3], ['water.head', 1]] };
+SHOTS['water/run'] = waterMove('run', 0, 1.75);
+SHOTS['water/fall'] = waterMove('fall', 0, 0.63);
+SHOTS['water/land'] = waterMove('land', 0.3, 1.5, { target: '#move-land [data-water]', pad: 150 });
+SHOTS['water/cling'] = waterMove('cling', 0, 1.4, { target: '#move-cling [data-water]', pad: 110 });
+SHOTS['water/pour'] = waterMove('pour', 0, 1.05, { target: '#move-pour [data-water]', pad: 160 });
+SHOTS['water/split'] = waterMove('split', 0.3, 2.4);
+SHOTS['water/frame'] = waterMove('frame', 0, 3.2);
+SHOTS['water/pool'] = waterMove('pool', 0, 2.8, { target: '#move-pool [data-water]', pad: 120 });
+SHOTS['water/light-plate'] = { route: '/lab/water/', vp: 'desktop', steps: [['scrollTo', 'move-light'], ['freeze', 3], ['water.head', 1], ['lamp', 0.08, 0.95]] };
+
 void VPS;
 
 export { SHOTS };

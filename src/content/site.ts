@@ -501,6 +501,7 @@ export const site = {
   },
 
   lab: {
+    moves: { body: 'The body', run: 'Run', fall: 'Fall', land: 'Land', cling: 'Cling', pour: 'Pour', split: 'Split', frame: 'Frame', light: 'Light on metal', pool: 'Pool' },
     metal: 'Metal',
     water: 'Water',
     piece: 'Piece',

@@ -1,0 +1,10 @@
+water/body | PASS | - | Braided currents with dark channels and caustic lines carried at the water's own speed, a breathing width, a warm halo that lights the page, motes inside and beside it, clear of the text and fading in under the nav.
+water/run | PASS | - | The stream crosses from one gutter to the other in the clear space above the text and runs down beside it, flowing, with no kink at the bends.
+water/fall | PASS | - | Water runs the bar, clings round the end and lets go; the front gains ground faster each frame and breaks into drops as it falls.
+water/land | PASS | - | The tapered stream lands on the corner; a crown of curved walls with beaded rims rises and collapses while drops fly on short arcs, then the sheet spreads along the top edge, and the plate warms toward the impact.
+water/cling | PASS | - | After the landing burst the sheet runs along the plate's top edge with a bright bead at its leading edge.
+water/pour | PASS | - | The sheet gathers at the corner, clings a little round it and pours off along its tangent into a fall that speeds up.
+water/split | PASS | - | A strong impact at the bar's centre, drops thrown both ways, then the water divides and runs both ways along the top.
+water/frame | PASS | - | The sheet reaches both ends of the bar, pours over, falls down both sides of the placards and curves in to meet beneath them, lighting the metal it passes.
+water/pool | PASS | - | The fall reaches the pool, which spreads from the inflow; rings from the inflow and from drops spread, cross and fade, foreshortened like the pool, under a soft rim, with a splash at the inflow.
+water/light-plate | PASS | - | The plate warms from its far edge to the edge beside the stream (red 140 to 183 measured), strongest on the bevel facing the water, words readable.

@@ -261,12 +261,18 @@ void main(){
   col += spec(N, V, L, T, B, rough, aniso, F0) * fall * vec3(1.0, 0.94, 0.86);
   col += spec(N, V, L, T, B, min(1.0, rough * 1.8 + 0.1), aniso * 0.5, F0) * fall * 0.1 * vec3(1.0, 0.94, 0.86);
 
+  float spill = 0.0;
   if (uWaterI > 0.0){
     vec3 Wv = vec3(uWater.x, -uWater.y, uWater.z) - P;
     float wd = length(Wv);
     float wf = uWaterI / (1.0 + pow(wd / 170.0, 2.0));
     col += spec(N, V, Wv / wd, T, B, rough, aniso, F0) * wf * vec3(1.0, 0.5, 0.14);
-    col += F0 * wf * 0.05 * vec3(1.0, 0.5, 0.14) * max(dot(N, Wv / wd), 0.0);
+    // The water is a long bright source beside the plate: its light grazes the metal and warms the near side,
+    // strongest on bevels that face it.
+    col += mix(F0, vec3(dot(F0, vec3(0.33))), 0.5) * wf * vec3(1.0, 0.36, 0.05) * (0.3 + 0.8 * max(dot(N, Wv / wd), 0.0)) * (0.4 + 0.6 * exp(-wd / 90.0));
+    // Spill the plate's own exposure does not swallow: warm light that lands on it, strongest near the water and
+    // on the bevel facing it.
+    spill = wf * (0.25 + 1.6 * pow(max(dot(N, Wv / wd), 0.0), 2.0)) * exp(-wd / 160.0) * 0.08;
   }
 
   // Enamel: a black glassy fill. Dark, with its own small sharp highlight.
@@ -317,6 +323,7 @@ void main(){
   // brass rolls off smoothly toward full gold and never turns lemon or white, and has no flat clipped plateau.
   float mx = max(col.r, max(col.g, col.b));
   if (mx > 1e-5) col *= (1.0 - exp(-mx * 1.15)) / (mx * 0.955);
+  col += vec3(1.0, 0.42, 0.07) * spill * (1.0 - ink * 0.7);
   col = pow(max(col, 0.0), vec3(1.0 / 2.2));
   frag = vec4(col * cov, cov);
 }`;

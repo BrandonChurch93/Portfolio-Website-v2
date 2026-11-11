@@ -10,6 +10,7 @@ import { site } from '../content/site';
 import { Footer } from '../components/Footer';
 import { Nav } from '../components/Nav';
 import { Runtime } from '../components/Runtime';
+import { Water } from '../components/Water';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <Nav />
+        <Water />
         {children}
         <Footer />
         <Runtime />

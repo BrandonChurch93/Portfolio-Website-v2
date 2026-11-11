@@ -1,0 +1,11 @@
+.water {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: var(--z-water);
+  /* The water passes under the nav and never shows through its words. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent calc(var(--nav-h) - 6px), var(--bg) calc(var(--nav-h) + 90px));
+  mask-image: linear-gradient(to bottom, transparent 0, transparent calc(var(--nav-h) - 6px), var(--bg) calc(var(--nav-h) + 90px));
+}
