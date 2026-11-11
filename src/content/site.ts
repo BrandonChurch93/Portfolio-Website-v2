@@ -558,6 +558,10 @@ export const site = {
       line: 'made in code',
       number: 'No. 1',
     },
+    rocket: {
+      name: 'Lumen',
+      stages: ['1', '2'],
+    },
   },
 
   lab: {

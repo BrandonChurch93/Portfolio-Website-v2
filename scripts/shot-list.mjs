@@ -155,6 +155,26 @@ SHOTS['sculpture/rest-desktop'] = sc([]);
 SHOTS['sculpture/rest-phone'] = sc([], { vp: 'phone' });
 SHOTS['sculpture/entrance'] = sc([['opening', 0]], { strip: { times: steps12(0, 3.2), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
 
+// ---- rocket: /lab/piece/rocket, the piece alone, assembled, before launch ----------------------------
+// aim takes millimetres of the room (the pad deck at y 0, the rocket at the origin, the gantry at x 172); view takes degrees and metres.
+const rk = (steps, extra = {}) => ({ route: '/lab/piece/rocket/', vp: 'desktop', steps: [['freeze', 10], ['lamp', 0.55, 0.3], ...steps], ...extra });
+const rclose = (aim, view, lamp = [0.5, 0.4]) => rk([['lamp', ...lamp], ['piece:rocket.aim', ...aim], ['piece:rocket.view', ...view]]);
+SHOTS['rocket/form'] = rk([['piece:rocket.clay', true], ['piece:rocket.view', 34, 14, 2.3]]);
+SHOTS['rocket/close-1'] = rclose([0, 40, 0], [24, 8, 0.32]);
+SHOTS['rocket/close-2'] = rclose([0, 210, 0], [18, 6, 0.34]);
+SHOTS['rocket/close-3'] = rclose([0, 530, 0], [10, 8, 0.28]);
+SHOTS['rocket/close-4'] = rclose([120, 350, 0], [52, 10, 0.38]);
+SHOTS['rocket/close-5'] = rclose([30, 0, 70], [20, 34, 0.5]);
+SHOTS['rocket/close-6'] = rclose([170, -90, 200], [30, 14, 0.55]);
+SHOTS['rocket/light'] = rk([['lamp', 0.2, 0.3]]);
+SHOTS['rocket/light-2'] = rk([['lamp', 0.85, 0.6]]);
+SHOTS['rocket/making'] = rk([['piece:rocket.setMaking', true]]);
+SHOTS['rocket/rest-desktop'] = rk([]);
+SHOTS['rocket/rest-phone'] = rk([], { vp: 'phone' });
+SHOTS['rocket/entrance'] = rk([['opening', 0]], { strip: { times: steps12(0, 3.2), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
+SHOTS['rocket/assembly'] = rk([['piece:rocket.assembly', 0]], { strip: { times: steps12(0, 1), frame: [['piece:rocket.assembly', '$t']], cols: 4, caption: (t) => `assembled ${Math.round(t * 100)} percent` } });
+SHOTS['rocket/launch'] = rk([['piece:rocket.launch', 0]], { strip: { times: steps12(0, 10), frame: [['piece:rocket.launch', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s after ignition` } });
+
 // ---- home: the page itself ------------------------------------------------------------------------
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });

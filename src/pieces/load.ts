@@ -8,6 +8,7 @@ export const pieceLoaders: Record<string, () => Promise<PieceFactory>> = {
   handheld: () => import('./handheld/index').then((m) => m.createHandheld),
   camera: () => import('./camera/index').then((m) => m.createCamera),
   sculpture: () => import('./sculpture/index').then((m) => m.createSculpture),
+  rocket: () => import('./rocket/index').then((m) => m.createRocket),
 };
 
 // The small views for the doors on the home page, each from its own piece.

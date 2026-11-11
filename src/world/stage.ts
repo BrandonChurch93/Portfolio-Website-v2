@@ -246,8 +246,19 @@ export class Stage {
       const lineMat = new THREE.LineBasicMaterial({ color: new THREE.Color(0xe8bd8a).multiplyScalar(2.6), transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false });
       // Edges lie on the surface they outline; draw them a hair nearer so the surface never hides them.
       lineMat.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\ngl_Position.z -= 0.0004 * gl_Position.w;'); };
+      // A part may bring its own line geometry (wireGeo: a lathe's rings and meridians at a readable spacing) and a
+      // strength (wireK) so a dense lattice does not bloom into a glow.
+      const dimmed = new Map<number, THREE.LineBasicMaterial>();
+      const lineFor = (k: number) => {
+        if (k === 1) return lineMat;
+        let m = dimmed.get(k);
+        if (!m) { m = lineMat.clone(); m.color.multiplyScalar(k); m.onBeforeCompile = lineMat.onBeforeCompile; dimmed.set(k, m); }
+        return m;
+      };
       for (const o of list) {
-        const w = this.wireEdges > 0 ? new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, this.wireEdges), lineMat) : new THREE.Mesh(o.geometry, mat);
+        const own = o.userData.wireGeo as THREE.BufferGeometry | undefined;
+        const k = (o.userData.wireK as number | undefined) ?? 1;
+        const w = own ? new THREE.LineSegments(own.clone(), lineFor(k)) : this.wireEdges > 0 ? new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, this.wireEdges), lineFor(k)) : new THREE.Mesh(o.geometry, mat);
         w.matrixAutoUpdate = false;
         w.matrix.copy(o.matrix);
         w.renderOrder = 10;
