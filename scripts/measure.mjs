@@ -1,6 +1,8 @@
 // Measures frame time on a page while the lamp moves every frame, so everything lit must redraw.
 //
-//   node scripts/measure.mjs <route> <viewport> [--steps file.json] [--seconds 4] [--tier high] [--headed] [--opening]
+//   node scripts/measure.mjs <route> <viewport> [--steps file.json] [--seconds 4] [--tier high] [--headed] [--opening] [--cpu 4]
+//
+// --cpu slows the CPU by that factor (Chromium devtools throttling), for the low tier budget in kit 06.
 //
 // --opening drives the hero opening through window.__site.opening(t) at real time, from 0, while measuring.
 //
@@ -24,6 +26,8 @@ const preview = await startPreview();
 const errors = [];
 try {
   const page = await openSite(browser, preview, { route, vp, steps }, errors, '');
+  const cpu = Number(flag('--cpu', 1));
+  if (cpu > 1) { const cdp = await page.context().newCDPSession(page); await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu }); }
   const result = await page.evaluate(async ([secs, drive]) => {
     const intervals = [];
     const metal = [];
@@ -51,6 +55,7 @@ try {
     };
   }, [seconds, args.includes('--opening')]);
   const r = (n) => n.toFixed(2);
+  console.log(`measure: cpu slowed ${Number(flag('--cpu', 1))}x`);
   console.log(`measure: ${route} at ${vp} · renderer ${renderer} (${hardware ? 'hardware' : 'software'}) · tier ${result.info.tier} · plates ${result.info.stats.plates ?? 0}`);
   console.log(`measure: frames ${result.frames} · frame interval median ${r(result.median)} ms · p95 ${r(result.p95)} ms · worst ${r(result.worst)} ms`);
   console.log(`measure: plate renderer CPU a frame median ${r(result.metalMedian)} ms · p95 ${r(result.metalP95)} ms`);

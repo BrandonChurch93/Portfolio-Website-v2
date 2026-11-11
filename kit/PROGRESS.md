@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 11 · start
+IN PROGRESS · Phase 12 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 11 Tiers, speed, access, hardening
-- Step: start (read 06 tiers and speed, 07, 09)
-- Next action: check incoming/ and REPO_URL; tier shots for the rooms and hero, frame budgets at every tier, access (keyboard, reduced motion, contrast), hardening
+- Phase: 12 Final pass
+- Step: start (read 09 QA gauntlet, 07)
+- Next action: check incoming/ and REPO_URL; stills; full retake of every shot; judge; check-shots clean; QA gauntlet with evidence; Handoff; BUILD COMPLETE
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -29,7 +29,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 8 | About, contact and the rocket | done | 2026-11-11, commit "Phase 8 About, contact and the rocket" |
 | 9 | The other pages | done | 2026-11-11, commit "Phase 9 the other pages" |
 | 10 | The water through the whole site | done | 2026-11-11, commit "Phase 10 the water through the whole site" |
-| 11 | Tiers, speed, access, hardening | | |
+| 11 | Tiers, speed, access, hardening | done | 2026-11-11, commit "Phase 11 tiers, speed, access, hardening" |
 | 12 | Final pass | | |
 
 ## Gate evidence
@@ -48,6 +48,14 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 11
+- Shots pass: node scripts/check-shots.mjs tier passed 6 of 6 (hero and room at mid, low and static: lower tiers give up resolution, occlusion and some particles; the static tier holds one complete frame with the water drawn still). My PASS (builder-tier-1).
+- Checked at Phase 11 start: no incoming/, REPO_URL NONE.
+- Speed, M4 Pro ANGLE Metal headed, 1440x900 at 2x: city at rest median 8.3 ms, p95 9.5 (60 fps budget met); the opening at real time median 8.5 to 8.7, p95 17.6 to 17.7 (Gate 4; never under 50 fps at p95); the rocket's launch at the page end median 8.4 and 16.2, p95 16.9 and 17.9 (Gate 8); low tier with the CPU slowed 4x (scripts/measure.mjs --cpu 4, Chromium devtools throttling): home median 9.7 ms, p95 18.1, worst 34.7 (one frame); /games median 8.3, p95 10.1, worst 16.3; the home page's end with the launch playing median 15.7, p95 18.1, worst 18.6. Every budget met.
+- Access, tests/e2e/access.spec.ts (Chromium, 68 checks): the first Tab reaches the skip link and Enter moves to the content; every focus stop on the home page shows a 2 px amber ring (rgb 255 157 60); one h1 and headings in order on every page (the /skills ledger now takes h2 under its page's h1); every picture has alt text; every link and button at least 44 px on a phone (the footer's Email link and the project pages' Live link widened); reduced motion skips the opening, shows the headline at once and takes the static tier; nothing scrolls sideways at 320 px on any page (project facts wrap inside on narrow screens); no layout shift after first paint on five pages (sum of layout shift entries under 0.02). Contrast, tests/unit/contrast.test.ts from the tokens: text 17.7, text-2 11.9, text-3 7.1, accent 8.9, amber 9.5 to 1 on --bg.
+- Playwright: 489 passed: the full suite in Chromium, the smoke test (every route at every viewport) in WebKit and Firefox.
+- typecheck clean, unit tests 63 passed, check:copy 0 problems (146 files, 30 pages).
 
 ### Gate 10
 - Shots pass: node scripts/check-shots.mjs home page water passed 97 of 97 (home 37 with the two scroll strips, page 50, water 10), all taken from the gate build. Critic rounds this phase: 062 and 063 (pages), 064 (water), 065 (home), 066 (pages), 067 (water and the scroll strips; light-plate critic PASS). Every water shot has critic verdicts from more than three rounds across Phases 3 and 10; every home and page desktop and phone shot has had a critic look; my PASS on the current images gates (builder-gate10-1, -2).
@@ -219,6 +227,7 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - Share images: the site's is the city settled; a project's is its own picture. JPEG, because some link previews still refuse WebP. Rule 3.
 - The page water's body was rebuilt once (kit 07 stuck rule) after critics failed its look on every page: a lens of light with a core thread and braided threads instead of advected fbm blotches. Rule 1 (W01, G06 against the second pass).
 - On a phone the split rejoins in the left margin and the stream goes on from the half that arrives first; the other half comes in as a tributary, so the water never waits at a join. Rule 2.
+- The share images are written by scripts/stills.mjs (it runs scripts/og.mjs after the stills), as kit 06 places them. Rule 4.
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -502,6 +511,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 9 done: project pages framed in brass under glass, picture focus and zoom in the content file, fuller plain plates, fitted placards, the résumé's lines, the not-found page's pool, share images, sitemap, robots, icon. Next: Phase 10, the water, starting with its look on every page.
 
 - 2026-11-11, Phase 10 done: the water rebuilt to a glassy braided ribbon with a halo and a hot head; routes that meander, never cross text, keep off screen edges, go behind the portrait where there is room, round every block of text to the foot of the page; pools as lit surfaces; the hero's stream waits for the city's water; home scroll strips; the desk's tools rest under a frozen clock. Next: Phase 11.
+
+- 2026-11-11, Phase 11 done: tier shots, every speed budget measured and met (a CPU throttle in measure.mjs for the low tier), an access suite (skip link, focus rings, headings, alt, touch targets, reduced motion, 320 px, layout shift), contrast from the tokens, WebKit and Firefox smoke. Next: Phase 12.
 
 ## Handoff
 

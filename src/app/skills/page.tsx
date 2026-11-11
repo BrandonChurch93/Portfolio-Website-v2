@@ -13,7 +13,7 @@ export default function Skills() {
       <div className={page.wrap}>
         <PageHead title={site.skills.heading} lede={site.skills.sub} />
         <Workbench />
-        <Ledger areas={site.skills.areas} />
+        <Ledger areas={site.skills.areas} level={2} />
       </div>
     </main>
   );

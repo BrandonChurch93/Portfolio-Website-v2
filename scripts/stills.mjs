@@ -43,4 +43,6 @@ try {
   await preview.stop();
   await browser.close();
 }
+// The share images come from the same stills (kit 06: the site's own pictures are written here, before the build).
+execFileSync('node', ['scripts/og.mjs'], { stdio: 'inherit' });
 execFileSync('npm', ['run', 'build'], { stdio: 'inherit' });

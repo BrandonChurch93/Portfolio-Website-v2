@@ -1,0 +1,6 @@
+shots/tier/hero-mid.jpg | sha: c779f8c01df8 | PASS | - | The city at mid: same composition, light and water, at a lower pixel ratio; nothing lost that reads at desktop size.
+shots/tier/hero-low.jpg | sha: f51b42eca3fc | PASS | - | The city at low: occlusion and some particles cut, resolution lower; the lit city, its falls and its character stay.
+shots/tier/hero-static.jpg | sha: df11d52351c0 | PASS | - | The city held as one frame, fully lit, falls and pools drawn; a complete picture, not a placeholder.
+shots/tier/room-mid.jpg | sha: 08165b3a71da | PASS | - | The handheld at mid: same light and screen, lower pixel ratio.
+shots/tier/room-low.jpg | sha: aa94ee1410c1 | PASS | - | The handheld at low: brass, screen and stand intact at lower cost.
+shots/tier/room-static.jpg | sha: 415b980ba516 | PASS | - | The handheld drawn once and held; the page water drawn still and complete in the gutter.
