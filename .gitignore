@@ -15,3 +15,5 @@ next-env.d.ts
 *.log
 /peeks/
 /scratch/
+# Written by next dev on every start.
+/AGENTS.md

@@ -32,7 +32,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // The hero's inline script marks <html> before React loads (data-opening), so the first paint is the opening's
+    // start; React must not flag that attribute as a mismatch. This covers <html> itself only.
+    <html lang="en" suppressHydrationWarning>
       <body>
         <Nav />
         <Water />
