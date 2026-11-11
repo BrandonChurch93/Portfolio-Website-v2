@@ -1,0 +1,23 @@
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 300;
+  letter-spacing: var(--track-tight);
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+}
+
+.link:hover {
+  color: var(--amber);
+  text-decoration-color: var(--amber);
+}

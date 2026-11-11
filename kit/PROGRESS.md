@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 1 · start
+IN PROGRESS · Phase 2 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 1 Foundations
-- Step: start (read the Phase 1 "Read first" files)
-- Next action: src/config/site.ts constants, tokens, fonts, global styles; then src/content/site.ts
+- Phase: 2 Metal and the lamp
+- Step: start (re-read 07, 02 Metal and The lamp, the two reference pages)
+- Next action: research real time metal on the web, log it; then the plate renderer on /lab/metal
 - Background tasks running (id, what): none
 - Files changed since the last commit: none
 
@@ -19,7 +19,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | Phase | Name | Status | Gate passed (date, commit) |
 |---|---|---|---|
 | 0 | Setup | done | 2026-11-10, first commit "Phase 0 setup and harness" |
-| 1 | Foundations | | |
+| 1 | Foundations | done | 2026-11-11, commit "Phase 1 foundations" |
 | 2 | Metal and the lamp | | |
 | 3 | The water | | |
 | 4 | The city | | |
@@ -41,6 +41,13 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Harness proven both ways: `node scripts/check-shots.mjs ref` exited 1 with "no verdict on the current image" for all four ref shots before any verdict, then exited 0 ("passed: 4, problems: 0") after `node scripts/verdict.mjs --from kit/critics/builder-ref.txt --who builder`. Shots taken headless on the hardware renderer "ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro)". All four ref images opened and judged. Every still in `kit/reference/hero-city/` (4) and `kit/reference/workbench/` (7) opened.
 - Old site inventory and reference notes written above. Import exit 0.
 - First commit made (see Phases table). Not pushed: REPO_URL is NONE.
+
+### Gate 1
+- `npm run typecheck` clean; `npm run build` wrote out/ from sources d801c9454f3c (29 pages: every route, 10 project pages, 3 lab pages plus 6 lab piece pages, 404); `npm run test` 25 passed (content shape, tier choice, lamp drift, config equals tokens and gate viewports); `npm run check:copy` 0 problems over 75 source files and 30 pages, and proven to fail on a planted exclamation point, banned words and a model version string.
+- Every route at all five viewports: `tests/e2e/smoke.spec.ts` loads 28 routes (all pages, every project, the lab, a missing route) at phone, tablet, desktop, wide and 4K in Chromium (140 tests): status 200 (404 for the missing route), h1 visible inside the viewport, real text in main, body text 16px or more, Sora loaded, no console error, no page error, `scrollWidth <= innerWidth`. All passed.
+- Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
+- SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
+- Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
 
 ## Environment
 
@@ -65,6 +72,10 @@ One line each: what was checked, where, what was found, the version it applies t
 - next 16.4.6 typecheck: after deleting a route, stale `.next/types/validator.ts` breaks `tsc --noEmit` until the next build. Build before typecheck, or delete `.next`.
 - @fontsource-variable 5.3.0 family names: 'Sora Variable', 'Inter Variable', 'JetBrains Mono Variable'; import path is the package root (index.css).
 - `generateBuildId` returning a fixed string works: `out/_next/static/brandon-church-static/`.
+- next 16.4.6 static export: `generateStaticParams` returning `[]` is a build error ("With output: export, at least one route must be generated"). So a switch cannot empty a dynamic route.
+- next 16.4.6 `pageExtensions`: a page named `page.art.tsx` is a route only while `art.tsx` is in `pageExtensions`. The config adds `art.tsx` and `lab.tsx` only when SHOW_3D_ART and SHOW_LAB are on. Proven: with SHOW_3D_ART=false via `scripts/build-flags.mjs` the probe route was absent from `out-flags/`, present in `out/`, and `out/` was untouched.
+- gsap 3.15.1: `gsap.ticker.remove(gsap.updateRoot)` then `gsap.updateRoot(seconds)` drives every tween from an outside clock (types in node_modules/gsap/types/gsap-core.d.ts line 614, source gsap.js line 2514). The ticker keeps running for ScrollTrigger.
+- Node 24.22.2 strips TypeScript types natively, so `.mjs` scripts can import `src/config/site.ts` (kept free of non-erasable syntax and of imports).
 
 ## Old site inventory
 
@@ -131,7 +142,17 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - `builder-batch.mjs` is not ported. It is not needed, and leaving it out guarantees it cannot pass a shot the rules would fail.
 - Static server answers a missing `/favicon.ico` with 204, so the reference pages do not log a 404 console error.
 - Contact links: GitHub, LinkedIn, CodePen, YouTube and the email (shown publicly on the old site's contact section). The Calendly booking link is left out: it asks the visitor to book a call, which reads as a funnel, and the kit allows only public profile links plus a public email. Rule 1 (kit 05 Contact).
+- Project pictures are placeholders. Brandon said mid-build (2026-11-11): the old project images are outdated, he will make new ones, do not compromise the design to fit them, build the right design and he will make the images fit. So photo windows have fixed, designed aspect ratios (constants), pictures fill them with object-fit cover (or cover-fit in the shader), and no layout or window shape is ever bent to an old image. The kit's rule still holds that a project with no picture shows no empty window. The Handoff lists the exact window aspect and pixel size to export new images at, and swapping them is one entry each in `scripts/media.mjs`. Rule 1.
 - About portrait: `headshot2.jpg` (orange background). Chosen in Phase 0 and then confirmed by Brandon in a message during the build. Rule 1.
+- Switches: a page behind a switch is `page.art.tsx` or `page.lab.tsx`, and next.config.ts adds those page extensions only while the switch is on, because an empty `generateStaticParams` is a build error in static export. Rule 4 (one move to turn it off, nothing reads as missing).
+- Root font size is fluid, `clamp(16px, 0.5vw + 8.8px, 28px)`: 16px at 1440 and below, 18.4 at 1920, 28 at 3840, so every rem grows on wide and 4K screens and nothing looks small and lost. Rule 1 (kit 02 Type).
+- `settle()` waits for fonts, eager pictures, pictures on screen (each capped at 15 s), everything tracked in the registry, and three frames. It does not wait for lazy pictures off screen, which may never load. Found when a 4K peek hung. Rule 4.
+- The test hooks add `info()` (tier, frozen, time, scrollY, GPU probe ms, lamp) for tests; the harness can call into a piece with a step named `piece:<name>.<method>`.
+- The one clock removes `gsap.updateRoot` from GSAP's ticker and calls `gsap.updateRoot(t)` itself every frame, so freeze holds GSAP too; the ticker keeps running for ScrollTrigger.
+- Tier choice: GPU timing test (64 iteration fragment loop at 512x512, 24 frames, read back) under 6 ms is high, under 12 ms mid, else low; one lower on under 4 GB memory; phones never high; a 4K fill or more drops one unless the GPU is under 3 ms. Rule 3.
+- Lab pages are bare benches until their phase; the smoke test asks them for 3 characters of text, content pages for 20.
+- Old project "why" lines are written from what the old site says (its sublines and first sentences), never a motive it does not state. Rule 1 (no invented fact).
+- Résumé page: "twelve years" (the old site's About notes say Brandon ruled twelve and the PDF's eleven is stale); the PDF itself says eleven. Under For review.
 - Résumé page text leaves out the phone number; the PDF download carries it as Brandon made it. Rule 1 (kit 01: never add a phone number from anywhere else to contact).
 - The Ask the Claude Docs image is cropped above its bottom line, which shows a model version string. Rule 1 (kit 01: no model version strings).
 - Framework and model versions in the old site's project data ("Next.js 16", "React 19", model names with numbers) are written without the numbers in the content file. Rule 1.
@@ -167,6 +188,21 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- The résumé PDF says "over eleven years"; the résumé page and the old site's About say twelve, per his earlier ruling. The PDF needs updating on his side.
+- Client work placards are built from the résumé (Property Claim Consulting, USAID through Leidit, Genius AI, Jobvite, G2i, small businesses, federal audits). The old site had no client list. He may want a different set.
+- Calendly is left off contact (kit allows profile links and a public email only).
+- The Proactive UI for AI Glasses picture shows a real film title on a theater card inside his own product. It is his screenshot and is used as is; he is replacing project pictures anyway.
+
+## Needed from Brandon (collected as found; copied into the Handoff in Phase 12)
+
+- PC Builder: any facts beyond the kit draft, a picture or video, and a link. Its plate uses the plain layout (no window) until then.
+- Red Team Arena: the same: facts, picture or video, link.
+- New project pictures (he said he is making them). Export at the window shapes in `WINDOW_ASPECT` (src/config/site.ts): plates 16:10, project page heroes 16:9, at least 2400 px wide; add or swap one entry each in `scripts/media.mjs` and run `npm run media`.
+- Any project video for photo windows.
+- Game footage, game art or game builds for /games (none on the old site).
+- Photographs for /photography (none on the old site), and the tools he uses for photography for the skills ledger.
+- Anything for /3d-art, or flip SHOW_3D_ART off before deployment.
+
 ## QA results
 
 One line per item of `kit/09-QA-GAUNTLET.md`: the id, pass or fail, the evidence.
@@ -176,6 +212,7 @@ One line per item of `kit/09-QA-GAUNTLET.md`: the id, pass or fail, the evidence
 Newest last. Date and time, what was done, what is next.
 
 - 2026-11-10, session 1: Phase 0. Machine checked, git init, stack installed exact, configs by hand, Next static export facts verified, harness ported (serve, free-port, shot-rules, shots, strips, verdict, check-shots, critic-list, crop, sheet, imgdiff, stamp-build), ref shots taken and judged, gate proven both ways, old site imported and inventoried, references read and noted. Brandon confirmed the orange-background portrait mid-build. Next: Gate 0 commit, then Phase 1 foundations.
+- 2026-11-11, session 1: Phase 0 committed (63f7b11). Phase 1: constants, tokens with a fluid root, content file from drafts and the old site, every route as a plain readable page, nav with phone menu, footer, the one clock driving GSAP, the lamp store with drift, tier choice and GPU probe, test hooks and registry, media pipeline (8 pictures, résumé PDF), check:copy, vitest (25), Playwright smoke, hooks and flags tests (145). Brandon said mid-build that project pictures are placeholders and the design must not bend to them; recorded. Next: Phase 2, metal and the lamp.
 
 ## Handoff
 

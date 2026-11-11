@@ -167,9 +167,13 @@ const substitute = (args, t) => args.map((a) => (a === '$t' ? t : a));
 
 async function hook(page, method, args) {
   return page.evaluate(async ([m, a]) => {
+    // "water.head" walks into __site.water; "piece:city.view" calls __site.piece('city') and then its view.
     const parts = m.split('.');
     let owner = window.__site;
-    for (let i = 0; i < parts.length - 1; i++) owner = owner[parts[i]];
+    for (let i = 0; i < parts.length - 1; i++) {
+      const call = /^(\w+):(.+)$/.exec(parts[i]);
+      owner = call ? owner[call[1]](call[2]) : owner[parts[i]];
+    }
     const fn = owner[parts[parts.length - 1]];
     if (typeof fn !== 'function') throw new Error(`window.__site.${m} is not a hook`);
     return await fn.apply(owner, a);

@@ -1,0 +1,106 @@
+.main {
+  position: relative;
+  z-index: var(--z-content);
+  padding-top: var(--nav-h);
+  min-height: 70vh;
+}
+
+.wrap {
+  max-width: calc(var(--max) + var(--gut) * 2);
+  margin: 0 auto;
+  padding: 0 var(--gut);
+}
+
+.head {
+  padding: clamp(5rem, 14vh, 10rem) 0 var(--space-8);
+  display: grid;
+  gap: var(--space-4);
+  max-width: 52rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.title {
+  font-size: var(--step-5);
+  font-weight: 300;
+  letter-spacing: var(--track-display);
+  line-height: var(--lead-display);
+}
+
+.lede {
+  font-size: var(--step-1);
+  color: var(--text-2);
+  max-width: var(--max-text);
+}
+
+.section {
+  padding: var(--section) 0 0;
+}
+
+.sectionHead {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-7);
+  max-width: 44rem;
+}
+
+.h2 {
+  font-size: var(--step-4);
+  font-weight: 300;
+  letter-spacing: var(--track-display);
+  line-height: 1.08;
+}
+
+.sub {
+  color: var(--text-2);
+  font-size: var(--step-1);
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-3);
+  max-width: 36rem;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--touch);
+  margin-top: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.more::after {
+  content: '';
+  width: 2.25rem;
+  height: 1px;
+  background: currentColor;
+  transition: width var(--dur-2) var(--ease-settle);
+}
+
+.more:hover {
+  color: var(--amber);
+}
+
+.more:hover::after {
+  width: 3.25rem;
+}
+
+.prose {
+  display: grid;
+  gap: var(--space-5);
+  max-width: var(--max-text);
+  font-size: var(--step-1);
+  color: var(--text-2);
+}

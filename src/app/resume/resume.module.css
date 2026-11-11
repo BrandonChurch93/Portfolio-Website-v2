@@ -1,0 +1,134 @@
+.sheet {
+  max-width: calc(58rem + var(--gut) * 2);
+}
+
+.head {
+  padding: clamp(5rem, 14vh, 10rem) 0 var(--space-7);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.titles {
+  color: var(--text);
+  font-size: var(--step-1);
+}
+
+.place {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-3);
+}
+
+.summary {
+  font-size: var(--step-1);
+  color: var(--text-2);
+  max-width: 48rem;
+}
+
+.section {
+  margin-top: var(--space-9);
+  display: grid;
+  gap: var(--space-5);
+}
+
+.h2 {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 400;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.roles {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.role {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.roleHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-5);
+  align-items: baseline;
+}
+
+.roleTitle {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: var(--track-tight);
+}
+
+.org {
+  color: var(--accent);
+}
+
+.when {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.roleSummary {
+  color: var(--text-2);
+}
+
+.points {
+  display: grid;
+  gap: var(--space-3);
+  color: var(--text-2);
+}
+
+.points li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 0.7rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+.earlier {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.earlier li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-5);
+  align-items: baseline;
+}
+
+.skills {
+  margin: 0;
+  display: grid;
+  gap: var(--space-5);
+}
+
+.skills dt {
+  font-family: var(--font-display);
+  color: var(--text);
+}
+
+.skills dd {
+  margin: var(--space-1) 0 0;
+  color: var(--text-2);
+}

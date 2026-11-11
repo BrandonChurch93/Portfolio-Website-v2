@@ -1,0 +1,3 @@
+.wrap {
+  padding-top: clamp(5rem, 14vh, 10rem);
+}

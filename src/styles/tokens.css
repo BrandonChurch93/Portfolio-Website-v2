@@ -1,13 +1,76 @@
 :root {
   --bg: #0c0a09;
+  --bg-2: #14110f;
   --amber: #ff9d3c;
   --accent: #d4a574;
   --text: #f5f2ee;
   --text-2: #cfc8c0;
   --text-3: #a39a91;
   --line: rgba(212, 165, 116, 0.2);
+  --line-strong: rgba(212, 165, 116, 0.38);
+  --shade: rgba(6, 5, 4, 0.72);
 
   --font-display: 'Sora Variable', 'Sora', system-ui, sans-serif;
   --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  /* The root size grows with the viewport, so every rem is larger on wide and 4K screens. 16px up to 1440 wide. */
+  --root: clamp(16px, calc(0.5vw + 8.8px), 28px);
+
+  /* Type scale. Display sizes also follow the viewport width. */
+  --step--2: 0.75rem;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: clamp(1.0625rem, 1rem + 0.2vw, 1.25rem);
+  --step-2: clamp(1.25rem, 1.1rem + 0.5vw, 1.6rem);
+  --step-3: clamp(1.5rem, 1.2rem + 1vw, 2.2rem);
+  --step-4: clamp(1.9rem, 1.3rem + 2vw, 3.4rem);
+  --step-5: clamp(2.4rem, 1.2rem + 4vw, 5.6rem);
+
+  --track-display: -0.04em;
+  --track-tight: -0.03em;
+  --track-label: 0.08em;
+  --lead-display: 1.06;
+  --lead-body: 1.6;
+
+  /* Space. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+  --space-10: 10rem;
+  --gut: clamp(1.375rem, 5vw, 4.5rem);
+  --section: clamp(6rem, 12vw, 12rem);
+  --max: 80rem;
+  --max-text: 38rem;
+  --nav-h: 4.25rem;
+
+  /* Photo window shapes. Same values as WINDOW_ASPECT in src/config/site.ts; a unit test keeps them equal. */
+  --window-plate: 16 / 10;
+  --window-project: 16 / 9;
+  --window-portrait: 4 / 5;
+
+  --radius-1: 0.375rem;
+  --radius-2: 0.75rem;
+  --radius-3: 1.125rem;
+
+  --focus: 2px solid var(--amber);
+  --focus-offset: 3px;
+  --touch: 44px;
+
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-weight: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 0.18s;
+  --dur-2: 0.45s;
+  --dur-3: 0.9s;
+
+  --z-water: 1;
+  --z-content: 2;
+  --z-nav: 20;
+  --z-skip: 30;
 }
