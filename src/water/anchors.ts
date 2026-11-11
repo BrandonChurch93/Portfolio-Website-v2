@@ -21,10 +21,17 @@ export function readAnchors(root: ParentNode, narrowBelow: number): { anchors: A
   const anchors: Anchor[] = [];
   root.querySelectorAll<HTMLElement>('[data-water]').forEach((el, i) => {
     if (!el.offsetParent && el.getClientRects().length === 0) return;
+    // An anchor that only applies below a width (a layout that changes shape above it).
+    if (el.dataset.waterBelow && document.documentElement.clientWidth >= Number(el.dataset.waterBelow)) return;
     const kind = el.dataset.water as AnchorKind;
     const rect = pageRect(el);
     const a: Anchor = { id: el.id || el.dataset.waterId || `a${i}`, kind, rect };
     if (el.dataset.waterFall) a.fall = Number(el.dataset.waterFall);
+    // data-water-line="#id": run down the middle of that element when it is shown.
+    if (el.dataset.waterLine) {
+      const line = document.querySelector(el.dataset.waterLine);
+      if (line && line.getClientRects().length) { const lr = pageRect(line); a.x = (lr.left + lr.right) / 2; }
+    }
     if (el.dataset.waterSide === 'left' || el.dataset.waterSide === 'right') a.side = el.dataset.waterSide;
     if (kind === 'split' && el.dataset.waterFrame) {
       const f = document.querySelector(el.dataset.waterFrame);

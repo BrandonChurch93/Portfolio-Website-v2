@@ -25,6 +25,8 @@ export interface Anchor {
   to?: { x: number; y: number };
   // How far it falls after pouring off, px. Default: to the next thing, at most WATER.maxFall.
   fall?: number;
+  // weave: run down this page x instead of a gutter (a gap between two columns of things).
+  x?: number;
 }
 
 export interface RouteOptions {
@@ -73,6 +75,8 @@ export interface Route {
 }
 
 export const WATER = {
+  // A stretch that starts thinner or wider than its kind eases to its own width over this many px.
+  widthEase: 48,
   gravity: 2600,
   step: 3,
   speed: { run: 240, surface: 230, cling: 120 },
@@ -84,6 +88,8 @@ export const WATER = {
   lip: 2,
   maxFall: 220,
   minFall: 70,
+  // Moving across to a new line, the water drops this far while it crosses, so the turn is a soft step, not a corner.
+  crossDrop: 56,
 } as const;
 
 class Pen {
@@ -100,6 +106,18 @@ class Pen {
     this.samples.push({ x, y, s: this.s, f: this.f, hw: hw * this.wScale, kind: KIND_ID[kind], drop, nx: 0, ny: 0 });
   }
 
+  // The width a new stretch starts from, and how far along it has gone: a run after a thin fall widens over its
+  // first stretch instead of jumping, so there is no tick at the join.
+  private eased(target: number, from: number, d: number): number {
+    const k = Math.min(1, d / WATER.widthEase);
+    return from + (target - from) * k * k * (3 - 2 * k);
+  }
+
+  private lastHw(fallback: number): number {
+    const last = this.samples[this.samples.length - 1];
+    return last ? last.hw / this.wScale : fallback;
+  }
+
   begin(kind: StrandKind): void {
     if (!this.samples.length) this.samples.push({ x: this.x, y: this.y, s: this.s, f: this.f, hw: WATER.width[kind] * this.wScale, kind: KIND_ID[kind], drop: 0, nx: 0, ny: 0 });
   }
@@ -111,14 +129,15 @@ class Pen {
     const len = Math.hypot(x - x0, dy) * 1.2;
     const n = Math.max(2, Math.ceil(len / WATER.step));
     const c1y = y0 + dy * 0.5, c2y = y - dy * 0.5;
-    let px = x0, py = y0;
+    let px = x0, py = y0, d = 0;
+    const from = this.lastHw(WATER.width[kind]);
     for (let k = 1; k <= n; k++) {
       const t = k / n, u = 1 - t;
       const bx = u * u * u * x0 + 3 * u * u * t * x0 + 3 * u * t * t * x + t * t * t * x;
       const by = u * u * u * y0 + 3 * u * u * t * c1y + 3 * u * t * t * c2y + t * t * t * y;
       const ds = Math.hypot(bx - px, by - py);
-      px = bx; py = by;
-      this.push(bx, by, kind, WATER.width[kind], 0, ds / WATER.speed[kind]);
+      px = bx; py = by; d += ds;
+      this.push(bx, by, kind, this.eased(WATER.width[kind], from, d), 0, ds / WATER.speed[kind]);
     }
   }
 
@@ -126,10 +145,11 @@ class Pen {
     this.begin(kind);
     const n = Math.max(1, Math.ceil(Math.hypot(x - this.x, y - this.y) / WATER.step));
     const x0 = this.x, y0 = this.y;
+    const from = this.lastHw(WATER.width[kind]), total = Math.hypot(x - x0, y - y0);
     for (let k = 1; k <= n; k++) {
       const t = k / n;
       const nx = x0 + (x - x0) * t, ny = y0 + (y - y0) * t;
-      this.push(nx, ny, kind, WATER.width[kind], 0, Math.hypot(nx - this.x, ny - this.y) / WATER.speed[kind]);
+      this.push(nx, ny, kind, this.eased(WATER.width[kind], from, total * t), 0, Math.hypot(nx - this.x, ny - this.y) / WATER.speed[kind]);
     }
   }
 
@@ -239,8 +259,10 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
   for (const a of sorted) {
     const r = a.rect;
     if (a.kind === 'weave') {
-      const x = gutterX(a.side ?? 'right', r);
-      travel(pen, x, r.top);
+      const x = a.x ?? gutterX(a.side ?? 'right', r);
+      // Never back up the page: a weave that starts above the water joins it where it already is.
+      const y0 = Math.max(r.top, pen.y + (Math.abs(x - pen.x) > 1 ? WATER.crossDrop : 0));
+      travel(pen, x, y0);
       pen.lineTo(x, r.bottom + 16, 'run');
       touch.push({ anchor: a.id, x, y: (r.top + r.bottom) / 2, s: pen.s });
     } else if (a.kind === 'corner') {
@@ -285,7 +307,7 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
         touch.push({ anchor: `${a.id}:pour${dir > 0 ? 'R' : 'L'}`, x: p.x, y: p.y, s: p.s });
         const fx = o.narrow ? gutterX(dir > 0 ? 'right' : 'left', { ...frame, left: Math.min(r.left, frame.left), right: Math.max(r.right, frame.right) }) : dir > 0 ? Math.max(r.right, frame.right) + 14 : Math.min(r.left, frame.left) - 14;
         // It leaves the end along the cling's tangent, falls free, then runs into the gutter beside the section.
-        p.fall(v.vx, v.vy, Math.min(ly + 60, frame.top), g);
+        p.fall(v.vx, v.vy, ly + (o.narrow ? 50 : 70), g);
         p.curveTo(fx, Math.min(frame.top + 140, frame.bottom), 'run');
         p.lineTo(fx, frame.bottom + 18, 'run');
         p.curveTo(cx + dir * 3, joinY, 'run');

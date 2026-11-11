@@ -374,7 +374,7 @@ class PlateRenderer {
     gl.uniform3f(l.u('uLamp'), L.px, L.py, LAMP.depth * Math.max(innerWidth, innerHeight * 0.8));
     gl.uniform1f(l.u('uLampI'), 1.15 + 0.3 * L.led);
     gl.uniform3f(l.u('uWater'), p.water.x, p.water.y, p.water.z);
-    gl.uniform1f(l.u('uWaterI'), p.water.k * 5.0);
+    gl.uniform1f(l.u('uWaterI'), p.water.k * 8.0);
     gl.uniform2f(l.u('uTilt'), p.tilt.x, p.tilt.y);
     const F = FINISHES[p.spec.finish];
     gl.uniform3fv(l.u('uF0a'), F.a);

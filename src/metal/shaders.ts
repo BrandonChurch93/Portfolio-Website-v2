@@ -269,7 +269,7 @@ void main(){
     col += spec(N, V, Wv / wd, T, B, rough, aniso, F0) * wf * vec3(1.0, 0.5, 0.14);
     // The water is a long bright source beside the plate: its light grazes the metal and warms the near side,
     // strongest on bevels that face it.
-    col += mix(F0, vec3(dot(F0, vec3(0.33))), 0.5) * wf * vec3(1.0, 0.36, 0.05) * (0.3 + 0.8 * max(dot(N, Wv / wd), 0.0)) * (0.4 + 0.6 * exp(-wd / 90.0));
+    col += mix(F0, vec3(dot(F0, vec3(0.33))), 0.5) * wf * vec3(1.0, 0.36, 0.05) * (0.3 + 1.3 * max(dot(N, Wv / wd), 0.0)) * (0.35 + 1.1 * exp(-wd / 80.0));
     // Spill the plate's own exposure does not swallow: warm light that lands on it, strongest near the water and
     // on the bevel facing it.
     spill = wf * (0.25 + 1.6 * pow(max(dot(N, Wv / wd), 0.0), 2.0)) * exp(-wd / 160.0) * 0.08;

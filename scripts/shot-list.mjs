@@ -84,6 +84,8 @@ SHOTS['city/settle'] = opening('desktop', 5.0, 7.6);
 
 // ---- home: the page itself ------------------------------------------------------------------------
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
+const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });
+for (const v of VPS) { SHOTS['home/work-' + v] = section('work')(v); SHOTS['home/clients-' + v] = section('clients')(v); }
 
 // ---- tier: the hero and a room at the lower tiers ----------------------------------------------------
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };

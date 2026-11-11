@@ -1,4 +1,4 @@
-import { ROUTES } from '../config/site';
+import { BREAKPOINT_WORK_COLUMNS, ROUTES } from '../config/site';
 import { projectBySlug, site, type Project } from '../content/site';
 import { ContactLinks } from '../components/ContactLinks';
 import { Doors } from '../components/Doors';
@@ -19,25 +19,30 @@ export default function Home() {
       <Hero />
 
       <section id="work" className={page.section} aria-labelledby="work-title">
-        <div className={page.wrap}>
-          <header className={page.sectionHead}>
+        <div className={`${page.wrap} ${styles.workGrid}`} data-water-column="">
+          <header className={page.sectionHead} data-water-avoid="">
             <h2 id="work-title" className={page.h2}>{site.work.heading}</h2>
             <p className={page.sub}>{site.work.sub}</p>
           </header>
+          <div id="work-spine" className={styles.spine} aria-hidden="true" />
           <div className={styles.featured}>
             {featured.map((p, i) => (
-              <div key={p.slug} className={styles.featuredRow} data-side={i % 2 ? 'right' : 'left'}>
-                <ProjectPlate project={p} index={i} />
+              <div key={p.slug} className={styles.featuredRow} data-side={i % 2 ? 'right' : 'left'} data-window={p.media.length ? 'yes' : 'no'}>
+                {/* Wide: down the outer left gutter, across into the gap between the columns, then out to the outer
+                    right gutter. Narrow: alternating margins. */}
+                <ProjectPlate project={p} index={i} water={i % 2 ? 'right' : 'left'} waterLine={i === 1 ? '#work-spine' : undefined} waterBelow={i === 2 ? BREAKPOINT_WORK_COLUMNS : undefined} />
               </div>
             ))}
           </div>
-          <MetalLink href={ROUTES.work} label={site.work.link} />
+          <div className={styles.more} data-water-avoid="">
+            <MetalLink href={ROUTES.work} label={site.work.link} />
+          </div>
         </div>
       </section>
 
       <section id="clients" className={page.section} aria-labelledby="clients-title">
         <div className={page.wrap}>
-          <Placards items={site.clients.items} bar={site.clients.bar} sub={site.clients.sub} headingId="clients-title" />
+          <Placards items={site.clients.items} bar={site.clients.bar} sub={site.clients.sub} headingId="clients-title" water />
         </div>
       </section>
 

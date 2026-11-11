@@ -43,6 +43,8 @@ export type PieceName = (typeof PIECES)[number];
 
 // Layout: below this width the page is one column.
 export const BREAKPOINT_ONE_COLUMN = 820;
+// At and above this width the featured work steps down in two columns (src/app/home.module.css matches it).
+export const BREAKPOINT_WORK_COLUMNS = 1100;
 
 // ---- tiers --------------------------------------------------------------------------------------
 
