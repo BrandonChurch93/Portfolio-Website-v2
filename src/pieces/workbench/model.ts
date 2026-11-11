@@ -3,7 +3,11 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { Builder, at, cyl, lathe, rbox, seeded, xf } from '../../world/build';
 import { crownMesh, dropsAt, dropsMaterial, fallStrip, riders, waterMaterial, waterStrip, type WaterRow } from '../../world/lightwater';
+import { site } from '../../content/site';
 import { anodised, leather, plaster, walnut } from './materials';
+
+const KW = site.pieces.workbench.keys;
+const KM = KW.mods;
 import { MonitorScreen, TabletScreen, legendAtlas } from './screens';
 
 // The workbench, in millimetres (the root is scaled by 0.001). The desk top is y = 0, the viewer sits at +z.
@@ -222,12 +226,12 @@ export function buildBench(): BenchModel {
     type K = [number, string, string];
     const k = (w: number, c: string, l: string): K => [w, c, l];
     const rows: K[][] = [
-      [k(1, 'a', 'Esc'), ...['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'].map((s) => k(1, 'c', s)), k(1, 'c', 'Del')],
-      [...'`1234567890-='.split('').map((s) => k(1, 'i', s)), k(2, 'c', 'Back'), k(1, 'c', 'Home')],
-      [k(1.5, 'c', 'Tab'), ...'QWERTYUIOP[]'.split('').map((s) => k(1, 'i', s)), k(1.5, 'i', '\\'), k(1, 'c', 'PgUp')],
-      [k(1.75, 'c', 'Caps'), ...'ASDFGHJKL;\''.split('').map((s) => k(1, 'i', s)), k(2.25, 'a', 'Enter'), k(1, 'c', 'PgDn')],
-      [k(2.25, 'c', 'Shift'), ...'ZXCVBNM,./'.split('').map((s) => k(1, 'i', s)), k(1.75, 'c', 'Shift'), k(1, 'c', '↑'), k(1, 'c', 'End')],
-      [k(1.25, 'c', 'Ctrl'), k(1.25, 'c', 'Alt'), k(1.25, 'c', 'Fn'), k(6.25, 'i', ''), k(1, 'c', 'Alt'), k(1, 'c', 'Fn'), k(1, 'c', 'Ctrl'), k(1, 'c', '←'), k(1, 'c', '↓'), k(1, 'c', '→')],
+      [k(1, 'a', KW.f[0]), ...KW.f.slice(1, 13).map((s) => k(1, 'c', s)), k(1, 'c', KW.f[13])],
+      [...'`1234567890-='.split('').map((s) => k(1, 'i', s)), k(2, 'c', KM.back), k(1, 'c', KM.home)],
+      [k(1.5, 'c', KM.tab), ...'QWERTYUIOP[]'.split('').map((s) => k(1, 'i', s)), k(1.5, 'i', '\\'), k(1, 'c', KM.pgup)],
+      [k(1.75, 'c', KM.caps), ...'ASDFGHJKL;\''.split('').map((s) => k(1, 'i', s)), k(2.25, 'a', KM.enter), k(1, 'c', KM.pgdn)],
+      [k(2.25, 'c', KM.shift), ...'ZXCVBNM,./'.split('').map((s) => k(1, 'i', s)), k(1.75, 'c', KM.shift), k(1, 'c', KM.up), k(1, 'c', KM.end)],
+      [k(1.25, 'c', KM.ctrl), k(1.25, 'c', KM.alt), k(1.25, 'c', KM.fn), k(6.25, 'i', ''), k(1, 'c', KM.alt), k(1, 'c', KM.fn), k(1, 'c', KM.ctrl), k(1, 'c', KM.left), k(1, 'c', KM.down), k(1, 'c', KM.right)],
     ];
     const labels: string[] = [];
     for (const row of rows) for (const [, , l] of row) if (l && !labels.includes(l)) labels.push(l);

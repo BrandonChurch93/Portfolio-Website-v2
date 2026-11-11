@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { site } from '../../content/site';
 
 // What the screens on the desk show, drawn from the clock so a frozen frame is always the same picture.
 // The words are code and tool names that read as real work; they are not visitor copy.
@@ -6,27 +7,8 @@ import * as THREE from 'three';
 const MONO = '"JetBrains Mono Variable", "JetBrains Mono", ui-monospace, Menlo, monospace';
 const SANS = '"Inter Variable", "Inter", system-ui, sans-serif';
 
-const CODE = [
-  '// the hero: a city that builds itself',
-  "import { Stage } from '../world/stage';",
-  '',
-  'export function buildCity(stage: Stage) {',
-  '  const disc = terraces({ radius: 456, levels: 4 });',
-  '  const spire = tower({ height: 520, fins: 5 });',
-  '  const water = lightWater(CANALS, { speed: 50 });',
-  '',
-  '  for (const lot of disc.lots) {',
-  '    lot.raise(facade(lot, { rooms: true }));',
-  '  }',
-  '',
-  '  stage.clock.onFrame((t) => {',
-  '    water.flow(t);',
-  '    spire.beacon(t);',
-  '  });',
-  '',
-  '  return { disc, spire, water };',
-  '}',
-];
+const WB = site.pieces.workbench;
+const CODE: readonly string[] = WB.code;
 const WRITTEN = 11;
 const TOTAL = CODE.slice(WRITTEN).reduce((n, l) => n + l.length + 1, 0);
 const CHARS_PER_S = 22;
@@ -96,7 +78,7 @@ export class MonitorScreen {
     c.fillStyle = '#0c0b0a'; c.fillRect(0, 0, W, H);
     c.fillStyle = '#161412'; c.fillRect(0, 0, W, 60);
     ['#ff9a38', '#6b6259', '#6b6259'].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.arc(40 + i * 34, 30, 9, 0, 7); c.fill(); });
-    c.font = `500 24px ${MONO}`; c.fillStyle = '#d6cdc2'; c.fillText('city.ts', 190, 39); c.fillStyle = '#6b6259'; c.fillText('water.ts    stage.ts', 330, 39);
+    c.font = `500 24px ${MONO}`; c.fillStyle = '#d6cdc2'; c.fillText(WB.tabs[0], 190, 39); c.fillStyle = '#6b6259'; c.fillText(WB.tabs.slice(1).join('    '), 330, 39);
     c.fillStyle = '#ff9a38'; c.fillRect(176, 56, 112, 4);
     // Typing: characters appear at a steady pace, the file holds a moment when done, then starts again.
     const cycle = TOTAL / CHARS_PER_S + HOLD;
@@ -120,7 +102,7 @@ export class MonitorScreen {
     c.save(); c.beginPath(); c.roundRect(px, py, pw, ph, 18); c.clip();
     wireCity(c, px, py, pw, ph, q);
     c.restore();
-    c.font = `500 20px ${MONO}`; c.fillStyle = '#7d7469'; c.fillText(`${(16.7 - 6.4 * (0.5 + 0.5 * Math.sin(q * 0.8))).toFixed(1)} ms`, px + 24, py + 40);
+    c.font = `500 20px ${MONO}`; c.fillStyle = '#7d7469'; c.fillText(`${(16.7 - 6.4 * (0.5 + 0.5 * Math.sin(q * 0.8))).toFixed(1)} ${WB.frameUnit}`, px + 24, py + 40);
     // A timeline under it with a playhead moving.
     c.fillStyle = '#161412'; c.beginPath(); c.roundRect(px, H - 132, pw, 96, 14); c.fill();
     c.strokeStyle = '#3a342e'; c.lineWidth = 2; [0, 1, 2].forEach((i) => { c.beginPath(); c.moveTo(px + 24, H - 108 + i * 24); c.lineTo(px + pw - 24, H - 108 + i * 24); c.stroke(); });
@@ -158,8 +140,8 @@ export class TabletScreen {
     c.fillStyle = '#171513'; c.fillRect(0, 0, w, h);
     c.fillStyle = '#211e1b'; c.fillRect(0, 0, 96, h); c.fillRect(w - 300, 0, 300, h);
     for (let i = 0; i < 7; i++) { c.fillStyle = i === 2 ? '#ff9a38' : '#5d554d'; c.beginPath(); c.roundRect(28, 60 + i * 84, 40, 40, 10); c.fill(); }
-    c.font = `600 26px ${SANS}`; c.fillStyle = '#b8afa4'; c.fillText('Layers', w - 268, 70);
-    ['Plate', 'Engraving', 'Screws', 'Light', 'Shadow'].forEach((s, i) => { c.fillStyle = i === 0 ? '#2e2924' : '#211e1b'; c.fillRect(w - 284, 96 + i * 62, 268, 52); c.fillStyle = i === 0 ? '#f3ede3' : '#8e857a'; c.fillText(s, w - 232, 131 + i * 62); c.fillStyle = '#ff9a38'; c.fillRect(w - 268, 114 + i * 62, 16, 16); });
+    c.font = `600 26px ${SANS}`; c.fillStyle = '#b8afa4'; c.fillText(WB.layersTitle, w - 268, 70);
+    WB.layers.forEach((s, i) => { c.fillStyle = i === 0 ? '#2e2924' : '#211e1b'; c.fillRect(w - 284, 96 + i * 62, 268, 52); c.fillStyle = i === 0 ? '#f3ede3' : '#8e857a'; c.fillText(s, w - 232, 131 + i * 62); c.fillStyle = '#ff9a38'; c.fillRect(w - 268, 114 + i * 62, 16, 16); });
     ['#ff9a38', '#d0a35c', '#f3ede3', '#8a5a34', '#2b2927'].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.arc(w - 250 + i * 52, 520, 20, 0, 7); c.fill(); });
     // The artboard.
     const ax = 190, ay = 150, aw = 1010, ah = 620;
@@ -180,7 +162,7 @@ export class TabletScreen {
     const [hx, hy] = pts[upto - 1];
     c.fillStyle = '#fff0d8'; c.beginPath(); c.arc(hx, hy, 9, 0, 7); c.fill();
     c.setLineDash([10, 14]); c.lineWidth = 4; c.beginPath(); c.ellipse(1000, 420, 150, 96, 0, 0, 7); c.stroke(); c.setLineDash([]);
-    c.font = `500 30px ${SANS}`; c.fillStyle = '#ff9a38'; c.fillText('shine follows the light', 866, 560);
+    c.font = `500 30px ${SANS}`; c.fillStyle = '#ff9a38'; c.fillText(WB.note, 866, 560);
     c.restore();
     this.texture.needsUpdate = true;
   }

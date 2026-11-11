@@ -500,6 +500,42 @@ export const site = {
     line: 'Everything on this site is code, including the city and the water.',
   },
 
+  // Words drawn onto the 3D pieces: on screens, keys and engraved parts.
+  pieces: {
+    workbench: {
+      tabs: ['city.ts', 'water.ts', 'stage.ts'],
+      code: [
+        '// the hero: a city that builds itself',
+        "import { Stage } from '../world/stage';",
+        '',
+        'export function buildCity(stage: Stage) {',
+        '  const disc = terraces({ radius: 456, levels: 4 });',
+        '  const spire = tower({ height: 520, fins: 5 });',
+        '  const water = lightWater(CANALS, { speed: 50 });',
+        '',
+        '  for (const lot of disc.lots) {',
+        '    lot.raise(facade(lot, { rooms: true }));',
+        '  }',
+        '',
+        '  stage.clock.onFrame((t) => {',
+        '    water.flow(t);',
+        '    spire.beacon(t);',
+        '  });',
+        '',
+        '  return { disc, spire, water };',
+        '}',
+      ],
+      frameUnit: 'ms',
+      layersTitle: 'Layers',
+      layers: ['Plate', 'Engraving', 'Screws', 'Light', 'Shadow'],
+      note: 'shine follows the light',
+      keys: {
+        f: ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Del'],
+        mods: { back: 'Back', home: 'Home', tab: 'Tab', pgup: 'PgUp', caps: 'Caps', enter: 'Enter', pgdn: 'PgDn', shift: 'Shift', end: 'End', ctrl: 'Ctrl', alt: 'Alt', fn: 'Fn', up: '↑', left: '←', down: '↓', right: '→' },
+      },
+    },
+  },
+
   lab: {
     moves: { body: 'The body', run: 'Run', fall: 'Fall', land: 'Land', cling: 'Cling', pour: 'Pour', split: 'Split', frame: 'Frame', light: 'Light on metal', pool: 'Pool' },
     metal: 'Metal',
