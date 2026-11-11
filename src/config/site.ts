@@ -91,6 +91,10 @@ export const LAMP = {
 // A room page opens with its piece above the words: framing per screen shape (see PieceOptions.frame). Tall screens
 // lift the piece over the words; wide ones also move it right of the words.
 export const ROOM = {
+  // Which piece opens each room, and shows in its door on the home page.
+  pieces: { games: 'handheld', photography: 'camera', art3d: 'sculpture' },
+  // How the shared renderer lights each small view (Neutral tone mapping exposure).
+  exposure: { handheld: 1, camera: 1.3, sculpture: 1.1 },
   frame: { tall: { shift: -0.11, scale: 0.86, x: 0 }, upright: { shift: -0.1, scale: 1.0, x: 0 }, wide: { shift: -0.07, scale: 1.32, x: 0.17 } },
 } as const;
 

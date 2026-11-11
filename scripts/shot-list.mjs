@@ -158,6 +158,7 @@ SHOTS['sculpture/entrance'] = sc([['opening', 0]], { strip: { times: steps12(0, 
 // ---- home: the page itself ------------------------------------------------------------------------
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });
+for (const v of VPS) SHOTS['home/rooms-' + v] = section('rooms')(v);
 for (const v of VPS) { SHOTS['home/work-' + v] = section('work')(v); SHOTS['home/clients-' + v] = section('clients')(v); SHOTS['home/skills-' + v] = section('skills-desk')(v); }
 // ---- page: one route per screen, from its top -------------------------------------------------------
 const pageShot = (route) => (v) => ({ route, vp: v, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] });

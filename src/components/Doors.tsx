@@ -1,12 +1,14 @@
 import Link from 'next/link';
-import { ROUTES, SHOW_3D_ART } from '../config/site';
+import { ROOM, ROUTES, SHOW_3D_ART } from '../config/site';
+import { DoorViews } from './DoorViews';
 import type { Door } from '../content/site';
 import styles from './Doors.module.css';
 
-// The doors to the rooms. Phase 7 puts a small live view of each room's piece in its frame.
+// The doors to the rooms, each with a small live view of its room's piece.
 export function Doors({ doors }: { doors: readonly Door[] }) {
   const open = doors.filter((d) => d.route !== 'art3d' || SHOW_3D_ART);
   return (
+    <div data-doors="">
     <ul className={styles.doors} data-count={open.length}>
       {open.map((d) => (
         <li key={d.route} className={styles.door}>
@@ -20,5 +22,7 @@ export function Doors({ doors }: { doors: readonly Door[] }) {
         </li>
       ))}
     </ul>
+    <DoorViews rooms={open.map((d) => d.route).filter((r): r is keyof typeof ROOM.pieces => r in ROOM.pieces)} />
+    </div>
   );
 }

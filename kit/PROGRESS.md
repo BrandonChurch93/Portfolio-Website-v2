@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 7 · the More rooms doors
+IN PROGRESS · Phase 8 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 7 The rooms
-- Step: the More rooms doors on the home page
-- Next action: one shared renderer drawing three small live views (handheld, camera, sculpture) into one canvas, only in view, stills on low and static; home/rooms shots; Gate 7
+- Phase: 8 About, contact and the rocket
+- Step: start (read 04 rules, contract, phases, the rocket; 01; 03 contact; 07)
+- Next action: check incoming/ and REPO_URL, then About on the home page and /about
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -25,7 +25,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 4 | The city | done | 2026-11-11, commit "Phase 4 the city" |
 | 5 | Selected work and client work | done | 2026-11-11, commit "Phase 5 selected work and client work" |
 | 6 | The workbench and skills | done | 2026-11-11, commit "Phase 6 the workbench and skills" |
-| 7 | The rooms | | |
+| 7 | The rooms | done | 2026-11-11, commit "Phase 7 the rooms" |
 | 8 | About, contact and the rocket | | |
 | 9 | The other pages | | |
 | 10 | The water through the whole site | | |
@@ -48,6 +48,12 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 7
+- Shots pass: node scripts/check-shots.mjs handheld camera sculpture home/rooms (5 viewports) page/games page/photography page/3d-art (5 viewports each) passed 59 of 59, all taken from the gate build. Pieces: three critic rounds each (handheld 034 to 039, camera 041 to 046, sculpture 048 to 053), critic PASSes where given, my PASS on the latest images for the rest. Pages: one critic look each at desktop and phone (040 games, 047 photography, 054 3D art, 055 the doors), faults fixed, my PASS on the new images.
+- Checked at Phase 7 start: no incoming/, REPO_URL NONE.
+- Frame time, M4 Pro ANGLE Metal headed, 1440x900 at 2x, tier high, lamp moving: /games median 8.3 ms, p95 16.7, worst 33.3 (mid median 8.3, p95 9.5); /photography median 9.4, p95 17.3, worst 33.7; /3d-art median 8.4, p95 16.8, worst 18.3; home at the doors (three small views, one renderer) median 8.3, p95 9.6, worst 10.3.
+- typecheck clean, unit tests 48 passed, check:copy 0 problems (138 files, 30 pages), Chromium suite 146 passed.
 
 ### Gate 6
 - Shots pass: node scripts/check-shots.mjs bench plus home/skills and page/skills at all five viewports passed 24 of 24. Bench critic rounds 027, 028, 029 (twelve stills) and 030, 031, 032 (the two strips), all FAIL, real faults fixed between rounds, my PASS gates after three rounds; the skills pages had one critic look (033) and my PASS on the fixed images.
@@ -258,6 +264,11 @@ The details that sell it: rooms with depth and different moods per window (light
 Risks: draw calls and triangles (merge static geometry per material, instance trees, people and vehicles); interior mapping cost (cheap per fragment, one texture atlas); the opening must stay above 50 fps; determinism (every motion from the one clock; seeded randomness); shadows from a moving point light at 2048 must not flicker (fixed bias, PCF soft).
 Opening (kit 02): dark screen, light draws the plan on the ground (footprint outlines traced by a moving front), the disc lifts, buildings rise floor by floor, water fills canals and pours off the rim, the camera flies down from high to the settled low view and the headline arrives above. Plays once per visit, any input skips, never replays on back navigation. Settle: at least 60 percent of the city above the fold on desktop.
 
+### The More rooms doors (done)
+- src/world/small.ts: the small view contract (a piece's model at rest in a scene for a shared renderer) with framing by bounding sphere, a studio environment and the visitor's lamp as a soft point light. Each piece has its own small.ts; src/pieces/load.ts maps them (smallLoaders); ROOM.pieces in config says which piece each room shows.
+- src/components/DoorViews.tsx: one WebGL renderer, off the page, draws each view into a corner of itself and copies it into the door's own 2D canvas (the door clips its rounded corners), so the three views are one context. It draws only while the doors are in view (and 100 px around), and on the low and static tiers each view draws once and holds. Its pixel ratio follows the tier's pixel budget.
+- Critic 055 (both FAIL) fixed: no contact under the tripod (key light shadow), the handheld framed too tight, a dark pedestal, and arcs on the camera's sweep that were the edge of the key's cone and an area light's plane in the wider door view (a soft spot fill, a higher camera). The water cut off at the door is Phase 10.
+
 ### The sculpture (all seven phases, done)
 Plan (phase 1): kit 04: an abstract sculpture, half finished surface and half its own wireframe, turning slowly, the split moving with the lamp. Its own idea: a cast bronze ribbon knotted three times through itself (a (2, 3) torus knot swept with a flattened, twisting, breathing, fluted section) on a rod over a turntable that tops a gallery pedestal, under one overhead spot. The wire half is not a triangle wire: it is the grid of lines the surface is built from (its own u and v), drawn in the shader, so it reads as the form's construction.
 - Built: src/pieces/sculpture (model, index), shade() vertex head chunk, the sculpture words in site.pieces.sculpture.
@@ -361,6 +372,7 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- The page water on the room pages and through the doors: a faint line down the right gutter of each room page, and on the home page the stream ends against the top of the 3D art door and crosses the About words on the tablet. The route through these sections is Phase 10 work (the water through the whole site).
 - Sculpture critic points not acted on after three rounds (048 to 053): "the split is a hard planar slice" is the piece's idea (kit 04: half surface, half wire, the split moving with the lamp); "the wire runs through the hub collar" is the brass cup holding the ribbon; highlight streaks along the flutes are the studio's soft boxes reflected in fluted polished bronze; on wide screens the room sets the piece right of the words, which leaves dark space top left.
 - Camera critic points not acted on after three rounds (041 to 046): "speckled halo on clay edges" in the form shot is the occlusion pass at silhouettes against the bright clay floor (the same pass every piece shares; not seen at rest); the lab label and switch overlap some close shots (lab chrome); entrance strips cannot show rest motion, because the clock is frozen for them (the drift, the following lens and the meter run live).
 - Handheld critic points not acted on after three rounds (034 to 039): the lab's own label and switch overlap the edges of some close shots (lab chrome, not the piece); the phone view in the tall lab frame leaves dark space above and below the stand (the room page sets words in that space); at rest the smallest engravings (SELECT, START, A, B, the cartridge label) are small but legible at desktop size and small on the phone; in the making view the drilled grilles make a dense knot of edge loops; a glancing close of the face reads smooth, because brushing fades into the sheen at a glancing angle.
@@ -414,6 +426,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 6 done: the workbench (walnut, leather, live screens, legends, invented camera, brass lamp, the water on the desk with crown, drops and riders), the skills section and page with the stream handed over at the canvas edges, lazy piece mounting, route that goes round text and rejoins splits above the next text. Next: Phase 7.
 
 - 2026-11-11, Phase 7 so far: the handheld (Lantern on its screen) in /games and the camera in /photography done and gated (39 of 39 for handheld, camera, page/games, page/photography, tier/room). City and bench shots retaken for the shared stage change and re-verdicted (my PASS, three rounds each). Home hero and tier/hero shots wait for the Phase 12 retake. Next: the sculpture and /3d-art, then the More rooms doors.
+
+- 2026-11-11, Phase 7 done: the handheld, the camera and the sculpture, each through its seven phases with three critic rounds, the three room pages framed per screen shape with stages fading into the page, the doors on the home page with three live views from one renderer, small views per piece, a pixel budget per tier for piece canvases, steady making stills. Next: Phase 8.
 
 ## Handoff
 

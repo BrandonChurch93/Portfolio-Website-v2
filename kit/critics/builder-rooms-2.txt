@@ -1,0 +1,7 @@
+shots/camera/close-4.jpg | sha: e1d2bb0c54ea | PASS | - | Framed finder window, port glass, film speed reminder, rewind knob and worn edges against the wider paper sweep.
+shots/camera/making.jpg | sha: a6af254460ab | PASS | - | Edges and iris in wire over the dimmed lit camera on its sweep, readout in mono.
+shots/home/rooms-phone.jpg | sha: b4c01540ce40 | PASS | - | Each door holds its room piece live at rest, framed for the door, lit and grounded; words clear below.
+shots/home/rooms-tablet.jpg | sha: c6448a818fac | PASS | - | Three doors side by side, each piece whole and lit in its frame.
+shots/home/rooms-desktop.jpg | sha: 39609ecf91ba | PASS | - | Three live views from one renderer: handheld playing, camera on its sweep, sculpture split; captions clear.
+shots/home/rooms-wide.jpg | sha: e9b0b8266e28 | PASS | - | Same composition at 1920, nothing small or lost.
+shots/home/rooms-4k.jpg | sha: fde8382842b6 | PASS | - | Same composition at 4K with the fluid type.

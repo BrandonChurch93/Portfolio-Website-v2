@@ -1,4 +1,5 @@
 import type { PieceFactory } from '../world/piece';
+import type { SmallFactory } from '../world/small';
 
 // Each piece is its own chunk, loaded only when a page shows it.
 export const pieceLoaders: Record<string, () => Promise<PieceFactory>> = {
@@ -7,4 +8,11 @@ export const pieceLoaders: Record<string, () => Promise<PieceFactory>> = {
   handheld: () => import('./handheld/index').then((m) => m.createHandheld),
   camera: () => import('./camera/index').then((m) => m.createCamera),
   sculpture: () => import('./sculpture/index').then((m) => m.createSculpture),
+};
+
+// The small views for the doors on the home page, each from its own piece.
+export const smallLoaders: Record<string, () => Promise<SmallFactory>> = {
+  handheld: () => import('./handheld/small').then((m) => m.createSmall),
+  camera: () => import('./camera/small').then((m) => m.createSmall),
+  sculpture: () => import('./sculpture/small').then((m) => m.createSmall),
 };

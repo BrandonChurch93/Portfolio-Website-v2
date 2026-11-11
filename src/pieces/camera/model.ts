@@ -442,9 +442,9 @@ export function buildCamera(): CameraModel {
       const R = 420, back = -260;
       for (let i = 0; i <= 12; i++) prof.push(new THREE.Vector2(2400 - (i / 12) * (2400 - back), 0));
       for (let i = 1; i <= 32; i++) { const a = (i / 32) * (Math.PI / 2); prof.push(new THREE.Vector2(back - Math.sin(a) * R, R - Math.cos(a) * R)); }
-      for (let i = 1; i <= 10; i++) prof.push(new THREE.Vector2(back - R, R + (i / 10) * 2000));
-      const nx = 24, pos: number[] = [], idx: number[] = [];
-      for (let i = 0; i <= nx; i++) for (const p of prof) pos.push(-3000 + (i / nx) * 6000, p.y, p.x);
+      for (let i = 1; i <= 10; i++) prof.push(new THREE.Vector2(back - R, R + (i / 10) * 4000));
+      const nx = 32, pos: number[] = [], idx: number[] = [];
+      for (let i = 0; i <= nx; i++) for (const p of prof) pos.push(-8000 + (i / nx) * 16000, p.y, p.x);
       const n = prof.length;
       for (let i = 0; i < nx; i++) for (let j = 0; j < n - 1; j++) { const a = i * n + j, b = (i + 1) * n + j; idx.push(a, b, a + 1, b, b + 1, a + 1); }
       const g = new THREE.BufferGeometry();
