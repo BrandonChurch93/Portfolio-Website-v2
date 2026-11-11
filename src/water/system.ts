@@ -1,4 +1,4 @@
-import { BREAKPOINT_ONE_COLUMN, type Tier } from '../config/site';
+import { BREAKPOINT_ONE_COLUMN, READING_LINE, type Tier } from '../config/site';
 import { registry, stats } from '../hooks/registry';
 import { plates } from '../metal/renderer';
 import { clock } from '../world/clock';
@@ -278,7 +278,7 @@ export class WaterSystem {
     if (this.forced !== null) return this.forced;
     if (tiers.get() === 'static' || matchMedia('(prefers-reduced-motion: reduce)').matches) return r.total;
     // Where the page has a source, the stream already runs on a little past it at the top of the page.
-    return headAt(this.table!, Math.max(scrollY + innerHeight * 0.66, this.startY + innerHeight * 0.32));
+    return headAt(this.table!, Math.max(scrollY + innerHeight * READING_LINE, this.startY + innerHeight * 0.32));
   }
 
   // When the water reached a landing. Live, it is the moment the front crossed it; for frozen or forced states it is

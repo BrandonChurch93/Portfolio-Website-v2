@@ -78,6 +78,8 @@ export class Stage {
   private envRT: THREE.WebGLRenderTarget;
   private making = false;
   private exposureBefore = 1;
+  // Triangles per square unit of a part's bounding sphere above which its wire is left out of the making view.
+  wireDensity = Infinity;
   private wire: THREE.Mesh[] = [];
   private stats: HTMLDivElement;
   tier: Tier;
@@ -198,6 +200,27 @@ export class Stage {
   }
 
   // The making view: the same scene as clean wireframe over the lit surface, plus a readout.
+  // The clay view for form shots: one clay material on everything through the render pass; light (glows, light-water,
+  // sprites, points) hidden; no bloom.
+  clay = false;
+  private clayMat = new THREE.MeshStandardMaterial({ color: 0xbdb3a6, roughness: 0.85 });
+  setClay(on: boolean, root: THREE.Object3D): void {
+    this.clay = on;
+    this.renderPass.overrideMaterial = on ? this.clayMat : null;
+    this.bloom.enabled = !on;
+    root.traverse((o) => {
+      if (o instanceof THREE.Sprite || o instanceof THREE.Points) { o.userData.clayHidden = on; return; }
+      if (!(o instanceof THREE.Mesh)) return;
+      const m = o.material as THREE.Material;
+      if (m.blending === THREE.AdditiveBlending || m instanceof THREE.MeshBasicMaterial || m instanceof THREE.ShaderMaterial || /screen/i.test(m.name)) o.userData.clayHidden = on;
+    });
+  }
+
+  // Hides what clay hides; call after anything that sets visibility for the frame.
+  hideForClay(root: THREE.Object3D): void {
+    if (this.clay) root.traverse((o) => { if (o.userData.clayHidden) o.visible = false; });
+  }
+
   setMaking(on: boolean, root: THREE.Object3D): void {
     if (on === this.making) return;
     this.making = on;
@@ -206,7 +229,9 @@ export class Stage {
       // dimmed underneath so the lines read and the materials still show through.
       const mat = new THREE.MeshBasicMaterial({ color: 0xe8bd8a, wireframe: true, transparent: true, opacity: 0.75, depthWrite: false, toneMapped: false });
       const list: THREE.Mesh[] = [];
-      root.traverse((o) => { if (o instanceof THREE.Mesh && !(o instanceof THREE.InstancedMesh) && !o.userData.noWire && o.visible) list.push(o); });
+      // Skip parts so dense their wire would only shimmer (knurling, lathed lenses): the readout still counts them.
+      const dense = (o: THREE.Mesh) => { const g = o.geometry; if (!g.boundingSphere) g.computeBoundingSphere(); const r = g.boundingSphere?.radius ?? 1; const tris = (g.index ? g.index.count : g.getAttribute('position').count) / 3; return tris / (4 * Math.PI * r * r) > this.wireDensity; };
+      root.traverse((o) => { if (o instanceof THREE.Mesh && !(o instanceof THREE.InstancedMesh) && !o.userData.noWire && o.visible && !dense(o)) list.push(o); });
       this.exposureBefore = this.renderer.toneMappingExposure;
       this.renderer.toneMappingExposure = this.exposureBefore * 0.3;
       for (const o of list) {

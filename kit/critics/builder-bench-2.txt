@@ -1,0 +1,14 @@
+bench/form | PASS | - | After three rounds (027 to 029): Clay silhouette of a furnished desk in a room: lamp, monitor on its stand, tablet on a fold stand, keyboard, mouse, camera, spare lens, cap, mat, legs and apron, wall with a rail.
+bench/close-1 | PASS | - | After three rounds (027 to 029): Sculpted, dished keycaps with legends on every key, a knurled brass knob, case screws, a stitched leather mat with grain.
+bench/close-2 | PASS | - | After three rounds (027 to 029): The monitor shows code being typed with a cursor and a wire city turning beside it with a frame timer and a moving playhead.
+bench/close-3 | PASS | - | After three rounds (027 to 029): An invented camera: brass top plate, two knurled dials with brass caps, shutter button, leather on body and grip, lens with grip rings, distance ticks and coated glass.
+bench/close-4 | PASS | - | After three rounds (027 to 029): The brass lamp: cone shade with rolled rim and lit inner surface, knuckle joint and tension knobs, weighted base.
+bench/close-5 | PASS | - | After three rounds (027 to 029): Mouse with button split, wheel in a brass ringed well, thumb buttons; leather grain and stitches; lens cap with brass ring.
+bench/close-6 | PASS | - | After three rounds (027 to 029): The water lands on the front left corner with thrown drops, runs as a streaked sheet along the edge, the wood darkens and shines where wet; cathedral walnut figure.
+bench/light | PASS | - | After three rounds (027 to 029): Lamp up left: the visitor lamp adds to the desk lamp on the left half; shadows fall right.
+bench/light-2 | PASS | - | After three rounds (027 to 029): Lamp low right: the right half and the camera take the extra light; the fixed desk light is unchanged.
+bench/making | PASS | - | After three rounds (027 to 029): Warm wire over the dimmed lit desk, built geometry only, mono readout.
+bench/rest-desktop | PASS | - | After three rounds (027 to 029): The settled desk in its fixed light, water along the front edge pouring off the right corner, room behind.
+bench/rest-phone | PASS | - | After three rounds (027 to 029): The whole desk framed for a tall screen, water on the edge and the pour, dark plaster room.
+bench/entrance | PASS | - | Dark desk; the lamp warms, tools settle onto the desk one after another with a small give, screens come on.
+bench/water | PASS | - | The front left corner wets first, the sheet runs to the right along the edge, then pours off the corner and falls.

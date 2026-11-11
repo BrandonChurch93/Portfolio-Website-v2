@@ -18,7 +18,7 @@ export default async function LabPiece({ params }: { params: Promise<{ name: str
   return (
     <main id="main" className={styles.main} data-water-off="">
       <h1 className={styles.title}>{site.lab.piece} · {name}</h1>
-      <PieceView name={name} className={styles.stage} />
+      <PieceView name={name} className={styles.stage} switchSide={name === 'workbench' ? 'left' : 'right'} />
     </main>
   );
 }

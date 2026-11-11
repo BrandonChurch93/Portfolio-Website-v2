@@ -43,6 +43,10 @@ export type PieceName = (typeof PIECES)[number];
 
 // Layout: below this width the page is one column.
 export const BREAKPOINT_ONE_COLUMN = 820;
+// The page's reading line, as a fraction of the viewport height: the water's head sits here as the page scrolls.
+export const READING_LINE = 0.66;
+// A piece mounts within this many viewport heights of the screen and disposes beyond the second number.
+export const PIECE_MOUNT = { near: 1, far: 2.5 } as const;
 // At and above this width the featured work steps down in two columns (src/app/home.module.css matches it).
 export const BREAKPOINT_WORK_COLUMNS = 1100;
 

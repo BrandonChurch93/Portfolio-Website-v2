@@ -1,0 +1,2 @@
+bench/entrance | PASS | - | After three rounds (030 to 032): lamp, monitor, keyboard, tablet, mouse, camera and lens drop in turn and settle with a small give; screens come on; the water arrives once the desk is set.
+bench/water | PASS | - | After three rounds: the water lands on the front left corner, runs the front edge and pours off the right corner and falls; riders move along the run; the wood darkens where wet.

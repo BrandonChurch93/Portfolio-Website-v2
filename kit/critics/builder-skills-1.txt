@@ -1,0 +1,12 @@
+home/skills-phone | PASS | - | The workbench in its fixed light under the heading, the stream going round the heading to the desk corner, the desk water running the front edge and pouring off; the ledger rows follow; no labels on the desk.
+page/skills-phone | PASS | - | The skills page opens with its heading and the workbench, the stream in the gutter beside the heading meeting the desk corner, then the ledger rows.
+home/skills-tablet | PASS | - | The workbench in its fixed light under the heading, the stream going round the heading to the desk corner, the desk water running the front edge and pouring off; the ledger rows follow; no labels on the desk.
+page/skills-tablet | PASS | - | The skills page opens with its heading and the workbench, the stream in the gutter beside the heading meeting the desk corner, then the ledger rows.
+home/skills-desktop | PASS | - | The workbench in its fixed light under the heading, the stream going round the heading to the desk corner, the desk water running the front edge and pouring off; the ledger rows follow; no labels on the desk.
+page/skills-desktop | PASS | - | The skills page opens with its heading and the workbench, the stream in the gutter beside the heading meeting the desk corner, then the ledger rows.
+home/skills-wide | PASS | - | The workbench in its fixed light under the heading, the stream going round the heading to the desk corner, the desk water running the front edge and pouring off; the ledger rows follow; no labels on the desk.
+page/skills-wide | PASS | - | The skills page opens with its heading and the workbench, the stream in the gutter beside the heading meeting the desk corner, then the ledger rows.
+home/skills-4k | PASS | - | The workbench in its fixed light under the heading, the stream going round the heading to the desk corner, the desk water running the front edge and pouring off; the ledger rows follow; no labels on the desk.
+page/skills-4k | PASS | - | The skills page opens with its heading and the workbench, the stream in the gutter beside the heading meeting the desk corner, then the ledger rows.
+bench/rest-desktop | PASS | - | After three rounds: the settled desk in its fixed light, water on the edge and the pour, room behind.
+bench/rest-phone | PASS | - | After three rounds: the whole desk for a tall screen with the water and pour.

@@ -88,6 +88,8 @@ export const WATER = {
   lip: 2,
   maxFall: 220,
   minFall: 70,
+  // How far beside a block of text the water keeps when it goes round it.
+  clear: 34,
   // Moving across to a new line, the water drops this far while it crosses, so the turn is a soft step, not a corner.
   crossDrop: 56,
 } as const;
@@ -234,14 +236,21 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
   const restart = () => { close(pen); pen = new Pen(pen.x, pen.y, pen.s, pen.f, wScale); };
   const avoid = o.avoid ?? [];
   // Run down the page to (x, y). If a block lies across the way, get to x in the clear space above it first.
+  // Run down the page to (x, y), going round any block of text on the way: beside it, on the side nearer the target,
+  // then across in the clear space below it.
+  const besideX = (r: Rect, left: boolean) => (left
+    ? Math.max(4, r.left - (o.narrow ? Math.max(6, r.left / 2) : WATER.clear))
+    : Math.min(o.width - 4, r.right + (o.narrow ? Math.max(6, (o.width - r.right) / 2) : WATER.clear)));
   const travel = (p: Pen, x: number, y: number) => {
-    if (Math.abs(x - p.x) > 1) {
-      const lo = Math.min(p.x, x) - 12, hi = Math.max(p.x, x) + 12;
-      const block = avoid.filter((r) => r.top > p.y + 8 && r.top < y && r.right > lo && r.left < hi).sort((a, b) => a.top - b.top)[0];
-      if (block) {
-        const yb = Math.max(p.y + 24, block.top - 28);
-        p.curveTo(x, yb, 'run');
-      }
+    const blocks = avoid.filter((r) => r.bottom > p.y + 8 && r.top < y - 8).sort((m, n) => m.top - n.top);
+    for (const r of blocks) {
+      const lo = r.left - 10, hi = r.right + 10;
+      const inNow = p.x > lo && p.x < hi, inAt = (q: number) => q > lo && q < hi;
+      const crosses = inNow || inAt(x) || (p.x <= lo && x >= hi) || (p.x >= hi && x <= lo);
+      if (!crosses) continue;
+      const side = besideX(r, x < (r.left + r.right) / 2);
+      if (Math.abs(p.x - side) > 1) p.curveTo(side, Math.max(p.y + 24, r.top - 28), 'run');
+      if (p.y < r.bottom + 18) p.lineTo(side, Math.min(y - 4, r.bottom + 18), 'run');
     }
     p.curveTo(x, y, 'run');
   };
@@ -297,7 +306,9 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       close(pen);
       const frame = a.frame ?? r;
       // Low enough below the section that the two halves curve in gently, never hook.
-      const joinY = frame.bottom + (o.narrow ? 140 : 260);
+      // Low enough below the section that the halves curve in gently, but above the next block of text.
+      const nextText = avoid.filter((q) => q.top > frame.bottom + 20).sort((m, n) => m.top - n.top)[0];
+      const joinY = Math.min(frame.bottom + (o.narrow ? 140 : 260), nextText ? Math.max(frame.bottom + 70, nextText.top - 40) : Infinity);
       const ends: Pen[] = [];
       for (const dir of [-1, 1] as const) {
         const p = pen.clone();

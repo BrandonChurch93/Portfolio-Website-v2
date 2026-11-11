@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
-import { COLORS, type Tier } from '../../config/site';
+import { COLORS, READING_LINE, type Tier } from '../../config/site';
 import { clock } from '../../world/clock';
 import type { Piece, PieceOptions } from '../../world/piece';
 import { Stage } from '../../world/stage';
@@ -222,8 +222,10 @@ export function createCity(): Piece {
     setLamp(x, y) {
       lampUV = { x, y };
     },
+    // Progress is the reading line through the hero: at rest it sits at the reading line; the camera lifts only as
+    // the hero scrolls away.
     setProgress(p) {
-      progress = clamp01(p);
+      progress = clamp01((p - READING_LINE) / 0.8);
     },
     setWaterLight(k) {
       waterK = 0.6 + 0.4 * clamp01(k);

@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 6 · start
+IN PROGRESS · Phase 7 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 6 The workbench and skills
-- Step: start (read 04 rules, contract, phases, The workbench; 02 The skills section; 03; 07; kit/reference/workbench including source/bench.ts in full)
-- Next action: check incoming/ and REPO_URL, then piece phase 1 for the workbench: research and plan
+- Phase: 7 The rooms
+- Step: start (read 04 handheld, camera, sculpture, the small views; 01 pages; 05; 07)
+- Next action: check incoming/ and REPO_URL, then the handheld through its seven phases
 - Background tasks running (id, what): none
 - Files changed since the last commit: none (Gate 4 commit)
 
@@ -24,7 +24,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 3 | The water | done | 2026-11-11, commit "Phase 3 the water" |
 | 4 | The city | done | 2026-11-11, commit "Phase 4 the city" |
 | 5 | Selected work and client work | done | 2026-11-11, commit "Phase 5 selected work and client work" |
-| 6 | The workbench and skills | | |
+| 6 | The workbench and skills | done | 2026-11-11, commit "Phase 6 the workbench and skills" |
 | 7 | The rooms | | |
 | 8 | About, contact and the rocket | | |
 | 9 | The other pages | | |
@@ -48,6 +48,12 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 6
+- Shots pass: node scripts/check-shots.mjs bench plus home/skills and page/skills at all five viewports passed 24 of 24. Bench critic rounds 027, 028, 029 (twelve stills) and 030, 031, 032 (the two strips), all FAIL, real faults fixed between rounds, my PASS gates after three rounds; the skills pages had one critic look (033) and my PASS on the fixed images.
+- Checked at Phase 6 start: no incoming/, REPO_URL NONE.
+- Frame time, /lab/piece/workbench, M4 Pro ANGLE Metal headed, 1440x900 at 2x, lamp moving: high median 9.2 ms, p95 17.0, worst 34.8 (first frames); mid median 8.3, p95 9.5.
+- typecheck clean, unit tests 47 passed, check:copy 0 problems (122 files, 30 pages), Chromium suite 146 passed.
 
 ### Gate 5
 - Shots pass: node scripts/check-shots.mjs over home/work and home/clients at all five viewports passed 10 of 10. Critic 026 looked once at the desktop and phone shots (all four FAIL); every real fault fixed, my PASS on the new images gates (page rule in kit 07).
@@ -163,6 +169,8 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - The opening renders at 0.62 of the tier's pixel ratio while it moves and steps up when it settles. Rule 3.
 - Hero framing per screen shape (tall, upright, wide) lives in HERO.frame in src/config/site.ts; the wide layout sets the headline and the words either side of the spire. Rule 1 (kit 02: the headline above the city, not jammed against the top, 60 percent of the city above the fold).
 
+- Pieces mount within a screen of the viewport and dispose beyond two and a half (PIECE_MOUNT), so at most a couple of piece contexts are alive. Rule 3.
+- The water route goes round any block of text on the way down (beside it, on the side nearer the target) and a split rejoins above the next block of text. Found when the stream crossed section headings. Rule 1 (W04).
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -239,6 +247,13 @@ The details that sell it: rooms with depth and different moods per window (light
 Risks: draw calls and triangles (merge static geometry per material, instance trees, people and vehicles); interior mapping cost (cheap per fragment, one texture atlas); the opening must stay above 50 fps; determinism (every motion from the one clock; seeded randomness); shadows from a moving point light at 2048 must not flicker (fixed bias, PCF soft).
 Opening (kit 02): dark screen, light draws the plan on the ground (footprint outlines traced by a moving front), the disc lifts, buildings rise floor by floor, water fills canals and pours off the rim, the camera flies down from high to the settled low view and the headline arrives above. Plays once per visit, any input skips, never replays on back navigation. Settle: at least 60 percent of the city above the fold on desktop.
 
+### The workbench (phases 2 to 7, done)
+- Built: src/world/lightwater.ts (shared light-water for pieces: strips, camera facing falls, crowns, thrown drops, riders), src/pieces/workbench (model, materials, screens, index), src/components/Workbench.tsx (the skills section host), lazy mounting in PieceView (within a screen, disposed past two and a half), clay in the shared Stage, the making view skips parts dense enough to shimmer.
+- Materials worked out in the shader from model millimetres: walnut from three boards each cut from its own log lying askew under the board (rings meet the surface as cathedral arches, pores, rays, sapwood), darkening and turning glossy where wet; leather with pebble grain and wear; dark plaster; brushed anodised metal. Colours are linear (an early pass used sRGB-like values and came out pale).
+- The screens are live canvases drawn from the clock: the monitor types the last lines of a file beside a turning wire city with a frame timer and playhead; the tablet strokes a pen line across a plate being designed. Legends on every key from one atlas, placed above the keycap dish.
+- The water on the desk is drawn by the piece and meets the page's stream at the canvas edges: the piece projects where its own fall crosses the top of the frame and where its pour crosses the bottom, and the page route arrives and leaves exactly there (data-water-from, data-water-to). It fills when the page's reading line reaches the corner, so the two agree.
+- Critic faults fixed: legends clipped by the dish, a white cross screw, a half empty monitor and a lamp shadow on a lit screen (screens take no shadow, glass reflects at a soft roughness), opaque lens front (coated glass you can see into, a baffle, a second element, iris blades), flat camera plate (brushed, finder windows, lever, lens release), plain lamp shade (seam, vents, switch, brushed), ragged mouse seam (seams found by raycasting onto the shell), starburst landing (softer crown, finer drops), tablet glare (matte), speckle (shadow normal bias, leather normal), readout in the pour's path (moves to the top), raw wire diagonals (room and screens out of the wire), weak visitor lamp, wall ending in the form view, phone framing (higher, closer), entrance popping (tools fall accelerating, a small give on landing), the water waiting for the desk to be set.
+
 ### Phase 5, selected work and client work (done)
 - Featured plates are lit metal now (ProjectPlate on Plate, aged brass, photo windows from the media list); placards in four finishes under a polished bar (Placards on Plate). Words in the DOM as before.
 - Critic 026 faults fixed: (1) on desktop one plate filled a screen with the right half empty: on wide screens (BREAKPOINT_WORK_COLUMNS 1100) the plates step down in two even columns beside the heading (every plate the same shape there); (2) the water passed the plates without lighting them: water light on metal raised (uWaterI 8, a stronger grazing term on the bevel facing it); (3) a tick where each pour off the bar meets its fall: a new stretch now eases from the width it starts at to its own over WATER.widthEase (48 px); (4) the split's pour fell 60 px at most before running: it falls 70 (desktop) or 50 (phone).
@@ -259,6 +274,23 @@ Opening (kit 02): dark screen, light draws the plan on the ground (footprint out
 - Found and fixed: twist in the loft outline only re-parametrized the shape (nothing twisted); GTAO cleared scene.overrideMaterial, so clay now goes through RenderPass.overrideMaterial; light-water drawn into the AO normal pass came out black; the under light sat above the plaza; towers were half the reference's proportion (spire now about the disc's width tall).
 - Critic rounds 010, 011, 012 on city/form, all FAIL; fixed between rounds: shared needle crowns (now each tower has its own crown), bunched towers (spread to r 196 to 204), plain box blocks (now curved terrace houses with rounded ends of rooms, stepping toward the spire), empty mid rings (mid-rise balcony towers, stations under the train track, landmarks on the outer ring: landing pad tower, garden pyramid, crescent, amphitheatre, conservatory), plain puck (paneled rim, deep bevel, stepped keel with lit rings), gate as scaffolding (sky hall under one roof), blade struts (deeper buttress fins), haze (bloom off in clay). My PASS gates form after three rounds.
 
+### The workbench (phase 1, research and plan)
+Research: the reference (kit/reference/workbench/source/bench.ts, read in full) builds a desk in millimetres with canvas wood (Bezier stripes, which is why it reads as stripes), a leather slab with a bump map, a generic monitor with a static code canvas and a wire city, a keyboard of rounded caps with no legends, a lofted mouse, an iPad shaped slab with a static design canvas, a camera close to a real body and a lens lathe, a brass cone lamp, and per tool lights so the page could relight one at a time (forbidden now: one fixed light). Its strengths to keep: the composition (lamp left, monitor centre back, keyboard on the mat, camera right), the warm fixed light Brandon liked, the code and the wire city on the monitor, the brass knob. Real desks read as real from: wood figure that varies along and across the board (growth rings cut at an angle, rays, pores), contact shadows and occlusion under every object, keycap legends and the dish of each cap catching light, the seam where a case meets its plate, screws, ports on the back of the monitor, stitching on the mat edge, a cable that sags under its weight, and a room around the desk.
+Parts:
+- Room: a dark plaster back wall with a wainscot rail and a skirting line, a floor that fades into the page dark, so the desk is not floating in black.
+- Desk: walnut top with a figured wood shader (rings from a 3D noise warped log, pores, rays, end grain on the edges), a bevelled edge, a brass inlay strip along the front, legs and an apron.
+- Mat: leather with grain, a stitched border (instanced stitches), a raised edge.
+- Monitor: generic, thin bezel, a stand with a cable hole, ports and vents on the back; the screen is a live canvas: code being typed line by line with a cursor, and a wire city turning in a viewport beside it.
+- Keyboard: 75 percent layout, sculpted caps with legends from a canvas atlas, an aluminium case with a seam, screws, a brass knob, a sagging coiled cable.
+- Mouse: a believable shell, split buttons with a seam, a wheel, a rubber side.
+- Tablet: generic slate (not a known tablet: a brass chamfered edge, a thicker bezel, a fold stand), its screen a live drawing being stroked; a stylus with a brass ring.
+- Camera: an invented body (brass top plate, original dial set, a hand grip with leather), a lens with coated elements; a spare lens and a cap.
+- Lamp: brass cone shade with a rolled rim, two arm sections with joint knuckles and tension knobs, a weighted base, a cord.
+- Light: one fixed light: the desk lamp (warm shadow casting spot), the monitor's glow (rect area), a faint rim; the visitor's lamp is a soft extra light in front (the shared stage lamp); Neutral tone mapping, GTAO, restrained bloom.
+- Water: drawn by the piece on the desk: it falls into the frame, lands on the front left corner with a crown, runs along the brass inlay as a sheet that wets the wood (darker, glossier, reflecting it), pours off the front right corner; the page stream hands over above and below the host, matched to projected corners.
+Details that sell it: wood that does not repeat, legends on every key, stitching, screws, ports, wet sheen on the wood, live screens, the lamp's pool of light, contact shadows.
+Risks: draw calls (merge per material, instance keys and stitches), the screen canvases updating each frame (update at 30 Hz, small canvases), the water depth agreement with the page stream, recognisable product shapes (keep everything generic, no logos).
+
 ## Measurements
 
 Frame times and sizes, with the tier, the viewport and the renderer string each was measured on.
@@ -274,6 +306,8 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- Workbench critic points not acted on after three rounds (027 to 032): the arriving fall is the page's stream continued and keeps its width (W01 at desk scale); the landing has a crown, rings and thrown drops but at shot size the critic read it as a spark; the run along the edge is a sheet of light-water, which the critic read as a band; the lamp shade has a seam, vents, switch and brushed grain but reads plain at close range; the mouse remains a smooth shell (a mouse is a smooth shell); legs show regular grain because a leg is cut along the board.
+- The page water itself was judged in Phase 3; critic 033 called its glints "blocky" at some sizes. Taken up in Phase 10 with the whole route.
 - Home work and clients (critic 026, not acted on): "the falls are even glowing tubes" at section scale is the water's shared look from Phase 3 (three critic rounds there); "the head ends in a bare point with no particles" is the water head at rest in a frozen frame (head sparks need motion). The join where a pour becomes a fall now has no width tick, but a faint seam in the flow pattern remains at 3x zoom.
 - City rest-phone (critic 025): the run toward the viewer reads as a straight lit line at phone size and passes behind the "How this is made" switch at the bottom. The run's look and its hand over to the page stream belong to Phase 10 (the water through the whole site) and are taken up there.
 - City rest-4k (critic 025, a PASS): the city fills about a third of the width at 16:9; the lab view keeps the desktop framing. The home hero is framed per screen shape.
@@ -318,6 +352,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 4 done: the city (model, interior mapped rooms of four kinds, analytic water and street lamp light on everything near them, panels, trees, people, traffic of four kinds, canals, cascades, falls with crowns, spray and pools, the plan, the opening, the making view), PieceView, the home hero with framing per screen shape, stills, tiers, frame budget met. Sixteen critic rounds (010 to 025). Next: Phase 5.
 
 - 2026-11-11, Phase 5 done: lit featured plates in a stepped two column layout on wide screens, lit client placards, the water weaving through both and splitting on the bar, route lines and width easing, stronger water light on metal. Next: Phase 6.
+
+- 2026-11-11, Phase 6 done: the workbench (walnut, leather, live screens, legends, invented camera, brass lamp, the water on the desk with crown, drops and riders), the skills section and page with the stream handed over at the canvas edges, lazy piece mounting, route that goes round text and rejoins splits above the next text. Next: Phase 7.
 
 ## Handoff
 

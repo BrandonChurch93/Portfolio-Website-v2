@@ -66,3 +66,15 @@
   border-color: var(--amber);
   box-shadow: 0 0 0.6rem var(--amber);
 }
+
+/* The switch on the left, the readout on the right, for a piece whose water leaves on the right. */
+.host[data-switch='left'] .making {
+  right: auto;
+  left: var(--edge);
+}
+
+.host[data-switch='left'] :global(.piece-stats) {
+  left: var(--edge);
+  bottom: auto;
+  top: calc(var(--nav-h) + var(--space-4));
+}
