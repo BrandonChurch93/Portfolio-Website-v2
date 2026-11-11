@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Third Pass: Cards, Water, Bench</title>
+<style>
+@font-face{font-family:"Sora";src:url(fonts/sora.woff2) format("woff2");font-weight:100 800;font-display:swap}
+@font-face{font-family:"Inter";src:url(fonts/inter.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/mono.woff2) format("woff2");font-weight:100 800;font-display:swap}
+:root{color-scheme:dark;--bg:#0c0a09;--amber:#ff9d3c;--accent:#d4a574;--text:#f5f2ee;--text-2:#cfc8c0;--text-3:#a39a91;--line:rgba(212,165,116,.2);--gut:clamp(22px,5vw,72px);
+  --d:"Sora",system-ui,sans-serif;--b:"Inter",system-ui,sans-serif;--l:"JetBrains Mono",ui-monospace,Menlo,monospace}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--b);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+p,h1,h2,h3{margin:0}
+#stream{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.intro{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:64px var(--gut) 130px;text-align:center;display:grid;gap:14px}
+.k{font-family:var(--l);font-size:13px;color:var(--accent)}
+.intro h1{font-family:var(--d);font-weight:400;font-size:clamp(28px,4vw,46px);letter-spacing:-.04em;line-height:1.08}
+.intro p{color:var(--text-2)}
+.page{position:relative;max-width:1180px;margin:0 auto;padding:0 var(--gut) 440px}
+.label{position:relative;z-index:2;font-family:var(--l);font-size:13px;color:var(--accent);margin:0 0 34px}
+.row{position:relative;z-index:2;display:flex;align-items:center;margin:0 0 clamp(80px,10vw,140px)}
+.row.r{justify-content:flex-end}
+.note{font-family:var(--l);font-size:12.5px;color:var(--text-3);max-width:22ch;margin:0 0 0 118px;line-height:1.5}
+.row.r .note{order:-1;text-align:right;margin:0 100px 0 0}
+.plate{position:relative;flex:none;width:min(100%,580px);aspect-ratio:580/360;perspective:1100px}
+.plate.wide{width:min(100%,760px);aspect-ratio:760/400}
+.plate.bar{z-index:2;width:100%;aspect-ratio:auto;height:54px;margin:0 0 64px}
+.plate canvas{position:absolute;inset:0;width:100%;height:100%;display:block;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s cubic-bezier(.2,.7,.2,1);filter:drop-shadow(var(--sx,0px) var(--sy,14px) 20px rgba(0,0,0,.7));will-change:transform}
+.plate.hot canvas{transition:transform .12s linear}
+.plate .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.trio{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(34px,6vw,84px);padding:0 7%}
+.trio .plate{width:100%;aspect-ratio:300/200}
+
+.skills{position:relative}
+.sk{position:relative;z-index:2;text-align:center;display:grid;gap:10px;padding:0 var(--gut)}
+.sk h2{font-family:var(--d);font-weight:400;font-size:clamp(28px,3.6vw,46px);letter-spacing:-.04em}
+.sk p:last-child{color:var(--text-2)}
+.stage{position:relative;z-index:0;max-width:1400px;margin:0 auto;background:var(--bg);overflow:hidden}
+.stage__in{position:relative;width:100%;aspect-ratio:2/1;mix-blend-mode:screen}
+.stage img{position:absolute;inset:0;width:100%;height:100%;display:block;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.stage img.wl{mix-blend-mode:screen;opacity:0}
+.lead{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lead line{stroke:var(--amber);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.75}
+.lead circle{fill:var(--amber)}
+.tag{position:absolute;font-family:var(--l);font-size:11.5px;line-height:1.4;color:var(--text-3);white-space:nowrap}
+.tag b{display:block;color:var(--amber);font-weight:500}
+.ledger{position:relative;z-index:2;max-width:1400px;margin:8px auto 0;padding:0 14% 0 8%}
+.lrow{display:grid;grid-template-columns:minmax(150px,.8fr) 1.7fr 1.3fr;gap:clamp(18px,3vw,48px);padding:28px 0;border-top:1px solid var(--line)}
+.lrow:last-child{border-bottom:1px solid var(--line)}
+.lrow .n{font-family:var(--l);font-size:12px;color:var(--text-3)}
+.lrow h3{font-family:var(--d);font-weight:400;font-size:clamp(21px,2vw,28px);letter-spacing:-.03em;line-height:1.1;margin-top:6px}
+.lrow .tool{font-family:var(--l);font-size:12px;color:var(--accent);margin-top:8px}
+.lrow > p{color:var(--text-2);font-size:15.5px;max-width:48ch}
+.lrow dl{margin:0;display:grid;gap:12px;align-content:start}
+.lrow dt{font-family:var(--l);font-size:11.5px;color:var(--text-3)}
+.lrow dd{margin:3px 0 0;font-size:14.5px}
+.notes{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:150px var(--gut) 140px;display:grid;gap:22px}
+.notes h2{font-family:var(--d);font-weight:400;font-size:22px;letter-spacing:-.03em}
+.notes ul{margin:0;padding:0;list-style:none}
+.notes li{position:relative;padding:7px 0 7px 22px;color:var(--text-2);font-size:15px}
+.notes li::before{content:"";position:absolute;left:0;top:1.05em;width:10px;height:1px;background:var(--accent)}
+@media (max-width:820px){
+  .intro{padding-bottom:96px}
+  .page{padding-bottom:330px}
+  .row,.row.r{display:block;margin-bottom:96px}
+  .plate,.plate.wide{width:100%}
+  .plate.wide{aspect-ratio:4/4.7}
+  .note{display:none}
+  .trio{grid-template-columns:1fr;gap:44px;padding:0 14%}
+  .stage__in{width:112vw;margin-left:-6vw}
+  .stage img{-webkit-mask-image:none;mask-image:none}
+  .lead,.tag{display:none}
+  .ledger{padding:0 54px 0 var(--gut)}
+  .lrow{grid-template-columns:1fr;gap:12px;padding:24px 0}
+}
+</style>
+</head>
+<body>
+<canvas id="stream" aria-hidden="true"></canvas>
+<header class="intro" id="intro">
+  <p class="k">Third pass · a slice of the home page</p>
+  <h1>Water that lands on things.</h1>
+  <p>Scroll slowly and watch where the water goes. Move the cursor over the metal.</p>
+</header>
+
+<main class="page" id="page">
+  <p class="label">Selected work · placeholder words</p>
+  <div class="row"><article class="plate" data-kind="brass" data-label="01 · PC BUILDER" data-big="I wanted to build a gaming PC without buying one." data-facts="THREE.JS · NO AI AT RUNTIME · 2026"></article><p class="note">The water lands on this corner, then falls to the next card.</p></div>
+  <div class="row r"><article class="plate" data-kind="bronze" data-label="02 · DESIGN SYSTEM EXTRACTOR" data-big="Paste a link. Get its design system back." data-facts="TOKENS · COMPONENTS · DRIFT REPORT"></article><p class="note">It runs along the top edge and pours off the corner.</p></div>
+  <div class="row"><article class="plate" data-kind="panel" data-label="03 · RED TEAM ARENA" data-big="Two models. One attacks, one defends." data-facts="LIVE MATCHES · 3D NIGHT CITY"></article><p class="note">Each card it touches picks up the amber light.</p></div>
+  <div class="row r"><article class="plate wide" data-kind="aged" data-photo="img/city.webp" data-label="04 · THIS SITE" data-big="A city that builds itself, and water made of light." data-facts="THREE.JS · WEBGL · 2026"></article><p class="note">Your favorite plate, with a photo window sunk into the metal.</p></div>
+  <div class="plate bar" id="bar" data-kind="brass" data-bar="1" data-label="CLIENT WORK"></div>
+  <div class="trio" id="trio">
+    <article class="plate" data-kind="brass" data-small="1" data-label="CLIENT ONE" data-big="Booking site" data-facts="2021"></article>
+    <article class="plate" data-kind="bronze" data-small="1" data-label="CLIENT TWO" data-big="Brand and web" data-facts="2022"></article>
+    <article class="plate" data-kind="panel" data-small="1" data-label="CLIENT THREE" data-big="Mobile app" data-facts="2023"></article>
+  </div>
+</main>
+
+<section class="skills">
+  <header class="sk" id="sk"><p class="k">Skills · rough draft</p><h2>The bench.</h2><p>What I work with, and what I use it for.</p></header>
+  <div class="stage">
+    <div class="stage__in" id="desk">
+      <img src="img/desk.webp" alt="A walnut desk with a monitor, keyboard and mouse, an iPad with a pencil, a camera and a brass lamp">
+      <img class="wl" id="wl" src="img/desk-water.webp" alt="">
+      <svg class="lead" viewBox="0 0 1000 500" aria-hidden="true">
+        <line x1="726" y1="110" x2="772" y2="110"/><circle cx="726" cy="110" r="2.6"/>
+        <line x1="792" y1="352" x2="862" y2="352"/><circle cx="792" cy="352" r="2.6"/>
+        <line x1="215" y1="368" x2="215" y2="416"/><circle cx="215" cy="368" r="2.6"/>
+        <line x1="440" y1="398" x2="440" y2="450"/><circle cx="440" cy="398" r="2.6"/>
+      </svg>
+      <span class="tag" style="left:78%;top:22%;transform:translateY(-50%)"><b>3D and motion</b>monitor</span>
+      <span class="tag" style="left:87%;top:70.4%;transform:translateY(-50%)"><b>Photography</b>camera</span>
+      <span class="tag" style="left:21.5%;top:84.4%;transform:translateX(-50%);text-align:center"><b>Design</b>iPad and pencil</span>
+      <span class="tag" style="left:44%;top:91%;transform:translateX(-50%);text-align:center"><b>Engineering</b>keyboard and mouse</span>
+    </div>
+  </div>
+  <div class="ledger" id="ledger"></div>
+</section>
+
+<section class="notes">
+  <h2>What this pass shows</h2>
+  <ul>
+    <li>A photo window cut into plate four. The lamp that lights the brass also shades the photo.</li>
+    <li>Land and fall: the water drops onto a card corner, splashes, and falls to the next card.</li>
+    <li>Split and frame: it lands on the client work bar, runs both ways, and falls down both sides of the section.</li>
+    <li>The desk: it lands on the front corner, runs the front edge, and falls off the other corner.</li>
+    <li>The bench in one fixed light, labelled, with a ledger instead of pillars.</li>
+  </ul>
+  <h2>What is still rough</h2>
+  <ul>
+    <li>All words are placeholders.</li>
+    <li>The desk is a still picture, so the water cannot yet wet it or reflect in it.</li>
+    <li>The splash is droplets and glow. The final one needs real shape and weight.</li>
+  </ul>
+</section>
+
+<script>
+(async () => {
+  const still = matchMedia('(prefers-reduced-motion:reduce)').matches, phone = matchMedia('(max-width:820px)');
+  const DPR = Math.min(devicePixelRatio || 1, 2), $ = (id) => document.getElementById(id);
+  try { await Promise.all(['500 30px Sora', '600 12px "JetBrains Mono"', '500 14px Inter'].map((f) => document.fonts.load(f))); } catch (e) {}
+
+  const AREAS = [
+    ['Design', 'iPad and pencil', 'Most things start as a sketch. I work out the layout and the feel before any code exists.', 'Figma · design systems · interface design · motion design', 'Design System Extractor · this site'],
+    ['Engineering', 'keyboard and mouse', 'Front end first. I like building the part people touch, and I care how it feels under the cursor.', 'React · Angular · HTML and CSS · TypeScript', 'PC Builder · Ask the Claude Docs'],
+    ['AI', '', 'I build with AI every day, and I build products on top of it. I read what the agents write.', 'Claude Code · agents · retrieval · evals', 'Ask the Claude Docs · Red Team Arena'],
+    ['3D and motion', 'monitor', 'The most fun you can have in a browser. It is the reason this site looks the way it does.', 'Three.js · GSAP · shaders', 'This site · PC Builder'],
+    ['Games', '', 'I make game art and small games because I enjoy it. It keeps my eye for detail sharp.', 'Unity · Unreal · game art', 'The games room'],
+    ['Photography', 'camera', 'Portraits, mostly. It taught me more about light than any tutorial did.', 'Studio lighting · portraits · editing', 'The photography room'],
+  ];
+  $('ledger').innerHTML = AREAS.map((a, i) => `<div class="lrow"><div><p class="n">0${i + 1}</p><h3>${a[0]}</h3>${a[1] ? `<p class="tool">${a[1]}</p>` : ''}</div><p>${a[2]}</p><dl><div><dt>Tools</dt><dd>${a[3]}</dd></div><div><dt>Used in</dt><dd>${a[4]}</dd></div></dl></div>`).join('');
+
+  // ---------- the metal ----------
+  const VS = 'attribute vec2 a;varying vec2 vUv;void main(){vUv=a*.5+.5;gl_Position=vec4(a,0.,1.);}';
+  const FS = `precision highp float;
+uniform sampler2D uMask,uPhoto;uniform vec2 uRes;uniform float uPx,uRad,uInset,uThick;
+uniform vec3 uLight,uStream;uniform float uLInt,uSInt;uniform vec2 uTilt;
+uniform vec3 uF0a,uF0b,uInk;uniform float uRa,uRb,uBrush,uPatina,uSeed;uniform vec4 uScrew[4];
+uniform vec4 uWin;uniform float uWinOn,uWinR,uPA;
+varying vec2 vUv;
+float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
+float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*noise(p);p*=2.03;a*=.5;}return s;}
+float sdBox(vec2 p,vec2 b,float r){vec2 q=abs(p)-b+r;return length(max(q,0.))+min(max(q.x,q.y),0.)-r;}
+vec3 mask(vec2 p){vec2 o=vec2(.55)/uRes;vec2 u=p/uRes;return (texture2D(uMask,u).rgb*4.+texture2D(uMask,u+o).rgb+texture2D(uMask,u-o).rgb+texture2D(uMask,u+vec2(o.x,-o.y)).rgb+texture2D(uMask,u+vec2(-o.x,o.y)).rgb)/8.;}
+float hgt(vec2 p){
+  float d=sdBox(p-uRes*.5,uRes*.5-uInset,uRad);
+  float x=clamp(-d/(uThick*1.5),0.,1.);
+  float h=uThick*sqrt(1.-(1.-x)*(1.-x));
+  h-=mask(p).r*.95*uPx;
+  if(uWinOn>.5){float dw=sdBox(p-uWin.xy,uWin.zw,uWinR);h+=1.3*uPx*smoothstep(8.*uPx,6.5*uPx,dw)*smoothstep(-.5*uPx,1.2*uPx,dw);h-=6.*uPx*clamp(-dw/(3.5*uPx),0.,1.);}
+  for(int i=0;i<4;i++){vec4 s=uScrew[i];if(s.z>0.){vec2 q=p-s.xy;float r=length(q)/s.z;if(r<1.5){h-=smoothstep(1.4,1.05,r)*1.7*uPx;if(r<1.){h+=2.5*uPx*(1.-r*r*.8);if(s.w>-5.){float y=abs(-q.x*sin(s.w)+q.y*cos(s.w))/s.z;h-=smoothstep(.2,.11,y)*2.6*uPx;}}}}}
+  return h;
+}
+vec3 env(vec2 d,float r){
+  float b=.05+r*.6;
+  float top=smoothstep(-b,b,d.y-.16)*(1.-smoothstep(-b,b,d.y-.5))*smoothstep(-b,b,d.x+.8)*(1.-smoothstep(-b,b,d.x-.3));
+  float side=smoothstep(-b,b,d.x-.46)*(1.-smoothstep(-b,b,d.x-.6))*smoothstep(-b,b,d.y+.45);
+  float low=smoothstep(.05,-.8,d.y),sky=smoothstep(-1.2,.7,d.y);
+  return vec3(.085,.078,.07)+vec3(.46,.4,.32)*sky*sky+vec3(1.,.94,.86)*top*1.15+vec3(1.,.82,.62)*side*.5+vec3(.2,.11,.05)*low*.4;
+}
+vec3 lobe1(vec3 N,vec3 V,vec3 l,float rough,vec3 F0){
+  vec3 H=normalize(l+V);float nl=max(dot(N,l),0.),nh=max(dot(N,H),0.),nv=max(dot(N,V),.001);
+  float a=rough*rough,a2=a*a,dd=nh*nh*(a2-1.)+1.,D=a2/(3.14159*dd*dd),k=a*.5;
+  float G=(nv/(nv*(1.-k)+k))*(nl/(nl*(1.-k)+k));
+  vec3 F=F0+(1.-F0)*pow(1.-max(dot(H,V),0.),5.);
+  return F*D*G/(4.*nv);
+}
+vec3 lobe(vec3 N,vec3 V,vec3 Lv,float rough,vec3 F0){vec3 l=normalize(Lv);return lobe1(N,V,l,rough,F0)*.5+lobe1(N,V,l,min(1.,rough*2.3+.14),F0)*.5;}
+float att(vec3 Lv,float f){return 1./(1.+dot(Lv,Lv)/(f*f));}
+void main(){
+  vec2 p=vUv*uRes;
+  float d=sdBox(p-uRes*.5,uRes*.5-uInset,uRad);
+  float cov=smoothstep(.8,-.8,d);
+  if(cov<=0.){gl_FragColor=vec4(0.);return;}
+  float e=1.;float h=hgt(p);
+  vec3 N=normalize(vec3(hgt(p-vec2(e,0.))-hgt(p+vec2(e,0.)),hgt(p-vec2(0.,e))-hgt(p+vec2(0.,e)),2.*e));
+  vec3 m=mask(p);float m2=m.b,ink=m.g;
+  vec2 q=p/uPx;
+  float br=(noise(vec2(q.x*.035+uSeed,q.y*2.3))-.5)+(noise(vec2(q.x*.11,q.y*5.1+uSeed))-.5)*.6;
+  N=normalize(N+vec3(0.,br*.17*mix(uBrush,uBrush*.3,m2),0.)+vec3(hash(q*3.7)-.5,hash(q*3.7+9.)-.5,0.)*.014);
+  float pat=fbm(q*.011+uSeed*3.1);
+  float rimD=smoothstep(30.,2.,-d/uPx);
+  float grime=uPatina*(smoothstep(.4,.74,pat)*.6+rimD*.45)*(1.-m2*.7);
+  vec3 F0=mix(uF0a,uF0b,m2)*(1.-grime*.6);
+  float rough=clamp(mix(uRa,uRb,m2)+grime*.24+(pat-.5)*.07,.08,.95);
+  vec3 P=vec3(p,h);
+  vec3 V=normalize(vec3((uRes*.5-p)/uRes.x*.95,1.));
+  vec3 R=reflect(-V,N);
+  vec2 rd=R.xy/max(R.z,.25)*.85+uTilt;
+  vec3 col=env(rd,rough)*F0;
+  float fl=uRes.x*.9;
+  vec3 Ll=uLight-P,Ls=uStream-P;
+  col+=lobe(N,V,Ll,rough,F0)*uLInt*vec3(1.,.95,.88)*att(Ll,fl);
+  col+=lobe(N,V,Ls,rough,F0)*uSInt*vec3(1.,.48,.12)*att(Ls,fl*.42);
+  vec3 inkC=uInk+env(rd,.22)*.009+lobe1(N,V,normalize(Ll),.34,vec3(.04))*uLInt*att(Ll,fl)*.1;
+  col=mix(col,inkC,ink);
+  if(uWinOn>.5){
+    float dw=sdBox(p-uWin.xy,uWin.zw,uWinR);
+    float inside=smoothstep(-3.*uPx,-4.4*uPx,dw);
+    if(inside>0.){
+      vec2 puv=(p-uWin.xy)/(2.*uWin.zw);
+      float wa=uWin.z/uWin.w;
+      if(wa>uPA)puv.y*=uPA/wa;else puv.x*=wa/uPA;
+      vec3 phc=pow(texture2D(uPhoto,puv+.5).rgb,vec3(2.2))*1.3;
+      vec2 tl=uLight.xy-p;float sl=min(length(tl)/uLight.z,1.6)*14.*uPx;
+      float sh=smoothstep(0.,6.*uPx,-sdBox(p+normalize(tl+.001)*sl-uWin.xy,uWin.zw,uWinR)-3.*uPx);
+      float ao=smoothstep(0.,18.*uPx,-dw-3.5*uPx);
+      phc*=(.3+.7*sh)*(.5+.5*ao);
+      vec2 rg=-V.xy/max(V.z,.25)*.85+uTilt;
+      vec3 gls=env(rg,.05)*.05+lobe1(vec3(0.,0.,1.),V,normalize(Ll),.14,vec3(.05))*uLInt*att(Ll,fl)*.35;
+      col=mix(col,phc+gls,inside);
+    }
+  }
+  float l=dot(col,vec3(.2126,.7152,.0722));col*=1./(1.+l*.4);
+  col=pow(col,vec3(1./2.2));
+  gl_FragColor=vec4(col*cov,cov);
+}`;
+  const glc = document.createElement('canvas'), gl = glc.getContext('webgl', { premultipliedAlpha: true, antialias: false, preserveDrawingBuffer: true });
+  const sh = (g, t, s) => { const o = g.createShader(t); g.shaderSource(o, s); g.compileShader(o); if (!g.getShaderParameter(o, g.COMPILE_STATUS)) console.error(g.getShaderInfoLog(o)); return o; };
+  const prog = (g, v, f) => { const p = g.createProgram(); g.attachShader(p, sh(g, g.VERTEX_SHADER, v)); g.attachShader(p, sh(g, g.FRAGMENT_SHADER, f)); g.bindAttribLocation(p, 0, 'a'); g.linkProgram(p); if (!g.getProgramParameter(p, g.LINK_STATUS)) console.error(g.getProgramInfoLog(p)); return p; };
+  const P = prog(gl, VS, FS); gl.useProgram(P);
+  const quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ['uMask', 'uPhoto', 'uRes', 'uPx', 'uRad', 'uInset', 'uThick', 'uLight', 'uStream', 'uLInt', 'uSInt', 'uTilt', 'uF0a', 'uF0b', 'uInk', 'uRa', 'uRb', 'uBrush', 'uPatina', 'uSeed', 'uScrew', 'uWin', 'uWinOn', 'uWinR', 'uPA'].forEach((n) => { U[n] = gl.getUniformLocation(P, n); });
+  const blank = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, blank); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+  const lin = (hex) => [hex >> 16 & 255, hex >> 8 & 255, hex & 255].map((v) => Math.pow(v / 255, 2.2));
+  const BRASS = lin(0xe6b866), BRONZE = lin(0x94663a), DEEP = lin(0x5a3b22);
+  const KIND = {
+    brass: { a: BRASS, b: BRASS, ra: .2, rb: .2, brush: .11, pat: .12, screws: 'slot' },
+    bronze: { a: BRONZE, b: BRASS, ra: .46, rb: .22, brush: .5, pat: .75, screws: 'none' },
+    panel: { a: BRASS, b: DEEP, ra: .33, rb: .5, brush: 1, pat: .1, screws: 'none' },
+    aged: { a: lin(0xc9994e), b: BRASS, ra: .36, rb: .3, brush: .45, pat: 1, screws: 'rivet' },
+  };
+  const plates = [...document.querySelectorAll('.plate')].map((el, i) => {
+    const cv = document.createElement('canvas'), d = el.dataset; cv.setAttribute('aria-hidden', 'true'); el.appendChild(cv);
+    const sr = document.createElement('div'); sr.className = 'sr'; sr.textContent = [d.label, d.big, d.facts].filter(Boolean).join('. '); el.appendChild(sr);
+    const pl = { el, cv, ctx: cv.getContext('2d'), kind: KIND[d.kind], kindName: d.kind, small: !!d.small, bar: !!d.bar, d, seed: 1.7 + i * 2.31, tex: gl.createTexture(), mk: document.createElement('canvas'), lit: 0, sAt: 1e9, sx: 0, syPage: 0, sy: 0, rx: 0, ry: 0, w: 0, h: 0, screws: [], win: null, photo: null, pa: 1, sig: '' };
+    if (d.photo) { const im = new Image(); im.onload = () => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); pl.photo = t; pl.pa = im.width / im.height; pl.sig = ''; }; im.src = d.photo; }
+    return pl;
+  });
+  function wrap(c, text, maxW) { const out = []; let line = ''; for (const wd of text.split(' ')) { const t = line ? line + ' ' + wd : wd; if (c.measureText(t).width > maxW && line) { out.push(line); line = wd; } else line = t; } out.push(line); return out; }
+  // the mask: red is cut into the plate, green is filled with enamel, blue is the second metal
+  function paint(pl) {
+    const r = pl.el.getBoundingClientRect(), w = Math.round(r.width * DPR), h = Math.round(r.height * DPR), c = pl.mk.getContext('2d'), k = pl.kindName, sm = pl.small;
+    const stacked = !!pl.d.photo && r.height > r.width * .9;
+    const S = pl.bar ? DPR : (r.width / (sm ? 300 : pl.d.photo && !stacked ? 760 : 580)) * DPR;
+    pl.w = w; pl.h = h; pl.S = S; pl.sig = ''; pl.mk.width = w; pl.mk.height = h; pl.cv.width = w; pl.cv.height = h;
+    c.fillStyle = '#000'; c.fillRect(0, 0, w, h);
+    const pad = (sm ? 22 : 40) * S, CUT = '#ff0', IN = '#00f';
+    let tw = w - pad * 2 - (sm ? 0 : 30 * S), ty0 = pad, ty1 = h - pad;
+    pl.win = null;
+    if (pl.d.photo) {
+      const m = 46 * S, [x0, y0, x1, y1] = stacked ? [m, m, w - m, h * .52] : [w * .49, m, w - m, h - m];
+      pl.win = [(x0 + x1) / 2, h - (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2];
+      if (stacked) ty0 = y1 + 22 * S; else tw = x0 - pad - 24 * S;
+    }
+    const text = (col) => {
+      c.fillStyle = col; c.textBaseline = 'alphabetic'; c.textAlign = 'left';
+      c.font = `700 ${(sm ? 11 : 13.5) * S}px "JetBrains Mono", monospace`; try { c.letterSpacing = 1.6 * S + 'px'; } catch (e) {}
+      c.fillText(pl.d.label, pad, ty0 + (sm ? 12 : 16) * S);
+      c.fillText(pl.d.facts, pad, ty1);
+      try { c.letterSpacing = '0px'; } catch (e) {}
+      const fs = (sm ? 25 : pl.d.photo ? 31 : 37) * S; c.font = `${k === 'panel' || k === 'bronze' ? 600 : 500} ${fs}px Sora, sans-serif`;
+      const lines = wrap(c, pl.d.big, tw), mid = (ty0 + ty1) / 2, y0 = sm ? mid + fs * .1 : mid - ((lines.length - 1) * fs * 1.14) / 2 + fs * .3;
+      lines.forEach((ln, j) => c.fillText(ln, pad, y0 + j * fs * 1.14));
+    };
+    const line = (col, inset, rad, lw) => { c.strokeStyle = col; c.lineWidth = lw * S; c.beginPath(); c.roundRect(inset * S, inset * S, w - inset * 2 * S, h - inset * 2 * S, rad * S); c.stroke(); };
+    c.globalCompositeOperation = 'lighter';
+    if (pl.bar) { c.fillStyle = CUT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = `600 ${15 * S}px Sora, sans-serif`; try { c.letterSpacing = 4 * S + 'px'; } catch (e) {} c.fillText(pl.d.label, w / 2, h / 2 + S); try { c.letterSpacing = '0px'; } catch (e) {} }
+    else if (k === 'brass') { line('#f00', sm ? 11 : 16, sm ? 7 : 9, 1.4); text(CUT); }
+    else if (k === 'bronze') { line(IN, sm ? 11 : 16, sm ? 7 : 9, 1.6); text(IN); }
+    else if (k === 'aged') { line('#f00', 15, 8, 3.2); line('#f00', 21, 5, 1); text(CUT); }
+    else if (k === 'panel') {
+      c.fillStyle = '#f0f'; c.beginPath(); c.roundRect((sm ? 13 : 20) * S, (sm ? 13 : 20) * S, w - (sm ? 26 : 40) * S, h - (sm ? 26 : 40) * S, (sm ? 7 : 10) * S); c.fill();
+      c.globalCompositeOperation = 'source-over'; text('#000');
+    }
+    c.globalCompositeOperation = 'source-over';
+    gl.bindTexture(gl.TEXTURE_2D, pl.tex); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pl.mk);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const sc = pl.kind.screws, o = (sm ? 16 : 24) * S, R = (sm ? 5.2 : 8) * S, rv = 3.4 * S;
+    pl.screws = pl.bar ? [[22 * S, h / 2, 6 * S, .6], [w - 22 * S, h / 2, 6 * S, 2.2]]
+      : sc === 'slot' ? (sm ? [[w - o, o, R, .5], [w - o, h - o, R, 2.2]] : [[o, o, R, .6], [w - o, o, R, 2.1], [o, h - o, R, 1.3], [w - o, h - o, R, 2.8]])
+      : sc === 'rivet' ? [[o * 1.35, o * 1.35, rv, -9], [w - o * 1.35, o * 1.35, rv, -9], [o * 1.35, h - o * 1.35, rv, -9], [w - o * 1.35, h - o * 1.35, rv, -9]] : [];
+  }
+  let mouse = null, lastMove = 0; const T0 = performance.now();
+  function render(pl, now) {
+    const r = pl.el.getBoundingClientRect();
+    if (r.bottom < -80 || r.top > innerHeight + 80 || !pl.w) return;
+    const { w, h, kind: K, S } = pl;
+    const t = (now - T0) / 1000, idle = !mouse || now - lastMove > 6000;
+    const lx = idle ? innerWidth * (.5 + .34 * Math.sin(t * .45)) : mouse[0], ly = idle ? innerHeight * (.4 + .16 * Math.cos(t * .36)) : mouse[1];
+    const sx = w / r.width, sig = [lx | 0, ly | 0, Math.round(r.top), Math.round(r.left), pl.lit.toFixed(3), pl.rx, pl.ry, w, !!pl.photo].join();
+    if (sig === pl.sig) return; pl.sig = sig;
+    if (glc.width < w || glc.height < h) { glc.width = Math.max(glc.width, w); glc.height = Math.max(glc.height, h); }
+    gl.viewport(0, 0, w, h); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, pl.photo || blank); gl.uniform1i(U.uPhoto, 1);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, pl.tex); gl.uniform1i(U.uMask, 0);
+    gl.uniform2f(U.uRes, w, h); gl.uniform1f(U.uPx, S); gl.uniform1f(U.uRad, (pl.bar ? 10 : pl.small ? 12 : 16) * S); gl.uniform1f(U.uInset, 2.5 * S); gl.uniform1f(U.uThick, 3.4 * S);
+    gl.uniform3f(U.uLight, (lx - r.left) * sx, (r.bottom - ly) * sx, pl.bar ? 220 * S : w * (pl.small ? .6 : .4)); gl.uniform1f(U.uLInt, idle ? .5 : .62);
+    gl.uniform3f(U.uStream, (pl.sx - r.left) * sx, (r.bottom - pl.sy) * sx, (pl.bar ? 60 : 120) * S); gl.uniform1f(U.uSInt, pl.lit * 2);
+    const cy = (r.top + r.height / 2) / innerHeight - .5, cx = (lx - (r.left + r.width / 2)) / innerWidth;
+    gl.uniform2f(U.uTilt, -cx * .22 + pl.ry * .012, -cy * .46 + .08 - pl.rx * .012);
+    gl.uniform3fv(U.uF0a, K.a); gl.uniform3fv(U.uF0b, K.b); gl.uniform3f(U.uInk, .006, .005, .004);
+    gl.uniform1f(U.uRa, K.ra); gl.uniform1f(U.uRb, K.rb); gl.uniform1f(U.uBrush, K.brush); gl.uniform1f(U.uPatina, K.pat); gl.uniform1f(U.uSeed, pl.seed);
+    const s4 = new Float32Array(16); pl.screws.forEach((s, i) => s4.set(s, i * 4)); gl.uniform4fv(U.uScrew, s4);
+    const wn = pl.win && pl.photo; gl.uniform1f(U.uWinOn, wn ? 1 : 0); gl.uniform4fv(U.uWin, pl.win || [0, 0, 1, 1]); gl.uniform1f(U.uWinR, 9 * S); gl.uniform1f(U.uPA, pl.pa);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    pl.ctx.clearRect(0, 0, w, h); pl.ctx.drawImage(glc, 0, glc.height - h, w, h, 0, 0, w, h);
+    const dx = (r.left + r.width / 2 - lx) / innerWidth, dy = (r.top + r.height / 2 - ly) / innerHeight;
+    pl.el.style.setProperty('--sx', (dx * 26).toFixed(1) + 'px'); pl.el.style.setProperty('--sy', (10 + dy * 26).toFixed(1) + 'px');
+  }
+  plates.forEach((pl) => {
+    if (pl.bar) return;
+    pl.el.addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; const r = pl.el.getBoundingClientRect(); pl.ry = ((e.clientX - r.left) / r.width - .5) * 4.5; pl.rx = -((e.clientY - r.top) / r.height - .5) * 4; pl.el.classList.add('hot'); pl.el.style.setProperty('--rx', pl.rx.toFixed(2) + 'deg'); pl.el.style.setProperty('--ry', pl.ry.toFixed(2) + 'deg'); });
+    pl.el.addEventListener('pointerleave', () => { pl.rx = pl.ry = 0; pl.el.classList.remove('hot'); pl.el.style.setProperty('--rx', '0deg'); pl.el.style.setProperty('--ry', '0deg'); });
+  });
+  addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; mouse = [e.clientX, e.clientY]; lastMove = performance.now(); }, { passive: true });
+
+  // ---------- the water ----------
+  // It is a list of strands. kind 0 runs free, kind 1 falls, kind 2 clings to a top edge. Every strand knows how far
+  // along the whole route it starts, so one number, the head, says how much of the route is wet.
+  const sc = $('stream'), g2 = sc.getContext('webgl', { premultipliedAlpha: true, antialias: true, alpha: true });
+  const SV = `attribute vec2 aC,aN;attribute vec4 aD;uniform vec2 uView;uniform float uScroll;varying vec4 vD;
+void main(){vD=aD;vec2 p=aC+aN*aD.y*aD.z;p.y-=uScroll;vec2 c=p/uView*2.-1.;gl_Position=vec4(c.x,-c.y,0.,1.);}`;
+  const SF = `precision highp float;varying vec4 vD;uniform float uT,uHead;
+float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}
+void main(){
+  float s=vD.x,v=vD.y,av=abs(v),fa=step(.5,vD.w)*step(vD.w,1.5),cl=step(1.5,vD.w);
+  float reveal=smoothstep(uHead,uHead-30.,s);
+  float head=exp(-pow((uHead-s)/52.,2.));
+  float f=s-uT*mix(mix(165.,520.,fa),300.,cl);
+  float st=mix(1.,.38,fa);
+  float body=smoothstep(1.,mix(.8,.4,fa),av);
+  float warp=noise(vec2(f*.011*st,v*1.3))-.5;
+  float th=exp(-pow((v-.56*sin(f*.021*st+warp*3.4))/.17,2.));
+  th+=exp(-pow((v+.5*sin(f*.0165*st+1.7+warp*2.2))/.13,2.))*.8;
+  th+=exp(-pow((v-.32*sin(f*.034*st+4.1))/.085,2.))*.6;
+  float caust=pow(noise(vec2(f*.028*st,v*2.6+uT*.5)),3.)*1.7;
+  float spark=smoothstep(.9,1.,noise(vec2(f*.12,v*5.+uT*.2)));
+  float rim=smoothstep(.7,.92,av)*smoothstep(1.,.95,av)*(1.-fa*.8);
+  float surge=pow(.5+.5*sin(s*.0085-uT*2.9),10.);
+  float torn=mix(1.,(.28+.95*smoothstep(.22,.62,noise(vec2(v*2.4+3.,f*.006))))*(.6+.5*noise(vec2(v*9.,f*.0025))),fa);
+  float I=(body*(.2+.52*th+caust*.5+spark*1.3+surge*.55)+rim*.5)*torn+head*1.9*body+cl*body*.25;
+  vec3 col=mix(vec3(1.,.36,.04),vec3(1.,.66,.24),smoothstep(.15,.85,I));col=mix(col,vec3(1.,.95,.82),smoothstep(.9,1.9,I));
+  col*=I*reveal;
+  col+=(vec3(.55,.38,.2)*rim*.2+vec3(.3,.2,.1)*body*.035)*(1.-reveal)*(1.-fa*.6);
+  gl_FragColor=vec4(col,0.);
+}`;
+  const mk = (v, f, names) => { const p = prog(g2, v, f), u = {}; names.forEach((n) => { u[n] = g2.getUniformLocation(p, n); }); return [p, u]; };
+  const [SP, su] = mk(SV, SF, ['uView', 'uScroll', 'uT', 'uHead']);
+  const HV = 'attribute vec4 aH;uniform vec2 uView;uniform float uScroll,uDpr;varying float vS;void main(){vS=aH.z;vec2 c=vec2(aH.x,aH.y-uScroll)/uView*2.-1.;gl_Position=vec4(c.x,-c.y,0.,1.);gl_PointSize=aH.w*2.*uDpr;}';
+  const HF = 'precision highp float;varying float vS;uniform float uT,uHead,uBoost;void main(){float d=length(gl_PointCoord-.5)*2.;float g=exp(-d*d*5.)-.0067;if(g<=0.)discard;float reveal=smoothstep(uHead,uHead-30.,vS);float head=exp(-pow((uHead-vS)/64.,2.));float pulse=mix(.72+.28*sin(vS*.012-uT*2.4),.75+.25*sin(uT*27.+vS)*sin(uT*11.3),step(1.5,uBoost));gl_FragColor=vec4(vec3(1.,.45,.1)*g*(.052*uBoost*pulse*reveal+head*.09),0.);}';
+  const [HP, hu] = mk(HV, HF, ['uView', 'uScroll', 'uDpr', 'uT', 'uHead', 'uBoost']);
+  const PV = 'attribute vec4 aP;uniform vec2 uView;uniform float uScroll,uDpr;varying float vA;void main(){vA=aP.w;vec2 c=vec2(aP.x,aP.y-uScroll)/uView*2.-1.;gl_Position=vec4(c.x,-c.y,0.,1.);gl_PointSize=aP.z*uDpr;}';
+  const PF = 'precision mediump float;varying float vA;void main(){float d=length(gl_PointCoord-.5)*2.;float a=pow(max(0.,1.-d),2.)*clamp(vA,0.,1.);gl_FragColor=vec4(vec3(1.,.66,.26)*a,0.);}';
+  const [PP, pu] = mk(PV, PF, ['uView', 'uScroll', 'uDpr']);
+  const sBuf = g2.createBuffer(), sIdx = g2.createBuffer(), hBuf = g2.createBuffer(), lBuf = g2.createBuffer(), pBuf = g2.createBuffer();
+  const NP = 280, parts = new Float32Array(NP * 4), pv = new Float32Array(NP * 3);
+  const barEl = $('bar'), trioEl = $('trio'), barPl = plates.find((q) => q.el === barEl), wl = $('wl');
+  let landings = [], total = 1, tabY = [], tabS = [], nIdx = 0, nHalo = 0, head = 0, prevHead = 0, deskS = 1e9, deskLit = 0, pi = 0, lastT = performance.now();
+
+  function layout() {
+    plates.forEach(paint);
+    const sy = scrollY, ph = phone.matches, HW = ph ? [6.5, 6, 4] : [9, 8, 5];
+    const R = (el) => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top + sy, b: r.bottom + sy, cx: r.left + r.width / 2, cy: r.top + sy + r.height / 2 }; };
+    const strands = []; landings = []; let s = 0;
+    const add = (pts, kind, foot) => { const S = [0]; for (let i = 1; i < pts.length; i++) S[i] = S[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); strands.push({ pts, kind, S, s0: s, foot }); s += S[S.length - 1]; };
+    const seg = (x0, y0, x1, y1) => { const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 4)), o = []; for (let k = 0; k <= n; k++) o.push([x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n]); return o; };
+    const bend = (x0, y0, x1, y1) => { const dy = y1 - y0, n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, dy) / 4)), o = []; for (let k = 0; k <= n; k++) { const t = k / n, u = 1 - t, a = u * u * u + 3 * u * u * t, b = 3 * u * t * t + t * t * t; o.push([x0 * a + x1 * b, u * u * u * y0 + 3 * u * u * t * (y0 + dy * .5) + 3 * u * t * t * (y1 - dy * .5) + t * t * t * y1]); } return o; };
+    const fall = (x0, y0, x1, y1) => { if (Math.abs(x1 - x0) < 1 || y1 - y0 < 150) add(seg(x0, y0, x1, y1), 1, true); else { add(seg(x0, y0, x0, y1 - 120), 1); add(bend(x0, y1 - 120, x1, y1), 1, true); } };
+    const pour = (cx, top, d) => { const A = [cx - d * 12, top - 3], C = [cx + d * 8, top - 3], B = [cx + d * 8, top + 16], o = []; for (let k = 0; k <= 8; k++) { const t = k / 8, u = 1 - t; o.push([u * u * A[0] + 2 * u * t * C[0] + t * t * B[0], u * u * A[1] + 2 * u * t * C[1] + t * t * B[1]]); } add(o, 2); };
+    const land = (x, y, pl) => { landings.push({ x, y, s }); if (pl) { pl.sx = x; pl.syPage = y; pl.sAt = s; } };
+
+    // 1. down the cards: land, run the top edge, pour off the corner, fall to the next
+    const cards = [...document.querySelectorAll('.row .plate')].map((el) => ({ pl: plates.find((q) => q.el === el), ...R(el) }));
+    const bar = R(barEl), trio = R(trioEl), ib = R($('intro')).b;
+    let x = cards[0].r - 14;
+    add(seg(x, ib - (ph ? 50 : 84), x, cards[0].t - 3), 1, true); land(x, cards[0].t - 3, cards[0].pl);
+    cards.forEach((c, i) => {
+      const next = cards[i + 1], target = next ? next.cx : bar.cx;
+      const d = i === 0 ? 1 : Math.abs(target - c.cx) < 20 ? (x > c.cx ? -1 : 1) : target < c.cx ? -1 : 1, corner = d > 0 ? c.r : c.l;
+      if (Math.abs(corner - d * 12 - x) > 6) add(seg(x, c.t - 3, corner - d * 12, c.t - 3), 2);
+      pour(corner, c.t, d); x = corner + d * 8;
+      if (next) { const lx = Math.min(next.r - 14, Math.max(next.l + 14, x)); fall(x, c.t + 16, lx, next.t - 3); land(lx, next.t - 3, next.pl); x = lx; }
+      else { add(seg(x, c.t + 16, x, c.b + 12), 1); add(bend(x, c.b + 12, bar.cx, bar.t - 60), 0); add(seg(bar.cx, bar.t - 60, bar.cx, bar.t - 3), 1, true); land(bar.cx, bar.t - 3, barPl); }
+    });
+    // 2. the header bar: both ways along the top, down both sides, and back together underneath
+    const s0 = s, yb = trio.b + 26, ym = trio.b + (ph ? 120 : 160), tp = [...trioEl.querySelectorAll('.plate')].map((el) => plates.find((q) => q.el === el));
+    for (const d of [-1, 1]) {
+      s = s0; const e = d > 0 ? bar.r : bar.l;
+      add(seg(bar.cx, bar.t - 3, e - d * 12, bar.t - 3), 2); pour(e, bar.t, d);
+      const fs = s, p = tp[d > 0 ? 2 : 0], pr = R(p.el); p.sx = e + d * 8; p.syPage = pr.cy; p.sAt = fs + Math.max(0, pr.cy - bar.t - 16);
+      add(seg(e + d * 8, bar.t + 16, e + d * 8, yb), 1); add(bend(e + d * 8, yb, bar.cx + d * 4, ym), 0);
+    }
+    // 3. the desk: onto the front left corner, along the front edge, off the front right corner
+    const dk = R($('desk')), dw = dk.r - dk.l, dh = dk.b - dk.t, FL = [dk.l + .0805 * dw + 5, dk.t + .7586 * dh], FR = [dk.l + .8851 * dw, dk.t + .9775 * dh];
+    add(bend(bar.cx, ym, FL[0], R($('sk')).t - 34), 0); add(seg(FL[0], R($('sk')).t - 34, FL[0], FL[1] - 3), 1, true);
+    deskS = s; land(FL[0], FL[1] - 3, null);
+    add(seg(FL[0], FL[1] - 3, FR[0] - 12, FR[1] - 3), 2); pour(FR[0], FR[1], 1);
+    add(seg(FR[0] + 8, FR[1] + 16, FR[0] + 8, R($('ledger')).b + 36), 1);
+    total = s;
+
+    const data = [], idx = [], halo = [], tab = []; let vi = 0;
+    for (const st of strands) {
+      const n = st.pts.length;
+      for (let i = 0; i < n; i++) {
+        const a = st.pts[Math.max(0, i - 1)], b = st.pts[Math.min(n - 1, i + 1)], tx = b[0] - a[0], ty = b[1] - a[1], l = Math.hypot(tx, ty) || 1, sv = st.s0 + st.S[i];
+        const hw = HW[st.kind] * (1 + .12 * Math.sin(sv * .013) + .07 * Math.sin(sv * .031 + 2)) * Math.min(1, (sv + 2) / 80) ** .6 * Math.min(1, Math.max(0, (total - sv) / 220)) ** .7 * (st.foot ? 1 + .9 * Math.exp(-(st.S[n - 1] - st.S[i]) / 22) : 1);
+        for (let j = 0; j < 2; j++) data.push(st.pts[i][0], st.pts[i][1], ty / l, -tx / l, sv, j ? 1 : -1, hw, st.kind);
+        if (i < n - 1) idx.push(vi + i * 2, vi + i * 2 + 1, vi + i * 2 + 2, vi + i * 2 + 1, vi + i * 2 + 3, vi + i * 2 + 2);
+        if (i % 3 === 0) halo.push(st.pts[i][0], st.pts[i][1], sv, hw * (st.kind === 0 ? (ph ? 5 : 7) : 8));
+        tab.push([st.pts[i][1], sv]);
+      }
+      vi += n * 2;
+    }
+    tab.sort((a, b) => a[0] - b[0]); tabY = tab.map((t) => t[0]); tabS = []; let mx = 0; for (const t of tab) { mx = Math.max(mx, t[1]); tabS.push(mx); }
+    nIdx = idx.length; nHalo = halo.length / 4;
+    g2.bindBuffer(g2.ARRAY_BUFFER, sBuf); g2.bufferData(g2.ARRAY_BUFFER, new Float32Array(data), g2.STATIC_DRAW);
+    g2.bindBuffer(g2.ELEMENT_ARRAY_BUFFER, sIdx); g2.bufferData(g2.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), g2.STATIC_DRAW);
+    g2.bindBuffer(g2.ARRAY_BUFFER, hBuf); g2.bufferData(g2.ARRAY_BUFFER, new Float32Array(halo), g2.STATIC_DRAW);
+    g2.bindBuffer(g2.ARRAY_BUFFER, lBuf); g2.bufferData(g2.ARRAY_BUFFER, new Float32Array(landings.flatMap((L) => [L.x, L.y, L.s, ph ? 34 : 46])), g2.STATIC_DRAW);
+    sc.width = Math.round(innerWidth * DPR); sc.height = Math.round(innerHeight * DPR);
+  }
+  const goalAt = (y) => { let lo = 0, hi = tabY.length - 1; if (!tabY.length || tabY[0] > y) return 0; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (tabY[m] <= y) lo = m; else hi = m - 1; } return tabS[lo]; };
+  function drop(L, k) { parts.set([L.x + (Math.random() - .5) * 12, L.y - 2, (1.6 + Math.random() * 2.8) * k, 1.2], pi * 4); pv.set([(Math.random() - .5) * 300 * k, -(70 + Math.random() * 210 * k), .4 + Math.random() * .5], pi * 3); pi = (pi + 1) % NP; }
+  function drawWater(now) {
+    const dt = Math.min(.05, (now - lastT) / 1000), t = still ? 2 : (now - T0) / 1000; lastT = now;
+    const goal = still ? total : goalAt(scrollY + innerHeight * .64), dd = goal - head;
+    head = still ? total : head + Math.sign(dd) * Math.min(Math.abs(dd), Math.max(Math.abs(dd) * dt * 5, dt * 950));
+    g2.viewport(0, 0, sc.width, sc.height); g2.clearColor(0, 0, 0, 0); g2.clear(g2.COLOR_BUFFER_BIT);
+    g2.enable(g2.BLEND); g2.blendFunc(g2.ONE, g2.ONE);
+    g2.useProgram(HP); const aH = g2.getAttribLocation(HP, 'aH'); g2.enableVertexAttribArray(aH);
+    g2.uniform2f(hu.uView, innerWidth, innerHeight); g2.uniform1f(hu.uScroll, scrollY); g2.uniform1f(hu.uDpr, DPR); g2.uniform1f(hu.uT, t); g2.uniform1f(hu.uHead, head);
+    g2.bindBuffer(g2.ARRAY_BUFFER, hBuf); g2.vertexAttribPointer(aH, 4, g2.FLOAT, false, 0, 0); g2.uniform1f(hu.uBoost, 1); g2.drawArrays(g2.POINTS, 0, nHalo);
+    g2.bindBuffer(g2.ARRAY_BUFFER, lBuf); g2.vertexAttribPointer(aH, 4, g2.FLOAT, false, 0, 0); g2.uniform1f(hu.uBoost, 9); g2.drawArrays(g2.POINTS, 0, landings.length);
+    g2.useProgram(SP); g2.bindBuffer(g2.ARRAY_BUFFER, sBuf); g2.bindBuffer(g2.ELEMENT_ARRAY_BUFFER, sIdx);
+    const aC = g2.getAttribLocation(SP, 'aC'), aN = g2.getAttribLocation(SP, 'aN'), aD = g2.getAttribLocation(SP, 'aD');
+    g2.enableVertexAttribArray(aC); g2.enableVertexAttribArray(aN); g2.enableVertexAttribArray(aD);
+    g2.vertexAttribPointer(aC, 2, g2.FLOAT, false, 32, 0); g2.vertexAttribPointer(aN, 2, g2.FLOAT, false, 32, 8); g2.vertexAttribPointer(aD, 4, g2.FLOAT, false, 32, 16);
+    g2.uniform2f(su.uView, innerWidth, innerHeight); g2.uniform1f(su.uScroll, scrollY); g2.uniform1f(su.uT, t); g2.uniform1f(su.uHead, head);
+    g2.drawElements(g2.TRIANGLES, nIdx, g2.UNSIGNED_SHORT, 0);
+    if (still) return;
+    // droplets: a burst when the water first arrives, then a trickle for as long as it lands there
+    const live = [];
+    for (const L of landings) { if (prevHead <= L.s && head > L.s) for (let j = 0; j < 30; j++) drop(L, 1.5); if (head > L.s + 2 && L.y - scrollY > -120 && L.y - scrollY < innerHeight + 120) live.push(L); }
+    for (let j = 0; j < 2 && live.length; j++) drop(live[(Math.random() * live.length) | 0], 1);
+    prevHead = head;
+    for (let i = 0; i < NP; i++) { if (parts[i * 4 + 3] <= 0) continue; pv[i * 3 + 1] += 640 * dt; parts[i * 4] += pv[i * 3] * dt; parts[i * 4 + 1] += pv[i * 3 + 1] * dt; parts[i * 4 + 3] -= (dt / pv[i * 3 + 2]) * 1.2; }
+    g2.useProgram(PP); g2.bindBuffer(g2.ARRAY_BUFFER, pBuf); g2.bufferData(g2.ARRAY_BUFFER, parts, g2.DYNAMIC_DRAW);
+    const aP = g2.getAttribLocation(PP, 'aP'); g2.enableVertexAttribArray(aP); g2.vertexAttribPointer(aP, 4, g2.FLOAT, false, 0, 0);
+    g2.uniform2f(pu.uView, innerWidth, innerHeight); g2.uniform1f(pu.uScroll, scrollY); g2.uniform1f(pu.uDpr, DPR);
+    g2.drawArrays(g2.POINTS, 0, NP);
+  }
+  function frame(now) {
+    drawWater(now);
+    for (const pl of plates) { pl.lit += ((head > pl.sAt ? 1 : 0) - pl.lit) * .07; if (Math.abs(pl.lit - Math.round(pl.lit)) < .004) pl.lit = Math.round(pl.lit); pl.sy = pl.syPage - scrollY; render(pl, now); }
+    const dg = head > deskS ? .62 : 0; if (Math.abs(dg - deskLit) > .002) { deskLit += (dg - deskLit) * .05; wl.style.opacity = deskLit.toFixed(3); }
+    requestAnimationFrame(frame);
+  }
+  let rz = 0; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(layout, 120); });
+  await Promise.all([...document.querySelectorAll('.stage img')].map((im) => im.complete ? 0 : new Promise((res) => { im.onload = im.onerror = res; })));
+  layout(); head = still ? total : 0;
+  window.__ready = true;
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

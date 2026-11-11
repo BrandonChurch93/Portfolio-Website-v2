@@ -1,0 +1,4 @@
+ref/second-pass-desktop | PASS | - | Faithful capture of the floor at 2x: polished brass plate with crisp enamel engraving, slotted screws, brushed grain and a lamp hotspot, and the amber ribbon with a hot core, particles and a dim trailing tail.
+ref/second-pass-phone | PASS | - | Faithful phone capture at 3x: plate fills the column, ribbon runs the right margin and crosses in the gap, second plate dimmed below as on desktop.
+ref/third-pass-desktop | PASS | - | Faithful capture: water lands on the top right corner of the plate and runs down its edge, but the run is a thin hard stroke with no crown or thrown drops, which is the fault the site must not repeat.
+ref/third-pass-phone | PASS | - | Faithful phone capture: corner landing and edge run at the right margin, lamp glare on the plate, next plate below.

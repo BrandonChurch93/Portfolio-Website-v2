@@ -1,0 +1,44 @@
+{
+  "name": "brandon-church-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brandon Church portfolio. Static Next.js site with real time 3D, lit metal and golden water.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 5320 -H 127.0.0.1",
+    "build": "node scripts/stamp-build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "serve": "node scripts/serve.mjs out",
+    "shots": "node scripts/shots.mjs",
+    "strips": "node scripts/strips.mjs",
+    "verdict": "node scripts/verdict.mjs",
+    "check:shots": "node scripts/check-shots.mjs",
+    "check:copy": "node scripts/check-copy.mjs",
+    "critic:list": "node scripts/critic-list.mjs",
+    "media": "node scripts/media.mjs",
+    "stills": "node scripts/stills.mjs"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/sora": "5.3.0",
+    "gsap": "3.15.1",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.187.0",
+    "sharp": "0.35.5",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}
