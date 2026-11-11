@@ -5,7 +5,7 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/tokens.css';
 import '../styles/global.css';
-import { COLORS, SITE_NAME, SITE_URL } from '../config/site';
+import { COLORS, OG_IMAGE, SITE_NAME, SITE_URL } from '../config/site';
 import { site } from '../content/site';
 import { Footer } from '../components/Footer';
 import { Nav } from '../components/Nav';
@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: site.meta.home.description,
   applicationName: SITE_NAME,
   authors: [{ name: SITE_NAME }],
+  openGraph: { type: 'website', siteName: SITE_NAME, url: SITE_URL, images: [{ url: OG_IMAGE.src, width: OG_IMAGE.width, height: OG_IMAGE.height, alt: site.share.alt }] },
+  twitter: { card: 'summary_large_image', images: [OG_IMAGE.src] },
 };
 
 export const viewport: Viewport = {

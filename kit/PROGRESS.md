@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 9 · start
+IN PROGRESS · Phase 10 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 9 The other pages
-- Step: start (read 01 Pages, 02, 05)
-- Next action: check incoming/ and REPO_URL, then /work, every project page, /clients, /resume, not found
+- Phase: 10 The water through the whole site
+- Step: start (read 03 in full, 07)
+- Next action: check incoming/ and REPO_URL; then the page water itself (the look critics 062 and 063 failed on every page) and the routes (About portrait, doors, room pages, plate edges, the not-found bends, the hero timing)
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -27,7 +27,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 6 | The workbench and skills | done | 2026-11-11, commit "Phase 6 the workbench and skills" |
 | 7 | The rooms | done | 2026-11-11, commit "Phase 7 the rooms" |
 | 8 | About, contact and the rocket | done | 2026-11-11, commit "Phase 8 About, contact and the rocket" |
-| 9 | The other pages | | |
+| 9 | The other pages | done | 2026-11-11, commit "Phase 9 the other pages" |
 | 10 | The water through the whole site | | |
 | 11 | Tiers, speed, access, hardening | | |
 | 12 | Final pass | | |
@@ -48,6 +48,12 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 9
+- Shots pass: node scripts/check-shots.mjs page/work page/project page/clients page/resume page/notfound passed 25 of 25. Critic 063 looked once at desktop and phone (all FAIL); the real page faults fixed; the page water (the main point of every line) is Phase 10; my PASS on the new images (builder-pages9-1).
+- Checked at Phase 9 start: no incoming/, REPO_URL NONE.
+- Titles and descriptions on every page (site.meta); Open Graph and Twitter cards: the city settled (public/generated/og.jpg from scripts/og.mjs) for the site, each project's own picture cut at its focus for its page (og-<id>.jpg), alt words in the content file; out/sitemap.xml (every reachable page, 3D art only while SHOW_3D_ART, no lab), out/robots.txt (lab disallowed, sitemap linked), out/icon.svg (the water falling into a pool), all verified in the build.
+- typecheck clean, unit tests 52 passed, check:copy 0 problems (146 files, 30 pages), Chromium suite 146 passed.
 
 ### Gate 8
 - Shots pass: node scripts/check-shots.mjs rocket home/about home/contact page/about passed 30 of 30, all taken from the gate build. Rocket: critic rounds 056 and 057, 058 and 059, 060 and 061 (form and close-1 critic PASS), my PASS gates the rest (builder-rocket-1, builder-gate8-1). Pages: critic 062 looked once at home/about, page/about and home/contact at desktop and phone (all FAIL); the real faults fixed, the page water deferred to Phase 10 (For review), my PASS on the new images (builder-about-contact-1, builder-gate8-1).
@@ -197,6 +203,8 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - The page's stream ends by handing over to the rocket instead of drawing a pool of its own: the pool is in the 3D scene, raised in its basin, so the stream reaches it along a flume the piece draws, and the two meet where the flume comes out of the stage's side fade, where the page water shows through. Rule 1 (kit 03: it runs into a shallow pool under the launch pad; W08 never pasted over a piece).
 - Contact is one picture on wide screens (the words in the stage's sky) and the stage is the page's last screen with the footer over its faded foot, so the launch at the end of the page is seen whole. Rule 1 (kit 04: lifts off when the visitor reaches the end of the page).
 - The rocket's name stencilled on its hull is Lumen, words in site.pieces.rocket, an invented name like the handheld's game. Rule 2.
+- At the end of a page, or on a page that cannot scroll, the water's head goes to the end of its route instead of stopping at the reading line. Found when the not-found pool stayed dry. Rule 1 (kit 03: it moves down the page with the visitor; at the end there is no further to go).
+- Share images: the site's is the city settled; a project's is its own picture. JPEG, because some link previews still refuse WebP. Rule 3.
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -286,6 +294,13 @@ Risks: a toy look (fix with scale cues, rivets, panel lines, weathering), the pl
 - What the rocket is now: a riveted ivory skin (tall panels, ring and long seams, rivet lines either side of each ring seam, panel to panel tone, a stencilled name and stage numbers from site.pieces.rocket worn through, soot from a few interstage vents), fins with a root rivet line, a seam and chipped leading edges, a ribbed aft dome, hatches raised in a shadow gap with screws, a handle and a hinge, porthole bosses over a lit cabin under coated glass. The pad: a plated, scorched deck, clamps on struts from a pinned footing to a brass jaw, pillars with footings and tie beams, a vaned deflector. The pool: glossy water lit by the scene (the lamp's highlight and the shadows fall on it, ripples break the reflections) with the light-water glowing up through it, caustics at two scales, ripple rings and a bright meniscus at every pillar and pier, the pad and legs mirrored in it from the camera, a light from below for the pad. The tower: lighter lattice on stone piers, bolted bronze gussets, painted rails, arms that fold behind it, a lamp at its beacons. A jointed coping with drain grates, a concrete apron with slab joints, stains, scorch, a cable trench and tie-down rings.
 - Life: the entrance comes down and in from high and far while light spreads across the pool and the floods flicker on; assembly follows the scroll (tower, its parts arriving with it, stages on a cable from above the frame, arms, lights); the launch holds, rolls smoke out low and lit from below, climbs slowly then faster out of the frame, the pool answers, the smoke thins and the camera stays on the pad. The making view draws each hull's real rings and meridians (a part may bring its own line geometry and a strength, wireGeo and wireK in the shared stage).
 - Critic round 1 (056 stills, 057 strips): all 15 FAIL. Real faults to fix: no cast shadows on pad and pool, the lamp barely changes the rocket, an unexplained hot spot under the pad (pool point light inside the deflector), plain fins, flat hatch cards that do not follow the curve, portholes with no glass or depth, plain cube nodes on the gantry and a gantry lost in the dark, plain pad blocks and a bare deflector cone, a single scale caustic pool with no reflections, a dark featureless basin rim and an empty floor, glows in clay, a making view where the gantry blooms and the rocket has no wire, an entrance that is only a brightness ramp, arms folded toward the camera that read as floating blocks, a climb that reads quick, a camera tilt that cuts off the pad, flat smoke, the piece small in the frame.
+
+### Phase 9, the other pages (done)
+- Project pages open with the project's picture under glass in an aged brass frame plate, the name on its nameplate (the frame kind is now sized by its shorter side, so a wide frame keeps a portrait frame's border; its nameplate never drops below 11 px). Facts on one line with interpuncts.
+- Pictures can carry a focus and a zoom in the content file (MediaRef), used by every window and by the share images, so a new picture is framed by editing one entry.
+- Plain project plates set their reason larger, so the words fill the plate; placards keep room for a facts line so long words fit.
+- /clients drops the bar's repeated line; the résumé's titles and place break between parts only.
+- Not found: the page's one interaction is the water itself: the stream comes in from the top, goes round the words and pools under them. The block sits high so the pool is above the reading line; at the end of any page (or on a page too short to scroll) the stream now runs to its end.
 
 ### Contact (done)
 - src/components/Launchpad.tsx: the rocket as the stage of the last screen. The stage is the height of the screen under the nav; the footer sits over its faded foot (a measured negative margin), so at the end of the page, where the rocket lifts off, the whole stage is in view; the scene is framed into the part above the footer (frame shift and scale from how much the footer covers) and the switch and readout sit above it (--host-foot). On wide screens the stage runs the full width and the heading, line and links sit in its dark sky at the top left of the page column; narrow screens stack them above it. The canvas fades into the page on every side.
@@ -427,6 +442,8 @@ Things Brandon should look at first: faults a critic named that were not fixed a
 - Rocket critic points not acted on after three rounds (056 to 061): the pool and apron bleed off both sides on the phone (ground runs past the frame; fitting the whole pool makes the rocket small, which round 1 failed); a little ambient occlusion grain where the porthole bosses meet the skin; the lab's own nav covers the top of some close shots; the crane drops in with the last section of the tower like the other fixed parts; the floods are small fixtures, so their flicker in the entrance is subtle; the brass trim at the pad's edge glows from the pool's light below, which the critic did not read as a source.
 
 - Page water at About and Contact (critic 062, not acted on in Phase 8): the stream reads as a lit blade with a pointed end in frozen frames, is cut flat under the nav, has loose ticks for particles, runs diagonally past the portrait on wide and 4K screens and sits against the edge of the phone. All of this is the page water and its route (kit 08 Phase 10: the route round the doors and behind the portrait); taken up there. On the contact phone shot the stream stops at the reading line, because the head follows the scroll.
+- Page water, critic 063 on every Phase 9 page: the stream reads as a jagged, flame-like streak of one width with a needle head and few sparks, worse than the second pass reference ribbon (G06); it hugs the right edge and passes over plate and bar edges; the not-found route turns at tight elbows. Taken up in Phase 10 as its first job, with the look of the water itself rebuilt where needed, not tuned.
+- The Claude Docs picture is cut through a line of its own text in the narrow work windows at some widths; it is a placeholder Brandon is replacing, and its focus and zoom are set in its media entry.
 - Contact: the flume runs on past the point where the stream joins it, out through the stage's side fade; the critic read that as cut by the viewport.
 
 ## Needed from Brandon (collected as found; copied into the Handoff in Phase 12)
@@ -464,6 +481,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 7 done: the handheld, the camera and the sculpture, each through its seven phases with three critic rounds, the three room pages framed per screen shape with stages fading into the page, the doors on the home page with three live views from one renderer, small views per piece, a pixel budget per tier for piece canvases, steady making stills. Next: Phase 8.
 
 - 2026-11-11, Phase 8 done: About with the portrait in an aged brass frame plate; the rocket through its seven phases (riveted stencilled hull, plated pad in a glossy light-water pool with reflections and ripples, a lattice tower on piers, assembly on scroll, the launch once per visit at the page end with smoke and the pool answering), three critic rounds; Contact as the last screen with brass links in the stage's sky; the page's stream handed to the rocket's flume and poured into the pool. Next: Phase 9.
+
+- 2026-11-11, Phase 9 done: project pages framed in brass under glass, picture focus and zoom in the content file, fuller plain plates, fitted placards, the résumé's lines, the not-found page's pool, share images, sitemap, robots, icon. Next: Phase 10, the water, starting with its look on every page.
 
 ## Handoff
 

@@ -25,6 +25,10 @@ export interface Link {
 export interface MediaRef {
   id: MediaId;
   alt: string;
+  // Which part of the picture stays in view when a window crops it, 0 to 1 across and down. Default: centre, a little high.
+  focus?: readonly [number, number];
+  // How far a window crops in around the focus; 1 just covers the window.
+  zoom?: number;
 }
 
 export interface Project {
@@ -75,6 +79,9 @@ export interface PageMeta {
 const GITHUB = 'https://github.com/BrandonChurch93';
 
 export const site = {
+  // What a shared link shows beside the site's image.
+  share: { alt: 'A floating city of brass and ivory towers at night, golden water pouring off the rim of its disc.' },
+
   meta: {
     home: { title: 'Designer and engineer', description: 'Brandon Church builds things he wants to exist. A floating city, brass plates and golden water, all made in code.' },
     work: { title: 'Work', description: 'Every project, each with the reason it was built.' },
@@ -152,7 +159,7 @@ export const site = {
           'It exports to CSS, JSON, Tailwind and W3C tokens, and it ships an MCP server with seven tools and a CLI. Claude Code built it from a kit I planned, across nineteen gated phases and 112 logged decisions.',
         ],
         stack: ['Next.js', 'React', 'TypeScript', 'Playwright', 'BullMQ', 'Redis', 'PostgreSQL', 'Drizzle', 'Anthropic API', 'Model Context Protocol', 'Stripe'],
-        media: [{ id: 'dse', alt: 'A Design System Extractor run showing a live site with its extracted palette, stats and components' }],
+        media: [{ id: 'dse', alt: 'A Design System Extractor run showing a live site with its extracted palette, stats and components', focus: [0.78, 0.32], zoom: 1.55 }],
         links: [{ label: 'Code', href: `${GITHUB}/design-system-extractor` }],
       },
       {
@@ -177,7 +184,7 @@ export const site = {
           'Claude Code built it from twelve specification documents I wrote, under a three tier decision authority that sent ten real engineering conflicts to me for a ruling.',
         ],
         stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL and pgvector', 'Anthropic API', 'OpenAI embeddings', 'Upstash Redis', 'GitHub Actions', 'Playwright'],
-        media: [{ id: 'claude-docs', alt: 'The Ask the Claude Docs type specimen: an answer set in a serif with a cited passage, and a question set in a sans' }],
+        media: [{ id: 'claude-docs', alt: 'The Ask the Claude Docs type specimen: an answer set in a serif with a cited passage, and a question set in a sans', focus: [0.3, 0.3] }],
         links: [
           { label: 'Live', href: 'https://ask-the-claude-docs.vercel.app' },
           { label: 'Evals', href: 'https://ask-the-claude-docs.vercel.app/evals' },

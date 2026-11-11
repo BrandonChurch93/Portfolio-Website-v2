@@ -3,6 +3,8 @@
 
 export const SITE_NAME = 'Brandon Church';
 export const SITE_URL = 'https://brandonchurchportfolio.com';
+// The image a shared link shows (written by scripts/og.mjs).
+export const OG_IMAGE = { src: '/generated/og.jpg', width: 1200, height: 630, project: (id: string) => `/generated/og-${id}.jpg` } as const;
 
 export const SHOW_3D_ART = (process.env.SITE_SHOW_3D_ART ?? 'true') !== 'false';
 export const SHOW_LAB = (process.env.SITE_SHOW_LAB ?? 'true') !== 'false';

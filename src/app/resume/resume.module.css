@@ -132,3 +132,7 @@
   margin: var(--space-1) 0 0;
   color: var(--text-2);
 }
+
+.keep {
+  white-space: nowrap;
+}

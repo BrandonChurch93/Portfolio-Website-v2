@@ -6,7 +6,7 @@ const FINISHES: Finish[] = ['aged', 'bronze', 'polished', 'panel'];
 
 // Client work: a polished brass header bar, then small lit placards. On the home page the water lands on the bar,
 // splits, and frames the placards.
-export function Placards({ items, bar, sub, headingId, water = false }: { items: readonly Client[]; bar: string; sub: string; headingId?: string; water?: boolean }) {
+export function Placards({ items, bar, sub, headingId, water = false }: { items: readonly Client[]; bar: string; sub?: string; headingId?: string; water?: boolean }) {
   const frameId = headingId ? `${headingId}-frame` : undefined;
   return (
     <div className={styles.block}>
@@ -16,7 +16,7 @@ export function Placards({ items, bar, sub, headingId, water = false }: { items:
         </Plate>
       </div>
       <div id={frameId} className={styles.frame} data-water-avoid="">
-        <p className={styles.sub}>{sub}</p>
+        {sub ? <p className={styles.sub}>{sub}</p> : null}
         <ul className={styles.grid}>
           {items.map((c, i) => (
             <li key={c.name} className={styles.item}>

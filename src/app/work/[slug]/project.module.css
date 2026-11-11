@@ -32,12 +32,26 @@
   color: var(--text-3);
 }
 
+/* The facts read as one line with an interpunct between them, wrapping between facts, never inside one. */
+.facts li {
+  white-space: nowrap;
+}
+
+.facts li + li::before {
+  content: '·';
+  margin-right: var(--space-5);
+  color: var(--accent);
+}
+
+/* The project's picture under glass in an aged brass frame with its name on the nameplate; the frame's proportion
+   leaves the window itself at the project window shape. */
 .window {
-  aspect-ratio: var(--window-project);
-  border-radius: var(--radius-3);
-  overflow: hidden;
-  border: 1px solid var(--line);
-  margin-bottom: var(--space-9);
+  margin: 0 0 var(--space-9);
+}
+
+.frame {
+  width: 100%;
+  aspect-ratio: 16 / 10.2;
 }
 
 .photo {

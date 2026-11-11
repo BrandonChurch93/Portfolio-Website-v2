@@ -1,18 +1,25 @@
 .wrap {
-  min-height: calc(100svh - var(--nav-h));
+  min-height: min(calc(100svh - var(--nav-h)), 44rem);
   display: grid;
-  align-content: center;
+  /* High on the screen, so the pool sits above the reading line and the stream reaches it without a scroll. */
+  align-content: start;
+  padding-top: clamp(4rem, 14vh, 12rem);
   justify-items: center;
   text-align: center;
   gap: var(--space-5);
   position: relative;
 }
 
-.stage {
-  width: min(70vw, 28rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 157, 60, 0.16), rgba(12, 10, 9, 0));
+.words {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+}
+
+.pool {
+  width: min(84vw, 34rem);
+  height: clamp(7rem, 16vh, 11rem);
+  margin-top: var(--space-6);
 }
 
 .line {

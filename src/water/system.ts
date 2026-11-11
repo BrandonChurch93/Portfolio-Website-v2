@@ -277,6 +277,8 @@ export class WaterSystem {
     if (this.move) return sAtFlowTime(r, this.move.fEntry + this.move.t);
     if (this.forced !== null) return this.forced;
     if (tiers.get() === 'static' || matchMedia('(prefers-reduced-motion: reduce)').matches) return r.total;
+    // At the end of the page (or on a page too short to scroll) the stream runs all the way to its end.
+    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) return r.total;
     // Where the page has a source, the stream already runs on a little past it at the top of the page.
     return headAt(this.table!, Math.max(scrollY + innerHeight * READING_LINE, this.startY + innerHeight * 0.32));
   }

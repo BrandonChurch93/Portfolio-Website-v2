@@ -145,12 +145,14 @@ export function paintMask(spec: PlateSpec, cssW: number, cssH: number, dpr: numb
   } else if (spec.kind === 'frame') {
     // A picture frame: the window fills the plate, with an engraved nameplate band below it.
     const D = DESIGN.plate;
-    S = (cssW / D.width) * dpr;
+    // Sized by the shorter side, so a wide frame keeps a portrait frame's border and nameplate.
+    S = (Math.min(cssW, cssH * 0.8) / D.width) * dpr;
     radius = D.radius * S;
     const m = 46 * S, band = 84 * S;
     win = [w / 2, (m + h - band) / 2, w / 2 - m, (h - band - m) / 2];
     border(15, 9, 3); border(21, 5, 1);
-    const lab = 15 * S;
+    // Never smaller than a readable size, however small the frame.
+    const lab = Math.max(15 * S, 11 * dpr);
     g.font = `500 ${lab}px ${SORA}`;
     spaced(g, spec.label ?? '', w / 2, h - band / 2 + lab * 0.36, 0.3 * lab, 'center');
     const r = 24 * S, rr = 5.2 * S;
@@ -191,9 +193,11 @@ export function paintMask(spec: PlateSpec, cssW: number, cssH: number, dpr: numb
     if (spec.facts) monoLine(g, spec.facts, tx0, ty1, D.facts * S, colW, 0.12);
     if (spec.big) {
       const weight = f === 'panel' || f === 'bronze' ? 600 : 500;
-      const size = (spec.kind === 'plate' && spec.window ? DESIGN.plate.bigWin : D.big) * S;
+      // A plain plate (no window) sets its reason larger, so the words fill the plate.
+      const size = (spec.kind === 'plate' && spec.window ? DESIGN.plate.bigWin : spec.kind === 'plate' ? D.big * 1.3 : D.big) * S;
       const top = ty0 + lab * (small ? 2.9 : 2.4);
-      const bottom = ty1 - (spec.facts ? D.facts * S * 2.6 : 0);
+      // A placard keeps room for a facts line even without one, so long words never crowd its border.
+      const bottom = ty1 - (spec.facts || small ? D.facts * S * 2.6 : 0);
       const lead = 1.14;
       const { size: fs, lines } = fit(g, spec.big, weight, size, tx1 - tx0 - (small ? 0 : 12 * S), bottom - top, D.maxLines, lead);
       g.font = `${weight} ${fs}px ${SORA}`;

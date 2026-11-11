@@ -4,6 +4,11 @@ import { MetalLink } from '../../components/MetalLink';
 import page from '../../components/Page.module.css';
 import styles from './resume.module.css';
 
+// A line of parts joined by interpuncts wraps between parts, never inside one.
+const kept = (line: string) => line.split(' · ').map((part, i) => (
+  <span key={part}>{i ? ' · ' : ''}<span className={styles.keep}>{part}</span></span>
+));
+
 export const metadata: Metadata = { title: site.meta.resume.title, description: site.meta.resume.description };
 
 export default function Resume() {
@@ -14,8 +19,8 @@ export default function Resume() {
         <header className={styles.head}>
           <p className={page.eyebrow}>{r.heading}</p>
           <h1 className={page.title}>{r.name}</h1>
-          <p className={styles.titles}>{r.titles}</p>
-          <p className={styles.place}>{r.place}</p>
+          <p className={styles.titles}>{kept(r.titles)}</p>
+          <p className={styles.place}>{kept(r.place)}</p>
           <MetalLink href={r.file} label={site.ui.resumeDownload} finish="aged" download />
         </header>
         <p className={styles.summary}>{r.summary}</p>

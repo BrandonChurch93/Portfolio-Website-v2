@@ -11,7 +11,7 @@ export default function Clients() {
     <main id="main" className={page.main}>
       <div className={page.wrap}>
         <PageHead title={site.meta.clients.title} lede={site.clients.pageSub} />
-        <Placards items={site.clients.items} bar={site.clients.bar} sub={site.clients.sub} />
+        <Placards items={site.clients.items} bar={site.clients.bar} />
       </div>
     </main>
   );

@@ -194,6 +194,12 @@ for (const v of VPS) SHOTS['page/games-' + v] = pageShot('/games/')(v);
 for (const v of VPS) SHOTS['page/photography-' + v] = pageShot('/photography/')(v);
 for (const v of VPS) SHOTS['page/3d-art-' + v] = pageShot('/3d-art/')(v);
 for (const v of VPS) SHOTS['page/about-' + v] = pageShot('/about/')(v);
+for (const v of VPS) SHOTS['page/work-' + v] = pageShot('/work/')(v);
+// One project page stands for all (kit 07): one with a picture, so its window is judged.
+for (const v of VPS) SHOTS['page/project-' + v] = pageShot('/work/design-system-extractor/')(v);
+for (const v of VPS) SHOTS['page/clients-' + v] = pageShot('/clients/')(v);
+for (const v of VPS) SHOTS['page/resume-' + v] = pageShot('/resume/')(v);
+for (const v of VPS) SHOTS['page/notfound-' + v] = pageShot('/this-page-is-not-here/')(v);
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 
 export { SHOTS };

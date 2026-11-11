@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ROUTES } from '../../../config/site';
+import { OG_IMAGE, ROUTES, SITE_NAME } from '../../../config/site';
 import { projectBySlug, projects, site } from '../../../content/site';
 import { ExternalLink } from '../../../components/ExternalLink';
 import { Picture } from '../../../components/Picture';
+import { Plate } from '../../../components/Plate';
+import { MEDIA } from '../../../content/media.generated';
 import page from '../../../components/Page.module.css';
 import styles from './project.module.css';
 
@@ -18,7 +20,9 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = projectBySlug((await params).slug);
-  return p ? { title: p.name, description: p.why } : {};
+  if (!p) return {};
+  const m = p.media[0];
+  return { title: p.name, description: p.why, ...(m ? { openGraph: { type: 'article', siteName: SITE_NAME, title: p.name, description: p.why, images: [{ url: OG_IMAGE.project(m.id), width: OG_IMAGE.width, height: OG_IMAGE.height, alt: m.alt }] } } : {}) };
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -43,7 +47,9 @@ export default async function ProjectPage({ params }: Props) {
         </header>
         {media ? (
           <figure className={styles.window}>
-            <Picture media={media} sizes="(max-width: 820px) 94vw, 80vw" priority className={styles.photo} />
+            <Plate finish="aged" kind="frame" label={p.name} photo={{ src: MEDIA[media.id].srcs[MEDIA[media.id].srcs.length - 1].src, focus: media.focus ? [media.focus[0], media.focus[1]] : undefined }} className={styles.frame}>
+              <Picture media={media} sizes="(max-width: 820px) 94vw, 80vw" priority className={styles.photo} />
+            </Plate>
           </figure>
         ) : null}
         <div className={styles.grid}>
