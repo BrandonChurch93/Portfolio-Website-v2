@@ -12,10 +12,6 @@ type City = Piece & { openingState?: () => { t: number; end: number }; anchor?: 
 
 const smooth = (k: number) => { const c = Math.min(1, Math.max(0, k)); return c * c * (3 - 2 * c); };
 
-// Decides before first paint whether the opening will play, so a first visit paints the plan, never the finished
-// city then a dark screen. Same rule as PieceView: not seen this session, motion allowed.
-const decide = `try{var s=sessionStorage.getItem('played:${HERO.once}')==='1',r=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!s&&!r)document.documentElement.dataset.opening='play'}catch(e){}`;
-
 // The home hero: the city fills the first screen, builds itself, settles low, and the headline arrives above it.
 // The front fall's landing is where the page's stream starts.
 export function Hero() {
@@ -47,6 +43,8 @@ export function Hero() {
       if (!w) return;
       const s = city.current?.openingState?.();
       const playing = document.documentElement.dataset.opening === 'play';
+      // The opening has played: a later visit to the home page (by a link) starts from the city at rest.
+      if (playing && s && s.t >= s.end) delete document.documentElement.dataset.opening;
       const k = s ? smooth((s.t - (s.end - HERO.wordsIn[0])) / (HERO.wordsIn[0] - HERO.wordsIn[1])) : playing ? 0 : 1;
       w.style.opacity = k.toFixed(3);
       w.style.transform = `translateY(${((1 - k) * 18).toFixed(2)}px)`;
@@ -63,7 +61,6 @@ export function Hero() {
 
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-title" data-ready={ready ? 'yes' : 'no'}>
-      <script dangerouslySetInnerHTML={{ __html: decide }} />
       {/* The stills are in the page's HTML, so the first paint shows the city before any script runs. */}
       <div className={styles.stage}>
         <picture className={`${styles.still} ${styles.stillRest}`}>

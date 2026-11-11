@@ -9,6 +9,7 @@ import { COLORS, OG_IMAGE, SITE_NAME, SITE_URL } from '../config/site';
 import { site } from '../content/site';
 import { Footer } from '../components/Footer';
 import { Nav } from '../components/Nav';
+import { decideOpening } from '../components/opening-script';
 import { Runtime } from '../components/Runtime';
 import { Water } from '../components/Water';
 
@@ -32,9 +33,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    // The hero's inline script marks <html> before React loads (data-opening), so the first paint is the opening's
-    // start; React must not flag that attribute as a mismatch. This covers <html> itself only.
+    // The opening script marks <html> before React loads (data-opening), so the first paint is the opening's start;
+    // React must not flag that attribute as a mismatch. This covers <html> itself only.
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: decideOpening }} />
+      </head>
       <body>
         <Nav />
         <Water />

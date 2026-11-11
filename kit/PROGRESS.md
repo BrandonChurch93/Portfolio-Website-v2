@@ -589,6 +589,8 @@ Newest last. Date and time, what was done, what is next.
 
 - 2026-11-11, Phase 12 done: gauntlet tests (requests, console, copy in components, pieces alone, a stub piece, context budget, widths, the route against real text, contrast against real backgrounds, switches), intent prefetch, pieces that mount without stalling the page, a budget of two piece contexts with the doors counted, the water kept to the middle of narrow margins, the final retake and critic round, a clean install, the Handoff. BUILD COMPLETE.
 
+- 2026-11-11, after BUILD COMPLETE, at Brandon's request: origin added (his GitHub repository) and main pushed. A crawl of every page on the dev server, loaded directly and reached by links at desktop and phone, found the hero's inline script rendered by React on client navigation ("Encountered a script tag") and a hydration warning on <html>; the script now sits in the root layout's head, <html> takes suppressHydrationWarning for that one attribute, and the hero clears the attribute when the opening ends. Left: Next dev preloads the not-found page's styles on every route and warns they were unused (dev only; the production build is clean, gauntlet A6). The shots predate these source edits; a retake will confirm them.
+
 ## Handoff
 
 ### What was built
@@ -621,7 +623,6 @@ The full list with every unfixed critic point and its reason is under "For revie
 
 ### Needed from Brandon
 
-- REPO_URL: none was set, so main is committed on this Mac and not pushed. Set REPO_URL and run node scripts/push.mjs. At the final commit node scripts/push.mjs printed: NOT PUSHED: there is no remote named origin. REPO_URL was NONE or was never added.
 - New project pictures. Export each at least 2400 px wide, 16:10, with the subject in the middle 60 percent: plates crop to a window beside the words on wide screens and above them on phones, project pages show it at about 16:9 inside a brass frame. Add or swap the entry in scripts/media.mjs (PICTURES), run npm run media, and in src/content/site.ts set the picture's focus ([x, y] from 0 to 1, the point that stays in view) and zoom (1 just covers the window) on its media entry.
 - PC Builder and Red Team Arena: facts beyond the kit draft, a picture or video, and a link.
 - Any project video for the photo windows (copied as it is by scripts/media.mjs).
@@ -657,4 +658,4 @@ Both are in src/config/site.ts and both are true:
 
 ### Where main is pushed
 
-Not pushed: REPO_URL is NONE (see Needed from Brandon).
+origin is https://github.com/BrandonChurch93/Portfolio-Website-v2 (given by Brandon after the build), and main is pushed there with node scripts/push.mjs.
