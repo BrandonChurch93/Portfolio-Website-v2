@@ -48,4 +48,11 @@ describe('pixelRatioFor', () => {
     expect(pixelRatioFor('low', 3)).toBe(1);
     expect(pixelRatioFor('high', 1)).toBe(1);
   });
+  it('lets a small canvas reach the device ratio within the same pixel count', () => {
+    expect(pixelRatioFor('high', 2, 1440 * 900)).toBe(2);
+    expect(pixelRatioFor('high', 3, 390 * 844)).toBe(3);
+    expect(pixelRatioFor('mid', 3, 390 * 844)).toBeCloseTo(1.5 * Math.sqrt((1440 * 900) / (390 * 844)), 5);
+    expect(pixelRatioFor('high', 1, 3840 * 2160)).toBe(1);
+    expect(pixelRatioFor('low', 3, 1920 * 1080)).toBe(1);
+  });
 });

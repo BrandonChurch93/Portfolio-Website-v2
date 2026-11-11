@@ -9,11 +9,16 @@
 .stage {
   position: absolute;
   inset: 0;
-  background: radial-gradient(50% 55% at 60% 45%, rgba(255, 157, 60, 0.12), rgba(12, 10, 9, 0) 70%);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
 }
 
 .words {
   position: relative;
+  pointer-events: none;
   width: 100%;
   display: grid;
   gap: var(--space-4);

@@ -1,0 +1,20 @@
+shots/handheld/close-1.jpg | sha: 55cbe36ad023 | PASS | - | D-pad on its gasket, graduated ring crisp, brushed face smooth and lit, no faceting.
+shots/handheld/close-2.jpg | sha: 08904e11d840 | PASS | - | Ivory domes on their boots, A and B crisp, ring and wheel hold at zoom.
+shots/handheld/close-3.jpg | sha: ae44a895d407 | PASS | - | Pixels under glass with grid and depth, HUD legible, the lamp a small crisp reflection.
+shots/handheld/close-4.jpg | sha: 3a38557db1b8 | PASS | - | POWER, LANTERN inlay, SELECT and START crisp and single, screw slot, smooth pill bevels.
+shots/handheld/close-5.jpg | sha: e22c62799b7f | PASS | - | Cartridge with printed label, vents, slider, shoulder ridges; face brushed under the lamp.
+shots/handheld/close-6.jpg | sha: df2ed2030f8e | PASS | - | Side wheel, jack, grilles, well depth; three materials read apart.
+shots/handheld/light.jpg | sha: 076da6a56ca2 | PASS | - | Lamp up left: streaked brushed highlight on the left plate, labels readable, no blowout.
+shots/handheld/light-2.jpg | sha: 433f5937e7e7 | PASS | - | Lamp low right: highlight moves to the lower deck, LANTERN and SELECT brighten.
+shots/handheld/making.jpg | sha: b8edb7a610fb | PASS | - | Edges over the dimmed lit surface with a mono readout; considered.
+shots/handheld/rest-desktop.jpg | sha: ef3f1a169324 | PASS | - | Console on its plinth, game playing, plaque and labels read; lit, not painted.
+shots/handheld/rest-phone.jpg | sha: 4b7d873d5ae5 | PASS | - | Whole stand in frame at full screen density, console lit and crisp.
+shots/handheld/entrance.jpg | sha: 90f9aa0ed8d0 | PASS | - | Empty stand, the console eases in from above, stands, tips back onto its rest, the screen opens and boots.
+shots/tier/room-mid.jpg | sha: 3fafc11410ac | PASS | - | Mid tier: same framing and light, softer occlusion, nothing lost.
+shots/tier/room-low.jpg | sha: 409999a86f13 | PASS | - | Low tier: no occlusion pass, console and words still read cleanly.
+shots/tier/room-static.jpg | sha: f3d917090bd7 | PASS | - | Static tier: one held frame, full look.
+shots/page/games-phone.jpg | sha: 1931449cbe8f | PASS | - | Console fills the opening above the heading at full density; words clear below.
+shots/page/games-tablet.jpg | sha: cdb66ad16f91 | PASS | - | Console above the words, centred, lit; words clear.
+shots/page/games-desktop.jpg | sha: a16291d2784c | PASS | - | Console up and right, heading and lede bottom left in clear space; single crisp labels.
+shots/page/games-wide.jpg | sha: 5da427aff5d5 | PASS | - | Same composition as desktop at 1920, nothing small or lost.
+shots/page/games-4k.jpg | sha: 285fe6292053 | PASS | - | Same composition at 4K with the fluid type; the note sits below the opening.

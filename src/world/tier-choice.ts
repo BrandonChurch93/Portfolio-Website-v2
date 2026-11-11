@@ -1,4 +1,4 @@
-import { TIER_PIXEL_RATIO, TIER_PROBE, type Tier } from '../config/site';
+import { TIER_PIXEL_BUDGET_AREA, TIER_PIXEL_RATIO, TIER_PROBE, type Tier } from '../config/site';
 
 export interface TierInputs {
   reducedMotion: boolean;
@@ -30,8 +30,11 @@ export function chooseTier(i: TierInputs): Tier {
   return tier;
 }
 
-// The pixel ratio a renderer uses at a tier: the device's, capped.
-export function pixelRatioFor(tier: Tier, dpr: number): number {
-  if (tier === 'static') return Math.min(dpr, TIER_PIXEL_RATIO.mid);
-  return Math.max(1, Math.min(dpr, TIER_PIXEL_RATIO[tier]));
+// The pixel ratio a renderer uses at a tier: the device's, capped. Given the canvas area in CSS pixels, a canvas smaller
+// than the budget area may go past the cap, keeping the same pixel count, but never past the device's ratio.
+export function pixelRatioFor(tier: Tier, dpr: number, area?: number): number {
+  const cap = tier === 'static' ? TIER_PIXEL_RATIO.mid : TIER_PIXEL_RATIO[tier];
+  const room = area ? cap * Math.sqrt(TIER_PIXEL_BUDGET_AREA / Math.max(1, area)) : cap;
+  const r = Math.min(dpr, Math.max(cap, room));
+  return tier === 'static' ? r : Math.max(1, r);
 }

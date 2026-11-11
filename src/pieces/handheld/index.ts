@@ -48,6 +48,7 @@ export function createHandheld(): Piece {
   let aim: THREE.Vector3 | null = null;
   let yaw = 0;
   let gameT0 = -GAME_AHEAD;
+  let frameOpt = { shift: 0, scale: 1, x: 0 };
   const hops: number[] = [];
   const pressedAt = new Map<string, { t: number; arm?: string }>();
 
@@ -63,13 +64,15 @@ export function createHandheld(): Piece {
     if (!at && stage) {
       const asp = stage.width / Math.max(1, stage.height);
       const hw = Math.tan(((stage.camera.fov / 2) * Math.PI) / 180) * asp;
-      d = Math.max(d, (asp < 0.8 ? 0.148 : 0.155) / hw);
+      d = Math.max(d, (asp < 0.8 ? 0.148 : 0.155) / hw) * frameOpt.scale;
       if (asp < 0.8) el += 10;
     }
     const a = v.az * D2R, e = el * D2R;
     cam.position.set(c.x + d * Math.cos(e) * Math.sin(a), c.y + d * Math.sin(e), c.z + d * Math.cos(e) * Math.cos(a));
     cam.lookAt(c);
     cam.updateMatrixWorld(true);
+    if (stage && !at && (frameOpt.shift || frameOpt.x)) cam.setViewOffset(stage.width, stage.height, -frameOpt.x * stage.width, -frameOpt.shift * stage.height, stage.width, stage.height);
+    else cam.clearViewOffset();
   };
 
   const ray = new THREE.Raycaster();
@@ -117,6 +120,8 @@ export function createHandheld(): Piece {
     const boot = o < ENTRANCE.end && o >= ENTRANCE.boot ? o - ENTRANCE.boot : o < ENTRANCE.boot ? -1 : null;
     let g: number;
     if (entranceOverride !== null) g = Math.max(0, o - (ENTRANCE.boot + BOOT.title));
+    // Under a frozen clock the piece is at rest, the run this far in, whenever it was mounted.
+    else if (still()) g = t + GAME_AHEAD;
     else g = t - gameT0;
     m.screen.draw(o >= ENTRANCE.boot ? power : 0, boot !== null && boot >= 0 ? boot : null, g, hops);
     m.lcd.uniforms.uPower.value = o >= ENTRANCE.boot ? 1 : 0;
@@ -162,10 +167,14 @@ export function createHandheld(): Piece {
     m.glass.uniforms.uLampK.value = stage.lamp.intensity / LAMP_POWER;
   };
 
-  const frame = () => {
+  // The static tier draws one frame and holds it; only a change of size, tier or view draws again.
+  let held = false;
+  const frame = (force = false) => {
     if (!stage || !visible) return;
+    if (stage.tier === 'static' && held && !force && !clock.isFrozen()) return;
     apply();
     stage.render();
+    held = true;
   };
 
   // Pressing a control with the pointer.
@@ -232,10 +241,11 @@ export function createHandheld(): Piece {
       entranceAt = null;
       pending = opts.entrance && !clock.isFrozen();
       gameT0 = -GAME_AHEAD;
+      frameOpt = { shift: opts.frame?.shift ?? 0, scale: opts.frame?.scale ?? 1, x: opts.frame?.x ?? 0 };
       apply();
       await stage.renderer.compileAsync(s, stage.camera);
       stage.render();
-      ro = new ResizeObserver(() => { stage?.resize(); frame(); });
+      ro = new ResizeObserver(() => { stage?.resize(); frame(true); });
       ro.observe(h);
       io = new IntersectionObserver((es) => { visible = es.some((e) => e.isIntersecting); });
       io.observe(h);
@@ -251,10 +261,10 @@ export function createHandheld(): Piece {
       frame();
     },
     setWaterLight() {},
-    setMaking(on) { if (stage && model) stage.setMaking(on, model.root); frame(); },
-    setTier(tier: Tier) { stage?.setTier(tier); frame(); },
+    setMaking(on) { if (stage && model) stage.setMaking(on, model.root); frame(true); },
+    setTier(tier: Tier) { stage?.setTier(tier); frame(true); },
     freeze(t) { hold = t; frame(); },
-    view(az, el, dist) { view = { az, el, d: dist }; viewForced = true; frame(); },
+    view(az, el, dist) { view = { az, el, d: dist }; viewForced = true; frame(true); },
     dispose() {
       off?.(); ro?.disconnect(); io?.disconnect();
       canvas?.removeEventListener('pointerdown', onDown);

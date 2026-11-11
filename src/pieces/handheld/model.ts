@@ -215,7 +215,7 @@ float engOn(){ return step(0.7, vObjN.z) * step(uFaceZ, vObj.z); }`;
     vec2 u = engUv(vObj.xy);
     float gx = (texture2D(uEng, engUv(vObj.xy + vec2(e, 0.0))).${ch} - texture2D(uEng, engUv(vObj.xy - vec2(e, 0.0))).${ch}) / (2.0 * e);
     float gy = (texture2D(uEng, engUv(vObj.xy + vec2(0.0, e))).${ch} - texture2D(uEng, engUv(vObj.xy - vec2(0.0, e))).${ch}) / (2.0 * e);
-    float D = ${kind === 'cut' ? '0.16' : '0.025'};
+    float D = ${kind === 'cut' ? '0.06' : '0.02'};
     normal = normalize(normal + (gx * vAxX + gy * vAxY) * D);
   }`,
     },

@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 7 · the handheld, phase 7 fit (/games)
+IN PROGRESS · Phase 7 · the camera, phase 1 plan
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -9,8 +9,8 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 ## Where things stand
 
 - Phase: 7 The rooms
-- Step: the handheld, phase 7 fit: the piece in the /games room page
-- Next action: Room component hosts PieceView with framing per screen shape, page/games shots at five viewports, frame time, then the camera
+- Step: the camera, phase 1 research and plan
+- Next action: plan the camera piece in PROGRESS, build src/pieces/camera, shots, critic rounds, then /photography
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -177,6 +177,7 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - The making view draws true edges (sharper than 12 degrees) for pieces built from extrusions with large flat faces, because a triangle wire there shows the triangulator's long slivers, which reads as a debug mode (P07). The city and the workbench keep the triangle wire. Rule 1.
 - Screen glass is drawn by its own small shader (a soft studio reflection by Fresnel, the lamp as a crisp reflection with a capped peak) instead of a standard material, because a standard glass layer turned the nearby lamp into a blown blob over the game. Rule 1 (the lamp never makes text harder to read).
 - The handheld's game is named Lantern, words in site.pieces.handheld: an original small game made for the site, as kit 04 asks when there is no footage.
+- Piece canvases render at a pixel budget per tier (TIER_PIXEL_BUDGET_AREA): the tier ratio for a 1440 by 900 canvas sets a pixel count, and a smaller canvas may use the screen density up to that count. Found when the phone room page rendered soft at 2x on a 3x screen. A shared change: the city and bench phone shots will render sharper and are retaken in Phase 12. Rule 1 (the phone is never the lesser version).
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -259,6 +260,7 @@ Opening (kit 02): dark screen, light draws the plan on the ground (footprint out
 - The body is extruded from one outline (cut top corners, round grips), front and back shells meet in a bevelled V seam with a dark gasket; deck pocket, wells, pill holes and grilles are holes in the front shell with floors behind. Engravings are painted once at 12 px a millimetre into one canvas over the face: red is cut into the brass and filled with dark enamel (normal perturbed from the height gradient in model space), green is brass inlaid flush in the bronze deck.
 - The screen is a 192 by 128 canvas drawn from the clock: an original runner over seeded rooftops with falls of light, drops to gather, a far city with a beaconed spire, craft, a moon and a HUD in a 3 by 5 pixel font. The LCD shader samples it sharp at any size, draws the pixel grid while pixels are big enough to see, a black border and the window wall's shade. The game presses A on each jump and holds right while it runs; a visitor's click presses any control, and A makes the runner hop.
 - Measured faults fixed on the way: lamp plane 10 cm in front of the camera kept the lamp beside the camera wherever the cursor went (now 20 cm in front of the console, intensity scaled to the distance); a key light near the mirror angle blew the face out (key moved overhead like a top softbox); lathe profiles drawn top to bottom turned buttons and screws inside out; brushing finer than a pixel shimmered on the phone (each octave fades by its screen size); crease smoothing fanned bevel normals across the flat face along sliver triangles (flat faces keep their exact normal); the pole of each dome pinched (flat first segment); the lamp on the screen glass blew out (glass shader with a capped, crisp lamp reflection).
+- Fit: src/components/RoomStage.tsx frames the room piece per screen shape (ROOM.frame in config: tall lifts it over the words, wide moves it up and right of them; PieceOptions.frame gained x). The static tier draws one frame and holds it. A frozen clock always shows the rest state (the game this far in), whenever the piece mounted. Critic 040 looked at page/games desktop and phone once (both FAIL: soft on the phone, small legends doubled); fixed: piece canvases get a pixel budget per tier instead of a hard ratio (a phone canvas reaches the screen density at the pixel count a 1440 by 900 canvas has at that tier; desktop high unchanged at 2x), small engravings read by their enamel with a lighter relief (the relief lit both walls of thin strokes), the phone framing larger. My PASS on the new images gates page/games and tier/room. Frame time /games desktop headed M4 Pro: high median 8.3 ms, p95 16.7, worst 33.3; mid median 8.3, p95 9.5.
 - Critic rounds 034 and 035, 036 and 037, 038 and 039. Form, close-2 and close-6 got critic PASSes in round three; every shot had three rounds; my PASS on the latest images gates the rest (builder-handheld-1, -2). Gate check: 13 of 13.
 
 ### The handheld (phase 1, research and plan)

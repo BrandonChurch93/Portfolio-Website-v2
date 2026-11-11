@@ -357,7 +357,7 @@ export const site = {
   games: {
     heading: 'Games',
     sub: 'Small games and game art, made for fun.',
-    note: 'The handheld is playing a small loop made for this site.',
+    note: 'The handheld is playing a small loop made for this site. Press A and the runner hops.',
     pieceAlt: 'A brass handheld game console with a D-pad, buttons, shoulder keys and a lit screen.',
     items: [] as { name: string; line: string }[],
   },

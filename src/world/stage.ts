@@ -196,7 +196,7 @@ export class Stage {
   resize(): void {
     const r = this.host.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
-    const dpr = pixelRatioFor(this.tier, devicePixelRatio || 1) * this.resScale;
+    const dpr = pixelRatioFor(this.tier, devicePixelRatio || 1, w * h) * this.resScale;
     this.width = w;
     this.height = h;
     this.renderer.setPixelRatio(dpr);

@@ -55,6 +55,9 @@ export const BREAKPOINT_WORK_COLUMNS = 1100;
 export type Tier = 'high' | 'mid' | 'low' | 'static';
 export const TIERS: readonly Tier[] = ['high', 'mid', 'low', 'static'];
 export const TIER_PIXEL_RATIO: Record<Exclude<Tier, 'static'>, number> = { high: 2, mid: 1.5, low: 1 };
+// A 3D canvas may go past its tier's ratio, up to the screen's own, while its pixel count stays inside the count the
+// tier's ratio gives a 1440 by 900 canvas: a phone's small canvas gets the screen's full density, a large one does not.
+export const TIER_PIXEL_BUDGET_AREA = 1440 * 900;
 // The GPU timing test draws a fixed load and measures milliseconds per frame. These are the limits per tier.
 export const TIER_PROBE = {
   frames: 24,
@@ -85,6 +88,12 @@ export const LAMP = {
 
 // Where the city rests in the hero (see PieceOptions.frame), the stills shown at first paint, written by
 // scripts/stills.mjs, and how far into the opening the first-visit still is (the opening continues from there).
+// A room page opens with its piece above the words: framing per screen shape (see PieceOptions.frame). Tall screens
+// lift the piece over the words; wide ones also move it right of the words.
+export const ROOM = {
+  frame: { tall: { shift: -0.11, scale: 0.86, x: 0 }, upright: { shift: -0.1, scale: 1.0, x: 0 }, wide: { shift: -0.07, scale: 1.32, x: 0.17 } },
+} as const;
+
 export const HERO = {
   // Tall screens (phone, tablet upright) stack the words over the city; wide ones set them either side of the spire.
   frame: { tall: { shift: 0.15, scale: 1.12 }, upright: { shift: 0.165, scale: 1.12 }, wide: { shift: 0.12, scale: 1.0 } },

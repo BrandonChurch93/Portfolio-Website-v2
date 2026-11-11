@@ -18,7 +18,7 @@ interface Props {
   making?: boolean;
   className?: string;
   onReady?: () => void;
-  frame?: { shift?: number; scale?: number };
+  frame?: { shift?: number; scale?: number; x?: number };
   entranceFrom?: number;
   // Called with the mounted piece (and null when it goes), for a page that times things to it.
   onPiece?: (p: Piece | null) => void;

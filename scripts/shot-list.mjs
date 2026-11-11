@@ -128,6 +128,8 @@ const pageShot = (route) => (v) => ({ route, vp: v, steps: [['freeze', 30], ['la
 for (const v of VPS) SHOTS['page/skills-' + v] = { route: '/skills/', vp: v, steps: [['scrollTo', 'skills-desk'], ['freeze', 30], ['lamp', 0.6, 0.35]] };
 
 // ---- tier: the hero and a room at the lower tiers ----------------------------------------------------
+for (const tr of ['mid', 'low', 'static']) SHOTS['tier/room-' + tr] = { route: '/games/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] };
+for (const v of VPS) SHOTS['page/games-' + v] = pageShot('/games/')(v);
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 
 export { SHOTS };
