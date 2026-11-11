@@ -154,6 +154,19 @@ test.describe('E9 · at most two pieces hold a WebGL context, the doors counting
   }
 });
 
+test.describe('F4 · first paint shows the city', () => {
+  for (const vp of ['desktop', 'phone'] as const) {
+    test(`before any script runs, the hero shows a still of the city at ${vp}`, async ({ browser }) => {
+      const ctx = await browser.newContext({ ...contextFor(vp), javaScriptEnabled: false });
+      const page = await ctx.newPage();
+      await page.goto(`${base()}/`, { waitUntil: 'load' });
+      const still = await page.evaluate(() => [...document.querySelectorAll('#hero picture')].map((p) => ({ shown: Number(getComputedStyle(p).opacity), loaded: (p.querySelector('img') as HTMLImageElement).naturalWidth })).filter((x) => x.shown > 0.99 && x.loaded > 0).length);
+      await ctx.close();
+      expect(still).toBe(1);
+    });
+  }
+});
+
 test.describe('F2 · no sideways scroll from 320 to 3840 wide', () => {
   const widths = [320, 360, 390, 430, 600, 768, 834, 1024, 1280, 1440, 1680, 1920, 2560, 3200, 3840];
   for (const route of PAGES) {

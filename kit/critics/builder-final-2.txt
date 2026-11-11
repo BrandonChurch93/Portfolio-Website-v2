@@ -1,0 +1,6 @@
+shots/ref/second-pass-desktop.jpg | sha: f64878f9005c | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/ref/second-pass-phone.jpg | sha: f21906302d61 | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/ref/third-pass-desktop.jpg | sha: 98d168ad6c0b | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/ref/third-pass-phone.jpg | sha: 8dbfd3f51cfc | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/city/making.jpg | sha: 093552faab2f | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/rocket/making.jpg | sha: 6369413336a5 | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.

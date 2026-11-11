@@ -1,0 +1,159 @@
+shots/ref/second-pass-desktop.jpg | sha: 699fffe2bec1 | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/ref/second-pass-phone.jpg | sha: 70517ff43760 | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/ref/third-pass-desktop.jpg | sha: fbebd4dbb9da | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/ref/third-pass-phone.jpg | sha: 922445c850bd | PASS | - | Reference page shot from kit/reference, retaken; matches the reference.
+shots/metal/aged-lamp-1.jpg | sha: d38661463399 | PASS | - | Aged brass under the lamp: brushed grain that stretches the highlight, patina in the recesses, crisp engraved words; the highlight moves with the lamp.
+shots/metal/aged-lamp-2.jpg | sha: 53112f4280e0 | PASS | - | Aged brass under the lamp: brushed grain that stretches the highlight, patina in the recesses, crisp engraved words; the highlight moves with the lamp.
+shots/metal/aged-lamp-3.jpg | sha: c77e9e48c354 | PASS | - | Aged brass under the lamp: brushed grain that stretches the highlight, patina in the recesses, crisp engraved words; the highlight moves with the lamp.
+shots/metal/polished-lamp-1.jpg | sha: 995af738a038 | PASS | - | Polished brass under the lamp: a round highlight that moves with the lamp, crisp engraved words, screws and a bevel.
+shots/metal/polished-lamp-2.jpg | sha: da78345918e6 | PASS | - | Polished brass under the lamp: a round highlight that moves with the lamp, crisp engraved words, screws and a bevel.
+shots/metal/polished-lamp-3.jpg | sha: e207de65cfaf | PASS | - | Polished brass under the lamp: a round highlight that moves with the lamp, crisp engraved words, screws and a bevel.
+shots/metal/bronze-lamp-1.jpg | sha: 0e134c3b5580 | PASS | - | Bronze under the lamp: a warm brushed highlight moving with the lamp, engraved words light on dark.
+shots/metal/bronze-lamp-2.jpg | sha: e85c8311f3f0 | PASS | - | Bronze under the lamp: a warm brushed highlight moving with the lamp, engraved words light on dark.
+shots/metal/bronze-lamp-3.jpg | sha: dc26b781ed50 | PASS | - | Bronze under the lamp: a warm brushed highlight moving with the lamp, engraved words light on dark.
+shots/metal/panel-lamp-1.jpg | sha: 45bc25bc39e0 | PASS | - | The enamel panel in a brass frame under the lamp: the frame catches the light, the words stay crisp.
+shots/metal/panel-lamp-2.jpg | sha: dce997b03fac | PASS | - | The enamel panel in a brass frame under the lamp: the frame catches the light, the words stay crisp.
+shots/metal/panel-lamp-3.jpg | sha: 8d05d52f753c | PASS | - | The enamel panel in a brass frame under the lamp: the frame catches the light, the words stay crisp.
+shots/metal/window-lamp-1.jpg | sha: d3781d8c0831 | PASS | - | The photo window under glass in its recess: the shadow and glare move with the lamp.
+shots/metal/window-lamp-2.jpg | sha: af34d5bba178 | PASS | - | The photo window under glass in its recess: the shadow and glare move with the lamp.
+shots/metal/window-lamp-3.jpg | sha: 71219bd1a0a3 | PASS | - | The photo window under glass in its recess: the shadow and glare move with the lamp.
+shots/metal/window-video.jpg | sha: 3ff1ef5e130c | PASS | - | The window with video under glass: recess, shadow and glare as with a picture.
+shots/metal/placard.jpg | sha: 99728993a031 | PASS | - | Placards in their finishes, words crisp and legible.
+shots/metal/phone.jpg | sha: 6bef48ed6b06 | PASS | - | A plate on a phone: crisp words and lit metal at that size.
+shots/metal/lamp-strip.jpg | sha: 24fc2e55abef | PASS | - | The lamp crossing the plate: the highlight travels with it frame by frame.
+shots/city/form.jpg | sha: c796065fc79c | PASS | - | The clay form reads from across the room: silhouette and proportions clear, nothing a plain primitive.
+shots/city/close-1.jpg | sha: 6deabaca9094 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/city/close-2.jpg | sha: 89495c2cadf2 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/city/close-3.jpg | sha: 843c172ce43b | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/city/close-4.jpg | sha: 601a78d1585b | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/city/close-5.jpg | sha: e6d7e2a65e0b | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/city/close-6.jpg | sha: 6b40cc962e5b | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/city/materials.jpg | sha: 351e6e7550f4 | PASS | - | Each material reads differently under the same light: glass, brass, ivory facades, lawns and paving.
+shots/city/light.jpg | sha: 70a0483508ca | PASS | - | The lamp lights the piece from one side: highlights, shadow and reflections agree with it.
+shots/city/light-2.jpg | sha: 93b5eed233fa | PASS | - | The lamp moved: highlights and shadow moved with it, the rest of the lighting unchanged.
+shots/city/making.jpg | sha: aedc58538176 | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/city/rest-phone.jpg | sha: 1a2f1d0101af | PASS | - | At rest on a phone: the piece fills the tall frame with its detail intact and the switch clear of it.
+shots/city/rest-tablet.jpg | sha: 3f5f1f95685c | PASS | - | At rest on a tablet: the city framed whole with its falls and pools.
+shots/city/rest-desktop.jpg | sha: 81cd86e550b6 | PASS | - | At rest in its lab frame: the whole piece, lit by its key, rim and the lamp, with motion of its own; consistent with the passed versions.
+shots/city/rest-wide.jpg | sha: 2cd9461aecfb | PASS | - | At rest on a wide screen: the city framed whole with its falls and pools.
+shots/city/rest-4k.jpg | sha: d5b2bb0f5cf2 | PASS | - | At rest at 4K: the city framed whole, its detail holding at that size.
+shots/city/opening-desktop.jpg | sha: a817a96414ad | PASS | - | The opening across the whole viewport: a spark draws the plan in light, the disc forms and lifts, the city rises, the falls fill; it builds and settles with weight.
+shots/city/opening-phone.jpg | sha: c9466eda88de | PASS | - | The opening on a phone, using the whole tall viewport: plan in light, the disc, the city rising, the falls and the run down the page.
+shots/city/settle.jpg | sha: 0bee44a81ed2 | PASS | - | The settle: the camera comes down low, the falls start at the rim and land in pools, the city at rest with the ending's feel.
+shots/bench/form.jpg | sha: 5f4194fde2f8 | PASS | - | The clay form reads from across the room: silhouette and proportions clear, nothing a plain primitive.
+shots/bench/close-1.jpg | sha: 22f62eca510f | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/bench/close-2.jpg | sha: 470565ddb186 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/bench/close-3.jpg | sha: 810699364893 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/bench/close-4.jpg | sha: 851b1ff80d8e | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/bench/close-5.jpg | sha: 282528ac873f | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/bench/close-6.jpg | sha: d8e2f5c33141 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/bench/light.jpg | sha: ca5f1ed545f0 | PASS | - | The lamp lights the piece from one side: highlights, shadow and reflections agree with it.
+shots/bench/light-2.jpg | sha: 47d4bd6470c0 | PASS | - | The lamp moved: highlights and shadow moved with it, the rest of the lighting unchanged.
+shots/bench/making.jpg | sha: 757dc8f3cc92 | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/bench/rest-desktop.jpg | sha: 66fa47e0e022 | PASS | - | At rest in its lab frame: the whole piece, lit by its key, rim and the lamp, with motion of its own; consistent with the passed versions.
+shots/bench/rest-phone.jpg | sha: 2328b5122154 | PASS | - | At rest on a phone: the piece fills the tall frame with its detail intact and the switch clear of it.
+shots/bench/entrance.jpg | sha: f25fa625d7af | PASS | - | The entrance plays from dark to rest and settles, nothing popping.
+shots/bench/water.jpg | sha: b40a7c6a1e77 | PASS | - | The page water reaches the desk, runs its edge and pours off at the front leg.
+shots/handheld/form.jpg | sha: 5f6061a430ea | PASS | - | The clay form reads from across the room: silhouette and proportions clear, nothing a plain primitive.
+shots/handheld/close-1.jpg | sha: 9d446a4968b6 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/handheld/close-2.jpg | sha: cee598a58776 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/handheld/close-3.jpg | sha: a55c70b522b6 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/handheld/close-4.jpg | sha: 61a7a8dceb89 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/handheld/close-5.jpg | sha: 65a8de5731b3 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/handheld/close-6.jpg | sha: 5700a07ed33f | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/handheld/light.jpg | sha: c1c0d847c152 | PASS | - | The lamp lights the piece from one side: highlights, shadow and reflections agree with it.
+shots/handheld/light-2.jpg | sha: 354a1ee98a44 | PASS | - | The lamp moved: highlights and shadow moved with it, the rest of the lighting unchanged.
+shots/handheld/making.jpg | sha: 2c9f783c68a3 | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/handheld/rest-desktop.jpg | sha: b5ca2437cf07 | PASS | - | At rest in its lab frame: the whole piece, lit by its key, rim and the lamp, with motion of its own; consistent with the passed versions.
+shots/handheld/rest-phone.jpg | sha: db3f0746e01b | PASS | - | At rest on a phone: the piece fills the tall frame with its detail intact and the switch clear of it.
+shots/handheld/entrance.jpg | sha: 63d69618f091 | PASS | - | The entrance plays from dark to rest and settles, nothing popping.
+shots/camera/form.jpg | sha: 8f250801b214 | PASS | - | The clay form reads from across the room: silhouette and proportions clear, nothing a plain primitive.
+shots/camera/close-1.jpg | sha: 3b756442c14b | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/camera/close-2.jpg | sha: c8f35568aa7e | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/camera/close-3.jpg | sha: 7926d883ff2c | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/camera/close-4.jpg | sha: c5d5b2a2acc0 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/camera/close-5.jpg | sha: 88e2ff9d9ba1 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/camera/close-6.jpg | sha: cfa21e64753b | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/camera/light.jpg | sha: 40063cbacb32 | PASS | - | The lamp lights the piece from one side: highlights, shadow and reflections agree with it.
+shots/camera/light-2.jpg | sha: eb2dcef917c8 | PASS | - | The lamp moved: highlights and shadow moved with it, the rest of the lighting unchanged.
+shots/camera/making.jpg | sha: b00d02982ea8 | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/camera/rest-desktop.jpg | sha: 4940de0e32c4 | PASS | - | At rest in its lab frame: the whole piece, lit by its key, rim and the lamp, with motion of its own; consistent with the passed versions.
+shots/camera/rest-phone.jpg | sha: 75a524dd371a | PASS | - | At rest on a phone: the piece fills the tall frame with its detail intact and the switch clear of it.
+shots/camera/entrance.jpg | sha: ca18e7ee69d0 | PASS | - | The entrance plays from dark to rest and settles, nothing popping.
+shots/sculpture/form.jpg | sha: a4bbf3e4a6f5 | PASS | - | The clay form reads from across the room: silhouette and proportions clear, nothing a plain primitive.
+shots/sculpture/close-1.jpg | sha: 41c1fed52c8e | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/sculpture/close-2.jpg | sha: 08ea3a210c44 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/sculpture/close-3.jpg | sha: 0a3547ab5fb7 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/sculpture/close-4.jpg | sha: 4af830384daf | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/sculpture/close-5.jpg | sha: 63715a18323f | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/sculpture/close-6.jpg | sha: 1205e47f8400 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/sculpture/light.jpg | sha: 3f6d2f868d6d | PASS | - | The lamp lights the piece from one side: highlights, shadow and reflections agree with it.
+shots/sculpture/light-2.jpg | sha: cde3b3f9882b | PASS | - | The lamp moved: highlights and shadow moved with it, the rest of the lighting unchanged.
+shots/sculpture/making.jpg | sha: d6afc38e306d | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/sculpture/rest-desktop.jpg | sha: 261b4618953a | PASS | - | At rest in its lab frame: the whole piece, lit by its key, rim and the lamp, with motion of its own; consistent with the passed versions.
+shots/sculpture/rest-phone.jpg | sha: 8004beb46483 | PASS | - | At rest on a phone: the piece fills the tall frame with its detail intact and the switch clear of it.
+shots/sculpture/entrance.jpg | sha: d65694f754e2 | PASS | - | The entrance plays from dark to rest and settles, nothing popping.
+shots/rocket/form.jpg | sha: aa47e56ae07d | PASS | - | The clay form reads from across the room: silhouette and proportions clear, nothing a plain primitive.
+shots/rocket/close-1.jpg | sha: 361ec7199e4d | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/rocket/close-2.jpg | sha: 05ac9bc9396c | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/rocket/close-3.jpg | sha: 1668c7b21938 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/rocket/close-4.jpg | sha: 2215bb6df0fd | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/rocket/close-5.jpg | sha: 792a320e3278 | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/rocket/close-6.jpg | sha: 050efa0300fa | PASS | - | A close view with detail still to find at three times zoom: fasteners, seams, bevels, engraving and layered materials, lit by the key and the lamp.
+shots/rocket/light.jpg | sha: 5faad39d22e1 | PASS | - | The lamp lights the piece from one side: highlights, shadow and reflections agree with it.
+shots/rocket/light-2.jpg | sha: 71ad8eb8d104 | PASS | - | The lamp moved: highlights and shadow moved with it, the rest of the lighting unchanged.
+shots/rocket/making.jpg | sha: 603dd9351242 | PASS | - | The making view: the real scene as clean wire over the dimmed lit surface, with the triangles, draw calls and frame time readout.
+shots/rocket/rest-desktop.jpg | sha: 5569c5a0388a | PASS | - | At rest in its lab frame: the whole piece, lit by its key, rim and the lamp, with motion of its own; consistent with the passed versions.
+shots/rocket/rest-phone.jpg | sha: e9a1bf9f1b82 | PASS | - | At rest on a phone: the piece fills the tall frame with its detail intact and the switch clear of it.
+shots/rocket/entrance.jpg | sha: 9930d60362eb | PASS | - | The entrance plays from dark to rest and settles, nothing popping.
+shots/rocket/assembly.jpg | sha: 0a21d0fe7250 | PASS | - | Assembly on scroll: the gantry rises, the stages are lowered on the sling and seated, the crane parks.
+shots/rocket/launch.jpg | sha: 3c433b29ee7d | PASS | - | The launch: ignition, smoke spreading low and lit from below, lift-off with a plume, the pad and pool settling after.
+shots/home/hero-desktop.jpg | sha: 51ac8fc570da | PASS | - | The city settled low with its falls and pools, headline and words above it facing each other across the spire; the page stream starts at the front pool.
+shots/home/rooms-phone.jpg | sha: 175b0332f3c9 | PASS | - | The doors with their live small views, the stream in the margin beside them.
+shots/home/rooms-tablet.jpg | sha: 71e38e342de7 | PASS | - | The doors with their live small views, the stream in the margin beside them.
+shots/home/rooms-desktop.jpg | sha: 00fe7080284d | PASS | - | The doors with their live small views, the stream in the margin beside them.
+shots/home/rooms-wide.jpg | sha: 450011ecaf5d | PASS | - | The doors with their live small views, the stream in the margin beside them.
+shots/home/rooms-4k.jpg | sha: 2029ba2b303f | PASS | - | The doors with their live small views, the stream in the margin beside them.
+shots/home/about-phone.jpg | sha: 0031d872908d | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/home/about-tablet.jpg | sha: d6a8c8f35122 | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/home/about-desktop.jpg | sha: 34497c87fed4 | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/home/about-wide.jpg | sha: 83adac98180c | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/home/about-4k.jpg | sha: f78bd0d69c11 | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/home/contact-phone.jpg | sha: e118344f5488 | PASS | - | The contact stage: the stream comes down the margin and turns into the flume, which pours into the pool under the rocket; the links in the sky, the footer below.
+shots/home/contact-tablet.jpg | sha: c2d956237878 | PASS | - | The contact stage: the stream comes down the margin and turns into the flume, which pours into the pool under the rocket; the links in the sky, the footer below.
+shots/home/contact-desktop.jpg | sha: 917b8fb99a60 | PASS | - | The contact stage: the stream comes down the margin and turns into the flume, which pours into the pool under the rocket; the links in the sky, the footer below.
+shots/home/contact-wide.jpg | sha: a0251d115515 | PASS | - | The contact stage: the stream comes down the margin and turns into the flume, which pours into the pool under the rocket; the links in the sky, the footer below.
+shots/home/contact-4k.jpg | sha: 1736e74e9086 | PASS | - | The contact stage: the stream comes down the margin and turns into the flume, which pours into the pool under the rocket; the links in the sky, the footer below.
+shots/home/work-phone.jpg | sha: 22c68af85af1 | PASS | - | The plates with the stream in the gutters and margins, crossing between them in the gaps; no text crossed.
+shots/home/skills-phone.jpg | sha: c9b799591912 | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/home/work-tablet.jpg | sha: 3cf2caf2c485 | PASS | - | The plates with the stream in the gutters and margins, crossing between them in the gaps; no text crossed.
+shots/home/clients-tablet.jpg | sha: d32f544f3488 | PASS | - | The bar and the placards, the stream landing on the bar and framing them; no text crossed.
+shots/home/skills-tablet.jpg | sha: a8391137ce36 | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/home/work-desktop.jpg | sha: 38dbe15da295 | PASS | - | The plates with the stream in the gutters and margins, crossing between them in the gaps; no text crossed.
+shots/home/clients-desktop.jpg | sha: a4cf2ce960c8 | PASS | - | The bar and the placards, the stream landing on the bar and framing them; no text crossed.
+shots/home/skills-wide.jpg | sha: 4f21bc3f1ec3 | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/home/skills-4k.jpg | sha: aaecd4ef33f5 | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/home/scroll-desktop.jpg | sha: 13d34567cc08 | PASS | - | The whole home route in order: from the city past the plates, the bar, the desk, the ledger, the doors and the portrait into the flume; the stream keeps to the gutters and margins and crosses no text.
+shots/home/scroll-phone.jpg | sha: 98fd75a9821d | PASS | - | The whole home route in order: from the city past the plates, the bar, the desk, the ledger, the doors and the portrait into the flume; the stream keeps to the gutters and margins and crosses no text.
+shots/page/skills-tablet.jpg | sha: f14fb492ac4b | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/page/skills-desktop.jpg | sha: 5c838f6f9b80 | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/page/skills-wide.jpg | sha: e0e0c533b594 | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/page/skills-4k.jpg | sha: 68fcea538bca | PASS | - | The desk with its water, and the stream going down beside the ledger in the margin; no line crossed.
+shots/tier/room-static.jpg | sha: 41c0b5c9647c | PASS | - | The static tier on a room page: one complete frame of the piece, the water drawn still, the words clear.
+shots/page/about-phone.jpg | sha: 6249110f886d | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/page/about-tablet.jpg | sha: 568f21246946 | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/page/about-desktop.jpg | sha: e4b693de6e5e | PASS | - | The portrait and the letter: the stream comes in with a soft curve, passes behind the frame where there is room, and keeps to the middle of the margin to the foot; no text crossed.
+shots/page/work-phone.jpg | sha: d028d4aac167 | PASS | - | The plates with the stream in the gutters and margins, crossing between them in the gaps; no text crossed.
+shots/page/work-tablet.jpg | sha: 32272a609b2e | PASS | - | The plates with the stream in the gutters and margins, crossing between them in the gaps; no text crossed.
+shots/page/work-desktop.jpg | sha: 3c0882c37555 | PASS | - | The plates with the stream in the gutters and margins, crossing between them in the gaps; no text crossed.
+shots/page/project-phone.jpg | sha: ef2cc6e96fa3 | PASS | - | The framed picture and the words, the stream in the middle of the margin.
+shots/page/project-tablet.jpg | sha: 4ac0a216428a | PASS | - | The framed picture and the words, the stream in the middle of the margin.
+shots/page/project-desktop.jpg | sha: fb5338f7d3d3 | PASS | - | The framed picture and the words, the stream in the middle of the margin.
+shots/page/clients-phone.jpg | sha: 25697a748d01 | PASS | - | The bar and the placards, the stream landing on the bar and framing them; no text crossed.
+shots/page/clients-tablet.jpg | sha: d10ea43b3fa9 | PASS | - | The bar and the placards, the stream landing on the bar and framing them; no text crossed.
+shots/page/clients-desktop.jpg | sha: 05a05fe7473b | PASS | - | The bar and the placards, the stream landing on the bar and framing them; no text crossed.
+shots/page/resume-phone.jpg | sha: 2b1bdc0e47c7 | PASS | - | The résumé as text with the stream in the middle of the margin beside it.
+shots/page/resume-tablet.jpg | sha: 07bb0eb32a61 | PASS | - | The résumé as text with the stream in the middle of the margin beside it.
+shots/page/resume-desktop.jpg | sha: ec663b2b6afa | PASS | - | The résumé as text with the stream in the middle of the margin beside it.
+shots/page/resume-wide.jpg | sha: e478c95ffea4 | PASS | - | The résumé as text with the stream in the middle of the margin beside it.
+shots/page/notfound-tablet.jpg | sha: 55ded32f8fd8 | PASS | - | The words, the button, and the stream coming in from the right to pool under them as a lit surface; nothing crossed.

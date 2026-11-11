@@ -64,7 +64,8 @@ export function Hero() {
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-title" data-ready={ready ? 'yes' : 'no'}>
       <script dangerouslySetInnerHTML={{ __html: decide }} />
-      {frame && <PieceView name="city" entrance once={HERO.once} frame={frame} entranceFrom={HERO.planStillAt} onPiece={onPiece} className={styles.stage}>
+      {/* The stills are in the page's HTML, so the first paint shows the city before any script runs. */}
+      <div className={styles.stage}>
         <picture className={`${styles.still} ${styles.stillRest}`}>
           <source media="(max-aspect-ratio: 1/1)" srcSet={HERO.stills.city.tall} />
           <img src={HERO.stills.city.wide} alt="" width={1440} height={900} />
@@ -73,7 +74,8 @@ export function Hero() {
           <source media="(max-aspect-ratio: 1/1)" srcSet={HERO.stills.plan.tall} />
           <img src={HERO.stills.plan.wide} alt="" width={1440} height={900} />
         </picture>
-      </PieceView>}
+        {frame && <PieceView name="city" entrance once={HERO.once} frame={frame} entranceFrom={HERO.planStillAt} onPiece={onPiece} className={styles.stage} />}
+      </div>
       <div className={styles.city} role="img" aria-label={site.hero.cityAlt} />
       <div ref={start} className={styles.source} data-water-start="" />
       <div ref={words} className={styles.words}>

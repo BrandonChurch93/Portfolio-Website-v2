@@ -282,9 +282,10 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
   // then across in the clear space below it.
   // How far a run beside text or in a gutter may meander: none on a phone, never nearer the text or the page edge.
   const meander = (x: number) => (o.narrow ? 0 : Math.max(0, Math.min(WATER.wander.amp, WATER.clear - 18, x - 18, o.width - 18 - x)));
+  // Beside a block: its clearance from the text, but never nearer the page edge than the middle of the margin.
   const besideX = (r: Rect, left: boolean) => (left
-    ? Math.max(4, r.left - (o.narrow ? Math.max(6, r.left / 2) : WATER.clear))
-    : Math.min(o.width - 4, r.right + (o.narrow ? Math.max(6, (o.width - r.right) / 2) : WATER.clear)));
+    ? Math.max(r.left / 2, r.left - WATER.clear)
+    : Math.min((o.width + r.right) / 2, r.right + WATER.clear));
   const travel = (p: Pen, x: number, y: number) => {
     const blocks = avoid.filter((r) => r.bottom > p.y + 8 && r.top < y - 8).sort((m, n) => m.top - n.top);
     for (const r of blocks) {
@@ -294,7 +295,10 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       if (!crosses) continue;
       const side = besideX(r, x < (r.left + r.right) / 2);
       if (Math.abs(p.x - side) > 1) p.curveTo(side, Math.max(p.y + 24, r.top - 28), 'run');
-      if (p.y < r.bottom + 18) p.wander(side, Math.min(y - 4, r.bottom + 18), meander(side));
+      // A target further out on this side is reached straight away, moving away from the block: no need to go down
+      // beside it first and cross at the last moment.
+      const outside = side < r.left ? x <= side : x >= side;
+      if (!outside && p.y < r.bottom + 18) p.wander(side, Math.min(y - 4, r.bottom + 18), meander(side));
     }
     p.curveTo(x, y, 'run');
   };

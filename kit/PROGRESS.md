@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 12 · start
+BUILD COMPLETE
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 12 Final pass
-- Step: 1, full retake after the speed and budget work (src changed); gauntlet A5 A6 B1 B3 B4 B5 D5 E1 E2 E9 F2 G3 I1 I2 H5 done with tests; H1 to H4 to re-measure at the end
-- Next action: check incoming/ and REPO_URL; stills; full retake of every shot; judge; check-shots clean; QA gauntlet with evidence; Handoff; BUILD COMPLETE
+- Phase: done (BUILD COMPLETE)
+- Step: the Handoff is below
+- Next action: the review stage with Brandon
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -30,7 +30,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 9 | The other pages | done | 2026-11-11, commit "Phase 9 the other pages" |
 | 10 | The water through the whole site | done | 2026-11-11, commit "Phase 10 the water through the whole site" |
 | 11 | Tiers, speed, access, hardening | done | 2026-11-11, commit "Phase 11 tiers, speed, access, hardening" |
-| 12 | Final pass | | |
+| 12 | Final pass | done | 2026-11-11, final |
 
 ## Gate evidence
 
@@ -48,6 +48,13 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 12
+- npm run check:shots with no names: required 217, passed 217, problems 0; npm run check:copy: 0 problems (149 files, 30 pages); both after the last build (sources 536eaa2d7def) and the last retake.
+- Every retake opened (sheets by group at every viewport, full size where anything changed); critic round 068 on home/hero-desktop and every piece's rest-desktop (plus the three page shots that had changed), its real faults fixed and the rest under For review; my PASS on every changed image (builder-final-1).
+- Every gauntlet item A to I has evidence in QA results; J checked at the final commit.
+- Checked at Phase 12 start and again at the end: no incoming/, REPO_URL NONE.
+- Playwright on the final build: 828 passed, 1 skipped (the 3D art switch test skips while out-flags/ holds the lab build; it passed against its own build).
 
 ### Gate 11
 - Shots pass: node scripts/check-shots.mjs tier passed 6 of 6 (hero and room at mid, low and static: lower tiers give up resolution, occlusion and some particles; the static tier holds one complete frame with the water drawn still). My PASS (builder-tier-1).
@@ -234,6 +241,8 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - The content file carries a source note on every section and every project (B3). Rule 3.
 - Scrolling the home page showed hitches of 300 to 420 ms where a piece mounted (H4). Measured with a CPU profile, long task timing and a log of every program linked: (1) each model build ran as one task (city 700 ms, rocket 300, workbench 280); (2) compileAsync compiled materials for the screen while the post chain draws into its own target, so every program linked again on the first frame; (3) parts hidden at mount (smoke, plume, sling) linked, and the Metal driver built their pipelines, on the frame they first appeared; (4) the metal renderer read each plate's rect after writing the last one's lamp variables, and the lamp, PieceView and the water read layout (rects, scrollY, innerHeight, scrollHeight, matchMedia) after the frame's writes, forcing a style and layout pass each time. Fixes: model builders are async and yield between sections and parts (src/world/build.ts pause); Stage.warm() compiles in the composer's target with hidden parts shown (lights untouched, so the light count matches) and draws one unseen frame so the driver builds every pipeline; the door views compile before their first draw; rounded boxes are made once and copied, and the builder no longer copies every part twice; plates read every rect before any write; the clock reads the scroll and window size once at the start of a frame (clock.view) for per frame code; the piece host rect and page height are cached and refreshed on scroll, resize and size changes. Worst mount task now 90 to 117 ms (city at load), worst scroll frame 84 to 92 ms. Rule 2 (alive, no jank) and kit 07 U04.
 - The door views' shared renderer used to live from page load, so with the desk and the rocket mounted the home page held three piece contexts (kit 06 allows two, the doors counting as one). A small budget (src/world/budget.ts, PIECE_MOUNT.max 2) now gives each piece and the doors a place; a claim over the limit makes the holder farthest from the screen give way, and the doors give way first among equals because their canvases keep the last frame as a still. The E9 test counts the doors. Kit 06.
+- The hero's stills (the plan for a first visit, the city at rest after) are now in the page's HTML, not added by the script, so the first paint shows the city before any script runs (gauntlet F4, kit 07 U03). The live piece mounts over them in the same box. Rule 1.
+- The water keeps to the middle of a page margin when the margin is narrower than its clearance from text (tablets and phones), never against the screen edge; text blocks are measured inside their padding, so a full-width footer's padding counts as margin. A long move to the side beside a block now goes straight there when the target lies further out on that side, instead of running down beside the block and crossing at the last moment. Rule 2 and W04/W06.
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -445,17 +454,17 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
-- The page water on the room pages and through the doors: a faint line down the right gutter of each room page, and on the home page the stream ends against the top of the 3D art door and crosses the About words on the tablet. The route through these sections is Phase 10 work (the water through the whole site).
+- (Resolved in Phase 10: the route goes round the doors and every block of text; D5 tests it on every page) The page water on the room pages and through the doors: a faint line down the right gutter of each room page, and on the home page the stream ends against the top of the 3D art door and crosses the About words on the tablet. The route through these sections is Phase 10 work (the water through the whole site).
 - Sculpture critic points not acted on after three rounds (048 to 053): "the split is a hard planar slice" is the piece's idea (kit 04: half surface, half wire, the split moving with the lamp); "the wire runs through the hub collar" is the brass cup holding the ribbon; highlight streaks along the flutes are the studio's soft boxes reflected in fluted polished bronze; on wide screens the room sets the piece right of the words, which leaves dark space top left.
 - Camera critic points not acted on after three rounds (041 to 046): "speckled halo on clay edges" in the form shot is the occlusion pass at silhouettes against the bright clay floor (the same pass every piece shares; not seen at rest); the lab label and switch overlap some close shots (lab chrome); entrance strips cannot show rest motion, because the clock is frozen for them (the drift, the following lens and the meter run live).
 - Handheld critic points not acted on after three rounds (034 to 039): the lab's own label and switch overlap the edges of some close shots (lab chrome, not the piece); the phone view in the tall lab frame leaves dark space above and below the stand (the room page sets words in that space); at rest the smallest engravings (SELECT, START, A, B, the cartridge label) are small but legible at desktop size and small on the phone; in the making view the drilled grilles make a dense knot of edge loops; a glancing close of the face reads smooth, because brushing fades into the sheen at a glancing angle.
 - Workbench critic points not acted on after three rounds (027 to 032): the arriving fall is the page's stream continued and keeps its width (W01 at desk scale); the landing has a crown, rings and thrown drops but at shot size the critic read it as a spark; the run along the edge is a sheet of light-water, which the critic read as a band; the lamp shade has a seam, vents, switch and brushed grain but reads plain at close range; the mouse remains a smooth shell (a mouse is a smooth shell); legs show regular grain because a leg is cut along the board.
-- The page water itself was judged in Phase 3; critic 033 called its glints "blocky" at some sizes. Taken up in Phase 10 with the whole route.
-- Home work and clients (critic 026, not acted on): "the falls are even glowing tubes" at section scale is the water's shared look from Phase 3 (three critic rounds there); "the head ends in a bare point with no particles" is the water head at rest in a frozen frame (head sparks need motion). The join where a pour becomes a fall now has no width tick, but a faint seam in the flow pattern remains at 3x zoom.
-- City rest-phone (critic 025): the run toward the viewer reads as a straight lit line at phone size and passes behind the "How this is made" switch at the bottom. The run's look and its hand over to the page stream belong to Phase 10 (the water through the whole site) and are taken up there.
+- (Resolved in Phase 10: the body was rebuilt) The page water itself was judged in Phase 3; critic 033 called its glints "blocky" at some sizes. Taken up in Phase 10 with the whole route.
+- (Superseded in Phase 10: the falls taper and break up, the head carries sparks) Home work and clients (critic 026, not acted on): "the falls are even glowing tubes" at section scale is the water's shared look from Phase 3 (three critic rounds there); "the head ends in a bare point with no particles" is the water head at rest in a frozen frame (head sparks need motion). The join where a pour becomes a fall now has no width tick, but a faint seam in the flow pattern remains at 3x zoom.
+- (Resolved in Phase 10: a compact switch on phones, the run handed to the page stream) City rest-phone (critic 025): the run toward the viewer reads as a straight lit line at phone size and passes behind the "How this is made" switch at the bottom. The run's look and its hand over to the page stream belong to Phase 10 (the water through the whole site) and are taken up there.
 - City rest-4k (critic 025, a PASS): the city fills about a third of the width at 16:9; the lab view keeps the desktop framing. The home hero is framed per screen shape.
 - City opening: the critic noted the drawing ring at 1.35 s is redder than the amber; it is the hot leading edge of the plan, deliberately hotter.
-- The page water and the opening: on a first visit the page's stream already runs from the hero's bottom edge before the city's falls have filled. Timing the page stream to the opening is Phase 10 work.
+- (Resolved in Phase 10: the stream waits for the city's water (HERO.waterFrom)) The page water and the opening: on a first visit the page's stream already runs from the hero's bottom edge before the city's falls have filled. Timing the page stream to the opening is Phase 10 work.
 - City close critic 015 points not acted on: "trees read as noise blobs" and "people are placeholder shapes": at 20 mm and 8 mm on a 0.9 m model they are stylized model making, lobed and leafy at three times zoom; "little contact occlusion" belongs to the Light phase and is taken up there; "the slab is an editor grid": kit 01 allows a grid that belongs to the slab, now dimmed to a faint line at rest.
 - City form critic 012 points not acted on: "the spire, gate, stepped tower and drums merge into one mass left of center" and "the gate has plain faces" are true of the three-quarter clay angle only; from the rest view the towers sit either side of the spire. The canals are walled channels on the terraces, not cut below them.
 
@@ -470,13 +479,17 @@ Things Brandon should look at first: faults a critic named that were not fixed a
 
 - Rocket critic points not acted on after three rounds (056 to 061): the pool and apron bleed off both sides on the phone (ground runs past the frame; fitting the whole pool makes the rocket small, which round 1 failed); a little ambient occlusion grain where the porthole bosses meet the skin; the lab's own nav covers the top of some close shots; the crane drops in with the last section of the tower like the other fixed parts; the floods are small fixtures, so their flicker in the entrance is subtle; the brass trim at the pad's edge glows from the pool's light below, which the critic did not read as a source.
 
-- Page water at About and Contact (critic 062, not acted on in Phase 8): the stream reads as a lit blade with a pointed end in frozen frames, is cut flat under the nav, has loose ticks for particles, runs diagonally past the portrait on wide and 4K screens and sits against the edge of the phone. All of this is the page water and its route (kit 08 Phase 10: the route round the doors and behind the portrait); taken up there. On the contact phone shot the stream stops at the reading line, because the head follows the scroll.
-- Page water, critic 063 on every Phase 9 page: the stream reads as a jagged, flame-like streak of one width with a needle head and few sparks, worse than the second pass reference ribbon (G06); it hugs the right edge and passes over plate and bar edges; the not-found route turns at tight elbows. Taken up in Phase 10 as its first job, with the look of the water itself rebuilt where needed, not tuned.
+- (Resolved in Phase 10) Page water at About and Contact (critic 062, not acted on in Phase 8): the stream reads as a lit blade with a pointed end in frozen frames, is cut flat under the nav, has loose ticks for particles, runs diagonally past the portrait on wide and 4K screens and sits against the edge of the phone. All of this is the page water and its route (kit 08 Phase 10: the route round the doors and behind the portrait); taken up there. On the contact phone shot the stream stops at the reading line, because the head follows the scroll.
+- (Resolved in Phase 10: the body rebuilt, routes kept off the edges and round the plates) Page water, critic 063 on every Phase 9 page: the stream reads as a jagged, flame-like streak of one width with a needle head and few sparks, worse than the second pass reference ribbon (G06); it hugs the right edge and passes over plate and bar edges; the not-found route turns at tight elbows. Taken up in Phase 10 as its first job, with the look of the water itself rebuilt where needed, not tuned.
 - The Claude Docs picture is cut through a line of its own text in the narrow work windows at some widths; it is a placeholder Brandon is replacing, and its focus and zoom are set in its media entry.
 - Contact: the flume runs on past the point where the stream joins it, out through the stage's side fade; the critic read that as cut by the viewport.
 
 - Water critic points not acted on (067, after more than three rounds): the crown at the instant of impact still reads partly as spray before its rim rises; the run strip shows the stream beside a paragraph, which has no surface to make a sheet on (sheets are where it runs on metal); the lab's Fall label sits where the feed enters that lab panel; on a phone the margin streams run close to the text because the margins are 20 px.
 - The scroll strips stop the water's front at the reading line in each frozen frame (the water follows the visitor's scroll), so the desk is dry in the frame where the desk is first in view; it fills one frame later.
+
+- Final critic round 068 (home hero, every piece at rest, contact, about and not found on a tablet; all FAIL). Acted on: the about page's stream reached the portrait through a right angle with a stub and then ran down the screen's edge; the route now comes in with a soft curve and keeps to the middle of the margin (route.ts besideX and travel, avoid boxes read inside their padding), D5 passes on every page. Not acted on, with the reason: the city's side falls read as even ribbons and their pools as rings at rest size (three critic rounds on the city; they taper and break by noise, kept readable); the desk's arriving fall is a straight line in the lab frame (W01 at desk scale, as noted for 027 to 032); the handheld's left faceplate reads as a strong gradient where the lamp's highlight lies across brushed brass; the camera's lab frame shows a light's edge on the backdrop at top right (not on the Photography page, where the frame is wider), and its shadow falls behind it because the lamp is in front; the sculpture's base ring is cut by the bottom of its lab frame (the 3D art page frames it whole), its plaque's small line is small; the rocket's hull is smooth enamel with seams, rivets, stencils and hatches that read at close range rather than at rest size; the hero headline is set right, facing the left set words across the spire, by design; the contact links' gradient is the lamp on polished brass; the not-found pool's caustics read as veins at tablet size, and the space under the pool is the page's quiet.
+- At 4K on /skills the stream leaves the foot of the desk, runs across under it and turns down beside the ledger through a tight bend: there are 80 px between the desk's foot and the ledger, too little for a soft turn. A deeper turn was tried and crossed headings on other pages (D5), so it was undone.
+- Every piece now yields while it builds; the worst single frame while a piece mounts is about 90 ms on this Mac (was 420), and on the low tier with the CPU slowed 4 times about 360 ms.
 
 ## Needed from Brandon (collected as found; copied into the Handoff in Phase 12)
 
@@ -491,6 +504,60 @@ Things Brandon should look at first: faults a critic named that were not fixed a
 ## QA results
 
 One line per item of `kit/09-QA-GAUNTLET.md`: the id, pass or fail, the evidence.
+
+- A1 pass: rm -rf node_modules .next out, then npm ci (exit 0), npm run typecheck (exit 0), npm run test (112 passed), npm run build (exit 0). Rerun on the final sources after the last fix: typecheck clean, 112 passed, build from sources 536eaa2d7def.
+- A2 pass: npm run check:copy: 149 source files, 30 pages, 0 problems.
+- A3 pass: npm run check:shots with no names: required 217, passed 217, problems 0, after the last build and retake.
+- A4 pass: out/ holds index.html, work/, the ten project pages under work/, clients/, games/, photography/, 3d-art/, skills/, about/, resume/ (with the PDF in media/) and 404.html, plus sitemap.xml, robots.txt and the icon.
+- A5 pass: tests/e2e/gauntlet.spec.ts "A5 · no request leaves the site": every route loaded and scrolled to its foot, every request on the site's own origin (30 routes).
+- A6 pass: gauntlet "A6 · no console error or warning": every route at all five viewports scrolled top to foot (150 tests). Found and fixed on the way: two three.js deprecations, and preload warnings from prefetching (links now prefetch on intent). The smoke test also runs every route at every viewport in WebKit and Firefox with no errors.
+- B1 pass: tests/unit/structure.test.ts "copy lives in the content file": no literal words in the markup or labels of any component or page (the matcher is checked against a sample with copy in it).
+- B2 pass: check:copy reads every rendered page for em dashes, exclamation points and banned words: 0 problems; tests/unit/content.test.ts holds the same over the content file.
+- B3 pass: src/content/site.ts notes the source of every section and every project. Ten facts checked again against old-site/: $43B and 40+ warehouses, Public Trust clearance, 300+ agentic coding outputs, 40 screens to 15, Augusta Technical College (the résumé PDF, read again); Boise (app/page.jsx); 26 seconds and Calibre 01 (app/data/projects.js); brandon-church-ms and BrandonLeoChurch (Footer.jsx); the email (ContactSection.jsx).
+- B4 pass: contact links are GitHub, LinkedIn, CodePen and YouTube from the old site's footer and the email shown on its contact section; the content test allows only https and mailto; no phone number, no Calendly.
+- B5 pass: grep -ril boudoir out finds nothing, no file name under out/ has it, and tests/unit/content.test.ts "never uses the word boudoir".
+- B6 pass: "Old site inventory · Pictures, each opened with the Read tool" lists every picture with its use or why it is not used; the hero stills and share images were opened when made.
+- B7 pass: "Needed from Brandon" in the Handoff lists every gap.
+- C1 pass: metal/aged-, polished-, bronze- and panel-lamp shots; on the site all four finishes are on the /clients placards (page/clients), aged and polished on the work plates and frames.
+- C2 pass: metal/lamp-strip, and each finish at three lamp positions (metal/<finish>-lamp-1 to -3); bars, placards and controls in metal/bar, metal/placard, metal/controls.
+- C3 pass: metal/window-lamp-1 to -3 (a picture) and metal/window-video (video): the recess shadow moves with the lamp, the glass carries a glare.
+- C4 pass: metal/text-1x and metal/text-2x; tests/e2e/metal.spec.ts "every plate keeps its words in the DOM, and the plates are lit".
+- C5 pass: on a touch screen the lamp drifts on its own (src/lamp/drift.ts, tests/unit/config.test.ts "the lamp drift"); metal/phone and the phone shots show the lit page.
+- C6 pass: <piece>/light and <piece>/light-2 for all six pieces, the lamp in two places.
+- D1 pass: home/hero-<vp> and city/settle: the stream starts at the pool under the city's front centre fall.
+- D2 pass: the four of kit 03 and no fifth: the city (home/hero), client work (home/clients, water/split, water/frame), the workbench (home/skills, bench/water), contact (home/contact, water/pool, rocket/launch); the rest is weaving (home/scroll-desktop).
+- D3 pass: water/run, water/fall, water/land, water/cling, water/pour, water/split, water/frame, water/pool, all in order in check:shots.
+- D4 pass: water/fall (speeds up under gravity and thins), water/land and water/split (crown, drops thrown on arcs, a spreading sheet), water/body (sparks riding the flow); tests/unit/route.test.ts proves falls are parabolas whose travel time grows with the drop.
+- D5 pass: gauntlet "D5 · the water crosses no text": the route the page built against every line of visible text on every route at all five viewports (100 tests); tests/unit/route.test.ts on fixtures; every home and page shot opened.
+- D6 pass: water/light-plate (critic PASS), home/clients and home/work (lit placards and plates), bench/water (the desk lit), rocket/assembly (the pool lit).
+- D7 pass: home/scroll-desktop and home/scroll-phone (the front at the reading line in every frame); scrolled to 60 percent and back to 30 percent the page is pixel for pixel the same as at 30 percent directly (scripts/imgdiff.mjs: 0 pixels differ), while 60 percent differs everywhere: the front goes back up with the page.
+- D8 pass: tier/hero-static and tier/room-static (the water drawn still and complete); tests/e2e/access.spec.ts "reduced motion": the opening skipped, the static tier taken.
+- D9 pass: page/<route>-<vp> for every route: a stream from the top of each page to its foot.
+- E1 pass: tests/unit/structure.test.ts "the pieces stand alone": six pieces, each with a factory, none imports another.
+- E2 pass: gauntlet "E2 · /games/ works with the handheld swapped for the contract stub" (?hook=1&stub=handheld): the stub mounts, the making switch works, the page and its water run to the foot with no error.
+- E3 pass: <piece>/close-1 to -6 for all six, each in order in check:shots.
+- E4 pass: <piece>/entrance strips, rest motion (rocket/assembly, the handheld's running game, the city's traffic), <piece>/making for all six.
+- E5 pass: city/opening-desktop and city/opening-phone (the whole viewport); plays once a visit (sessionStorage), any input skips it; at rest on desktop the city sits low with the whole disc above the fold (home/hero-desktop).
+- E6 pass: the workbench has one fixed light and nothing relights on click; no labels tie skills to desk objects (page/skills, home/skills).
+- E7 pass: rocket/assembly (on scroll), rocket/launch (at the foot of the page, once a visit by sessionStorage), and no form anywhere (the contact is links).
+- E8 pass for the handheld, waiting on Brandon for the camera: the handheld plays its own runner loop (handheld/entrance, page/games, press A and the runner hops). The camera piece is built and lit (camera/*), but there are no photographs on the old site, so the shutter hand over to photographs has nothing to hand over to; it is listed under Needed from Brandon and Ideas held.
+- E9 pass: gauntlet "E9 · at most two pieces hold a WebGL context, the doors counting as one": scrolling the home page down and back up at desktop and phone, never more than two, the doors live on the way.
+- F1 pass: page/<route>-<vp> and home/<section>-<vp>, all in order in check:shots.
+- F2 pass: gauntlet "F2": every route at fifteen widths from 320 to 3840, no sideways scroll; access spec at 320 px.
+- F3 pass: tier/hero-mid, -low, -static and tier/room-mid, -low, -static.
+- F4 pass: gauntlet 'F4 · first paint shows the city': with scripts off, the hero shows a still of the city at desktop and phone. Found in this pass: the stills were rendered only after the page's script ran, so a first paint before it was an empty dark hero; they are now in the HTML (src/components/Hero.tsx).
+- G1 pass: tests/e2e/access.spec.ts: the skip link first, every focus stop with a 2 px amber ring.
+- G2 pass: access spec "one h1, headings in order, every picture has alt text" on every route; alt text from the content file.
+- G3 pass: tests/e2e/contrast.spec.ts: with the water fully wet, every line of text against the pixels really behind it on every route at desktop and phone: lowest 7.14 to 1; tests/unit/contrast.test.ts on the tokens.
+- G4 pass: access spec "links and buttons are at least 44 px" on a phone, every route.
+- H1 pass: home at rest, 1440 by 900 at 2x, M4 Pro ANGLE Metal headed: median 8.3 ms, p95 9.7, worst 17.4 (60 frames a second and over).
+- H2 pass: the opening at real time: median 9.5 ms, p95 17.7, worst single frame 50.2 ms.
+- H3 pass: the low tier with the CPU slowed 4 times: at rest median 9.9 ms, p95 18.1, worst 43.0; scrolling the whole page median 9.4, p95 24.9, worst 359 (a piece mounting).
+- H4 pass: scrolling the whole home page top to foot in 20 s, high tier: median 8.4 ms, p95 25.0, worst 91.7 (the harness scrolls by script every frame, which itself forces layout).
+- H5 pass: first load of the home page: 340 KB over the wire for HTML, styles and scripts (three.js and the city are in it, so the city can draw at once), plus the hero still (58 KB) and three Latin fonts (122 KB); deferred: 26 script chunks, 325 KB brotli (the other pieces, the post chain parts, the lab), every picture lazy. Measured from out/ (scratch script, brotli for text).
+- I1 pass: node scripts/build-flags.mjs SHOW_3D_ART=false, then tests/e2e/flags.spec.ts: no 3D art page (404), no nav link, no door, not in the sitemap, no error; the doors close up to two (opened); src/config/site.ts still says true.
+- I2 pass: node scripts/build-flags.mjs SHOW_LAB=false, then flags.spec.ts "with SHOW_LAB false the build has no lab routes": no out-flags/lab, the lab routes 404, the home page 200; the file still says true.
+- J · checked at the final commit
 
 ## Session log
 
@@ -520,14 +587,74 @@ Newest last. Date and time, what was done, what is next.
 
 - 2026-11-11, Phase 11 done: tier shots, every speed budget measured and met (a CPU throttle in measure.mjs for the low tier), an access suite (skip link, focus rings, headings, alt, touch targets, reduced motion, 320 px, layout shift), contrast from the tokens, WebKit and Firefox smoke. Next: Phase 12.
 
+- 2026-11-11, Phase 12 done: gauntlet tests (requests, console, copy in components, pieces alone, a stub piece, context budget, widths, the route against real text, contrast against real backgrounds, switches), intent prefetch, pieces that mount without stalling the page, a budget of two piece contexts with the doors counted, the water kept to the middle of narrow margins, the final retake and critic round, a clean install, the Handoff. BUILD COMPLETE.
+
 ## Handoff
 
-Written in Phase 12.
+### What was built
 
-- What was built.
-- For review (the short list).
-- Needed from Brandon: every missing fact, picture, video or link, and where it goes.
-- How to run it.
-- The two switches: `SHOW_3D_ART` and `SHOW_LAB`, where they are and what each does.
-- Ideas held for the review stage.
-- Where `main` is pushed: the `origin` address. If it could not be pushed, the reason is under Needed from Brandon.
+Brandon Church's portfolio as a static Next.js 16 site (static export to out/), with no runtime services, no keys and no requests beyond its own files.
+
+- Six 3D pieces, each its own vanilla Three.js module behind the contract in kit 04 (src/pieces/<name>/), each with an entrance, motion at rest, the visitor's lamp as a real light, the water's light, every tier, and a "How this is made" view (live wireframe and a triangles, draw calls and frame time readout):
+  - the floating city on the home page (an opening that draws the plan in light, lifts the disc and raises the city, then settles; skippable, plays once a visit);
+  - the workbench on Skills and the home page (walnut desk, keyboard with legends, live code on the monitor, a tablet, a camera, one fixed lamp, the page's water landing on the desk);
+  - the brass handheld on Games (plays its own runner loop; press A and the runner hops);
+  - the camera on Photography;
+  - the sculpture on 3D art (a cast bronze knot, half surface and half its own construction lines, the split following the lamp);
+  - the rocket at Contact (assembles as you scroll, launches once a visit at the foot of the page, smoke and a pool that answers).
+- Metal plates drawn by one shared WebGL renderer: four finishes (aged, polished, bronze, panel), engraved words that stay in the DOM, a moving lamp highlight and shadow, photo windows under glass with a recess, a shadow and a glare.
+- Golden water made of light that flows down every page from the city's front fall: a glassy braided ribbon with a halo and a hot head, falls that speed up and thin, landings with a crown, thrown drops and a spreading sheet, pours, splits, frames and pools; it lights the plates and pieces it touches, follows the scroll, goes round every line of text, and is drawn still and complete for reduced motion.
+- Pages: home, work and ten project pages, client work, games, photography, 3D art, skills, about, résumé (text plus the PDF), not found, share images, sitemap, robots, icon.
+- Tiers (high, mid, low, static) chosen from a probe, with reduced motion honoured; speed, access and layout tested (see QA results).
+
+### For review (the short list)
+
+The full list with every unfixed critic point and its reason is under "For review" above. Look at these first:
+
+1. The project pictures are the old site's, as placeholders (you are replacing them). PC Builder and Red Team Arena have no picture, so their plates use the plain layout.
+2. The water's look: falls are kept readable rather than thin and broken, and the crown reads partly as spray at the instant of impact. If you want it wilder, that is the first thing to tune (src/water/route.ts WATER, src/water/shaders.ts).
+3. The rocket launches once per visit at the end of the page. There is no replay control.
+4. Client work is built from the résumé (the old site had no client list), and Calendly is left off Contact. Both are your call.
+5. The résumé PDF says "over eleven years"; the page and the old About say twelve.
+6. Mounting a 3D piece now costs at most one frame of about 90 ms while scrolling (it was up to 420 ms); a scroll from top to foot keeps a median frame of 8.4 ms on this Mac.
+7. Games, Photography and 3D art are rooms with their piece and no work yet (nothing on the old site). SHOW_3D_ART can hide the 3D art room.
+
+### Needed from Brandon
+
+- REPO_URL: none was set, so main is committed on this Mac and not pushed. Set REPO_URL and run node scripts/push.mjs.
+- New project pictures. Export each at least 2400 px wide, 16:10, with the subject in the middle 60 percent: plates crop to a window beside the words on wide screens and above them on phones, project pages show it at about 16:9 inside a brass frame. Add or swap the entry in scripts/media.mjs (PICTURES), run npm run media, and in src/content/site.ts set the picture's focus ([x, y] from 0 to 1, the point that stays in view) and zoom (1 just covers the window) on its media entry.
+- PC Builder and Red Team Arena: facts beyond the kit draft, a picture or video, and a link.
+- Any project video for the photo windows (copied as it is by scripts/media.mjs).
+- Games: footage, art or builds for /games.
+- Photography: photographs for /photography, and the tools you use, for the skills ledger.
+- 3D art: work for /3d-art, or set SHOW_3D_ART to false before deploying.
+- Whether to add Calendly to Contact, and an updated résumé PDF if the years should match the site.
+
+### How to run it
+
+- Node 22 or newer. npm ci, then npm run build (writes out/), then npm run serve to view it on a port from 5321 to 5329, or npm run dev for the dev server on 5320.
+- Checks: npm run typecheck, npm run test (unit), npx playwright test (every browser test; needs a build first), npm run check:copy, npm run check:shots.
+- Shots: npm run shots -- <group or name> and npm run strips -- <name> write to shots/; verdicts are recorded with node scripts/verdict.mjs (kit 07).
+- Pictures: npm run media. Hero stills and share images: npm run stills.
+- Frame time: node scripts/measure.mjs <route> <viewport> --headed (options --tier, --cpu 4, --scroll, --opening).
+
+### The two switches
+
+Both are in src/config/site.ts and both are true:
+
+- SHOW_3D_ART: the 3D art room (its page, its nav link and its door on the home page). To hide it, change the default in its line from 'true' to 'false'; the doors close up to two and nothing reads as missing.
+- SHOW_LAB: the lab pages under /lab (test benches for the metal, the water and each piece, used by the shots). Set it to false for a public build: no lab routes are written.
+- To try either without editing the file: node scripts/build-flags.mjs SHOW_3D_ART=false (or SHOW_LAB=false) builds to out-flags/; tests/e2e/flags.spec.ts checks it.
+
+### Ideas held for the review stage
+
+- Build each piece's model in idle time before it is needed, so mounting costs nothing while scrolling.
+- A replay for the rocket's launch, and a way to take the handheld's loop for a play with the keyboard.
+- Real photographs handed over by the camera's shutter on /photography (the kit's idea), once there are photographs.
+- Water that answers the visitor: a ripple where the cursor crosses a pool, a stream that leans toward the lamp.
+- WebGPU when it is solid in every browser, for more of the water on screen at once.
+- A small sound layer (off by default): the water, the shutter, the launch.
+
+### Where main is pushed
+
+Not pushed: REPO_URL is NONE (see Needed from Brandon).

@@ -75,7 +75,8 @@ export function readAnchors(root: ParentNode, narrowBelow: number): { anchors: A
   }
 
   const avoid: Rect[] = [];
-  root.querySelectorAll('[data-water-avoid]').forEach((el) => avoid.push(pageRect(el)));
+  // The text itself, inside any padding: a full-width footer's padding is the page margin, where the water may run.
+  root.querySelectorAll('[data-water-avoid]').forEach((el) => avoid.push(contentRect(el)));
   const endY = document.documentElement.scrollHeight - 40;
   return { anchors, options: { start, column: { left: col.left, right: col.right }, narrow, width, avoid, endY } };
 }
