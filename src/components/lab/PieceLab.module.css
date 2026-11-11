@@ -8,7 +8,7 @@
 .title {
   position: absolute;
   top: calc(var(--nav-h) + var(--space-4));
-  left: var(--gut);
+  left: var(--edge);
   z-index: 2;
   font-family: var(--font-mono);
   font-size: var(--step--1);

@@ -145,7 +145,7 @@ vec3 interior(vec2 uv){
 `;
 
 export function interiorMaterial(o: InteriorOptions): THREE.MeshStandardMaterial {
-  const m = new THREE.MeshStandardMaterial({ color: 0x0b0a09, metalness: 0.15, roughness: 0.14, envMapIntensity: 1.3 });
+  const m = new THREE.MeshStandardMaterial({ color: 0x0b0a09, metalness: 0.1, roughness: 0.24, envMapIntensity: 1.1 });
   m.name = 'interior';
   const uniforms = {
     uScale: { value: o.scale },

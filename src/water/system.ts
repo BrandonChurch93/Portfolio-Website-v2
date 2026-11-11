@@ -59,6 +59,7 @@ export class WaterSystem {
   private head = 0;
   private headSpeed = 0;
   private forced: number | null = null;
+  private startY = 0;
   private move: { fEntry: number; t: number } | null = null;
   private impacts = new Map<number, number>();
   private lights: { host: HTMLElement; near: { x: number; y: number; s: number; d: number; score: number }[] }[] = [];
@@ -154,6 +155,7 @@ export class WaterSystem {
   layout(): void {
     const { anchors, options } = readAnchors(document, BREAKPOINT_ONE_COLUMN);
     if (this.opts.entering) options.start = { x: options.start.x, y: 0 };
+    this.startY = options.start.y;
     const route = buildRoute(anchors, options);
     this.route = route;
     this.table = headTable(route);
@@ -275,7 +277,8 @@ export class WaterSystem {
     if (this.move) return sAtFlowTime(r, this.move.fEntry + this.move.t);
     if (this.forced !== null) return this.forced;
     if (tiers.get() === 'static' || matchMedia('(prefers-reduced-motion: reduce)').matches) return r.total;
-    return headAt(this.table!, scrollY + innerHeight * 0.66);
+    // Where the page has a source, the stream already runs on a little past it at the top of the page.
+    return headAt(this.table!, Math.max(scrollY + innerHeight * 0.66, this.startY + innerHeight * 0.32));
   }
 
   // When the water reached a landing. Live, it is the moment the front crossed it; for frozen or forced states it is

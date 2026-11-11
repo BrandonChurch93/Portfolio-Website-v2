@@ -1,0 +1,27 @@
+city/form | PASS | - | After three rounds: clay silhouette whole, spire, six towers, mid-rises, terraces, landmarks, paneled rim and keel; no stray cards.
+city/close-1 | PASS | - | After three rounds: retaken from the gate build (lamp at 6.5, dither, run toward the viewer); detail as judged before, ivory no longer blown.
+city/close-2 | PASS | - | After three rounds: retaken from the gate build (lamp at 6.5, dither, run toward the viewer); detail as judged before, ivory no longer blown.
+city/close-3 | PASS | - | After three rounds: retaken from the gate build (lamp at 6.5, dither, run toward the viewer); detail as judged before, ivory no longer blown.
+city/close-4 | PASS | - | After three rounds: retaken from the gate build (lamp at 6.5, dither, run toward the viewer); detail as judged before, ivory no longer blown.
+city/close-5 | PASS | - | After three rounds: retaken from the gate build (lamp at 6.5, dither, run toward the viewer); detail as judged before, ivory no longer blown.
+city/close-6 | PASS | - | After three rounds: retaken from the gate build (lamp at 6.5, dither, run toward the viewer); detail as judged before, ivory no longer blown.
+city/materials | PASS | - | After three rounds: every material reads apart and together, whole city in frame, nothing blown.
+city/light | PASS | - | After three rounds: lamp up left lights the left half 24 percent brighter than with the lamp low right (luma 49.9 against 37.9).
+city/light-2 | PASS | - | After three rounds: lamp low right lights the right half (luma 53.6 against 44.9), shadow swings left.
+city/making | PASS | - | Critic PASS in round 022; retaken: warm wire over the dimmed lit city, readout, switch dot lit while on.
+city/opening-desktop | PASS | - | Critic PASS in round 022; retaken from the gate build.
+city/opening-phone | PASS | - | Critic PASS in round 022; retaken from the gate build.
+city/settle | PASS | - | Critic PASS in round 022; retaken from the gate build.
+city/rest-phone | PASS | - | Whole city at phone, landings now amber sheets with rings and crowns, the run toward the viewer carrying the stream off the frame, label and switch on the page column.
+city/rest-tablet | PASS | - | Whole city at tablet, landings now amber sheets with rings and crowns, the run toward the viewer carrying the stream off the frame, label and switch on the page column.
+city/rest-desktop | PASS | - | Whole city at desktop, landings now amber sheets with rings and crowns, the run toward the viewer carrying the stream off the frame, label and switch on the page column.
+city/rest-wide | PASS | - | Whole city at wide, landings now amber sheets with rings and crowns, the run toward the viewer carrying the stream off the frame, label and switch on the page column.
+city/rest-4k | PASS | - | Whole city at 4k, landings now amber sheets with rings and crowns, the run toward the viewer carrying the stream off the frame, label and switch on the page column.
+home/hero-desktop | PASS | - | Headline left and words right sharing a baseline, spire between, city well above the fold, side landings in view, front stream running on into the page.
+home/hero-wide | PASS | - | Same at 1920, two line headline.
+home/hero-4k | PASS | - | Same at 4K.
+home/hero-tablet | PASS | - | Upright framing: needle clear of the cue, landings clear of the switch.
+home/hero-phone | PASS | - | Stack of words over the city; the stream runs from the front pool off the bottom of the screen; nothing under the switch but the run.
+tier/hero-mid | PASS | - | Same hero at the mid tier; resolution and occlusion given up, not character.
+tier/hero-low | PASS | - | Same hero at the low tier; resolution and occlusion given up, not character.
+tier/hero-static | PASS | - | Same hero at the static tier; resolution and occlusion given up, not character.

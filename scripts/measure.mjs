@@ -1,6 +1,8 @@
 // Measures frame time on a page while the lamp moves every frame, so everything lit must redraw.
 //
-//   node scripts/measure.mjs <route> <viewport> [--steps file.json] [--seconds 4] [--tier high] [--headed]
+//   node scripts/measure.mjs <route> <viewport> [--steps file.json] [--seconds 4] [--tier high] [--headed] [--opening]
+//
+// --opening drives the hero opening through window.__site.opening(t) at real time, from 0, while measuring.
 //
 // Prints the renderer string, the frame interval (median, 95th percentile, worst) from requestAnimationFrame,
 // and the site's own per frame stats from window.__site.info().stats (for example metalMs, the plate renderer's
@@ -22,13 +24,14 @@ const preview = await startPreview();
 const errors = [];
 try {
   const page = await openSite(browser, preview, { route, vp, steps }, errors, '');
-  const result = await page.evaluate(async (secs) => {
+  const result = await page.evaluate(async ([secs, drive]) => {
     const intervals = [];
     const metal = [];
     let last = performance.now();
-    const end = last + secs * 1000;
+    const start = last, end = last + secs * 1000;
     await new Promise((resolve) => {
       const tick = (now) => {
+        if (drive) window.__site.opening((now - start) / 1000);
         intervals.push(now - last);
         last = now;
         const k = (now % 4000) / 4000;
@@ -46,7 +49,7 @@ try {
       metalMedian: q(metal, 0.5), metalP95: q(metal, 0.95),
       info: window.__site.info(),
     };
-  }, seconds);
+  }, [seconds, args.includes('--opening')]);
   const r = (n) => n.toFixed(2);
   console.log(`measure: ${route} at ${vp} · renderer ${renderer} (${hardware ? 'hardware' : 'software'}) · tier ${result.info.tier} · plates ${result.info.stats.plates ?? 0}`);
   console.log(`measure: frames ${result.frames} · frame interval median ${r(result.median)} ms · p95 ${r(result.p95)} ms · worst ${r(result.worst)} ms`);

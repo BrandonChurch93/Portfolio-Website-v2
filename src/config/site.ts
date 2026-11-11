@@ -75,6 +75,23 @@ export const LAMP = {
   depth: 0.42,
 } as const;
 
+// ---- the hero ---------------------------------------------------------------------------------------
+
+// Where the city rests in the hero (see PieceOptions.frame), the stills shown at first paint, written by
+// scripts/stills.mjs, and how far into the opening the first-visit still is (the opening continues from there).
+export const HERO = {
+  // Tall screens (phone, tablet upright) stack the words over the city; wide ones set them either side of the spire.
+  frame: { tall: { shift: 0.15, scale: 1.12 }, upright: { shift: 0.165, scale: 1.12 }, wide: { shift: 0.12, scale: 1.0 } },
+  once: 'city-opening',
+  planStillAt: 1.0,
+  stills: {
+    city: { wide: '/generated/city-rest-wide.webp', tall: '/generated/city-rest-tall.webp' },
+    plan: { wide: '/generated/city-plan-wide.webp', tall: '/generated/city-plan-tall.webp' },
+  },
+  // The headline arrives over the opening's last moments, in seconds before its end.
+  wordsIn: [1.3, 0.2],
+} as const;
+
 // ---- test hooks ---------------------------------------------------------------------------------
 
 export const HOOK_PARAM = 'hook';

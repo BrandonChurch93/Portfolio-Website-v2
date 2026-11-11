@@ -1,0 +1,4 @@
+city/opening-desktop | PASS | - | Starts dark; a hot front draws the polar plan outward over the full viewport; the disc rises through the drawing as the lamp comes up; towers rise in turn with the spire last; the water fills and pours; the camera comes down from high over the plan to the low settled view. Better than the reference, which opened on a disc in a corner of the frame.
+city/opening-phone | PASS | - | Same opening framed for a tall screen: the plan and the city stay centred and whole from first frame to last.
+city/settle | PASS | - | The last two and a half seconds: the camera eases down and in with no overshoot, the falls reach the ground, crowns and pools light, and everything comes to rest.
+city/making | PASS | - | The real scene as warm wireframe over its own lit surface dimmed beneath, built geometry only so it reads as structure not fuzz, with a mono readout of triangles, draw calls and frame time.

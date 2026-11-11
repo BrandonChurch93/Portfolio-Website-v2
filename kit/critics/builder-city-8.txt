@@ -1,0 +1,3 @@
+city/materials | PASS | - | Paneled ivory, brushed brass, bronze, matte domed brass, glass with rooms behind, stone paving with wear, lawn, clumped foliage and light-water each read differently and together under one lamp, with contact occlusion where parts meet.
+city/light | PASS | - | Lamp up left: left faces of the spire fins, towers and dome take the light, shadows fall right and back, windows and water glow on their own.
+city/light-2 | PASS | - | Lamp low right: the light swings to the right faces, the fins on the right brighten and the left side drops into shade, shadows fall left; nothing blown out.

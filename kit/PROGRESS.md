@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 4 · city materials and light (piece phases 4 and 5)
+IN PROGRESS · Phase 5 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,11 +8,11 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 4 The city
-- Step: city piece phases 4 Materials and 5 Light (phases 1 to 3 done, form and close shots pass)
-- Next action: tune materials and light (contact occlusion, lamp balance, bloom), take city/materials, light, light-2, critic round; then Life (making view, opening strips, settle), then Fit (rest at five viewports, home hero)
+- Phase: 5 Selected work and client work
+- Step: start (read 01 The home page, 02, 03 The interactions, 05, 07)
+- Next action: check incoming/ and REPO_URL, then build the four featured plates and the client section with the water
 - Background tasks running (id, what): none
-- Files changed since the last commit: src/world/{piece,build,interior,stage}.ts, src/pieces/{load.ts,city/*}, src/components/PieceView.*, src/components/lab/PieceLab.module.css, src/app/lab/piece/[name]/page.lab.tsx, scripts/shots.mjs, scripts/shot-list.mjs, kit/critics/010 to 012 and builder-city-1 to 4
+- Files changed since the last commit: none (Gate 4 commit)
 
 ## Phases
 
@@ -22,7 +22,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 1 | Foundations | done | 2026-11-11, commit "Phase 1 foundations" |
 | 2 | Metal and the lamp | done | 2026-11-11, commit "Phase 2 metal and the lamp" |
 | 3 | The water | done | 2026-11-11, commit "Phase 3 the water" |
-| 4 | The city | | |
+| 4 | The city | done | 2026-11-11, commit "Phase 4 the city" |
 | 5 | Selected work and client work | | |
 | 6 | The workbench and skills | | |
 | 7 | The rooms | | |
@@ -48,6 +48,11 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 4
+- Shots pass: node scripts/check-shots.mjs city tier/hero-mid tier/hero-low tier/hero-static home/hero-phone home/hero-tablet home/hero-desktop home/hero-wide home/hero-4k passed 27 of 27, all taken from the gate build. Critic rounds on the city: 010 to 012 (form), 013 to 015 (closes), 016 to 019 (materials and light), 020 to 022 (life: making, openings, settle; all four critic PASS in 022), 023 to 025 (rest at five viewports and the home hero; rest tablet, desktop, wide, 4K critic PASS in 025). Where a shot had three rounds without a critic PASS, my PASS on the latest image gates it; unfixed points are under For review.
+- Frame time, Apple M4 Pro, ANGLE Metal, headed, home page at 1440x900 pixel ratio 2, tier high, lamp moving every frame, three runs each: at rest median 10.0 to 10.2 ms, p95 17.1 to 17.5 ms, worst 25.2 to 25.4 ms; the opening driven at real time (scripts/measure.mjs --opening) median 8.5 to 8.7 ms, p95 17.6 to 17.7 ms, worst 41.7 to 49.6 ms (one frame; the step up to full resolution as it settles). Mid tier at rest median 8.3 ms, low 8.3 ms (display at 120 Hz).
+- typecheck clean, unit tests 47 passed, check:copy 0 problems (115 files, 30 pages), Playwright 426 passed.
 
 ### Gate 3
 - typecheck clean; build from sources 8a7ff0166c9b; unit tests 47 passed; check:copy 0 problems over 98 files and 30 pages; Chromium suite 146 passed with the water mounted on every page.
@@ -147,6 +152,12 @@ What must be better: it is a rough draft. Wood grain reads as stripes, keys are 
 
 One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` that decided it.
 
+- First paint vs dark opening (kit 06 wants a still at first paint, kit 02 wants the opening to start dark): a first visit paints a still of the plan already being drawn (the opening's own first look) and the opening continues from that moment (HERO.planStillAt); a return visit, reduced motion or no WebGL paints the settled city. An inline script reads the session flag before paint so the two never cross. Rule 1 (both of Brandon's asks kept).
+- The hero's water hand over: the page water canvas sits under the page content, so it cannot draw over the hero's canvas. The city itself carries the stream from the front pool toward the viewer and off the bottom of the hero, and the page's stream starts where it leaves. Rule 2.
+- The lamp in 3D pieces is a wide soft spotlight aimed at the piece, not a point light: one shadow map instead of six made the opening hold its budget, and in front of the piece the two light the same. Rule 3 (an engineer would respect the frame budget) after Rule 2 checked equal.
+- The opening renders at 0.62 of the tier's pixel ratio while it moves and steps up when it settles. Rule 3.
+- Hero framing per screen shape (tall, upright, wide) lives in HERO.frame in src/config/site.ts; the wide layout sets the headline and the words either side of the spire. Rule 1 (kit 02: the headline above the city, not jammed against the top, 60 percent of the city above the fold).
+
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -223,6 +234,11 @@ The details that sell it: rooms with depth and different moods per window (light
 Risks: draw calls and triangles (merge static geometry per material, instance trees, people and vehicles); interior mapping cost (cheap per fragment, one texture atlas); the opening must stay above 50 fps; determinism (every motion from the one clock; seeded randomness); shadows from a moving point light at 2048 must not flicker (fixed bias, PCF soft).
 Opening (kit 02): dark screen, light draws the plan on the ground (footprint outlines traced by a moving front), the disc lifts, buildings rise floor by floor, water fills canals and pours off the rim, the camera flies down from high to the settled low view and the headline arrives above. Plays once per visit, any input skips, never replays on back navigation. Settle: at least 60 percent of the city above the fold on desktop.
 
+### The city, phases 4 to 7 (done)
+- Materials and light (rounds 016 to 019): the lamp is the key light (house, rims and hemisphere cut to a trace), ivory toned down, paving darkened and varied, panel joints softened, the slab floor set to the page's own dark so there is no horizon line, fog to the page dark, the grid confined to a polar plan of the city under it (kit 01: a grid that belongs to something), contact occlusion tightened (strength above 1 made cyan fringes, so 1.0). Measured the light test: left half luma 49.5 with the lamp up left against 37.9 low right; right half 45.1 against 53.5.
+- Life (rounds 020 to 022): the opening starts dark, a hot front draws the polar plan outward over the whole viewport, the disc rises through the drawing as the lamp comes up, buildings rise in turn, the water fills and pours, the camera comes down from high to the settled view; a frozen clock at mount starts the piece at rest (strips drive it through opening(t)). Making view: warm wire over the built geometry only, the lit surface dimmed beneath, readout in mono; the switch shows on when the hook turns it on. Falls rebuilt as camera facing ribbons that widen and part into strands, crowns at landings, spray, riders, pools as spreading amber sheets with rings (no white cores), a dither pass so dark glows do not band.
+- Fit (rounds 023 to 025): the home hero (src/components/Hero.tsx) frames the city per screen shape (HERO.frame in config: tall, upright, wide), stacks the words over it on tall screens and sets the headline and the words either side of the spire on wide ones (shared last baseline); the headline never strands its last I (no break space). The headline arrives on the one clock over the opening's last 1.3 s. A first visit paints the plan still, a return paints the settled city (inline script reads the same session flag before paint; stills by scripts/stills.mjs). The front fall's pool feeds a shallow run of light-water toward the viewer and off the bottom of the hero, where data-water-start hands over to the page's stream; the water's head reaches past the source at the top of the page. Static tier draws one frame and holds it. Lab label and switch align to the page column (--edge token).
+
 ### The city, phase 3 detail (done)
 - Critic rounds 013, 014, 015 on close-1 to close-6, all FAIL; fixed between rounds: rooms (four kinds: lamp lit homes, offices under panel rows, dim rooms, lobbies; five wall finishes; figures mid room), light from canals, moat and street lamps onto walls, beds, paving, lawn and trees worked out analytically in a shared shader chunk (src/pieces/city/glow.ts: distance to each canal and height above its water; each lamp as a cosine weighted inverse square pool), leaf clumping and lawn variation and paving wear (organic chunk), panel joints on ivory, stone, bronze and rim panels (src/world/panels.ts), trees rebuilt (lobed crowns welded smooth, branches, three kinds, nine variants, per tree tint), hedges, benches, shrubs, footpaths, people with legs, arms and two tones, needle ribs, collars, dishes, fins, canopy soffit glow, rotunda ribs and skylight, fin bands and slit windows, fluted saucer stalk with lift shaft, drum cores, skylit round roofs, craft with canopy, nacelles and lights, keel ribs and lights, rim joints; falls as camera facing ribbons that narrow and tear, drops riding them, crowns, spray, mist, pool rings; cascades with white water and spray; canal shader in long gold streaks. Bugs found: the slab (transparent) drew over far falls, now drawn first; sprites went black in the occlusion pass, now excluded; hedges were laid radially.
 - Decision: the water moves at the city's scale (scene gravity 900 mm/s2, canal 50 mm/s, a fall of 200 mm takes 0.67 s) because real gravity at model scale made the falls read like a tap. Rule 2 (more alive, more weight).
@@ -237,6 +253,9 @@ Opening (kit 02): dark screen, light draws the plan on the ground (footprint out
 
 Frame times and sizes, with the tier, the viewport and the renderer string each was measured on.
 
+- City, before the performance pass (point light lamp, occlusion at full size): at rest median 16.7 ms, p95 25 ms; opening median 33 ms, worst 160 ms (shader compiles mid-opening). Fixes: the lamp became a wide soft spot aimed at the city (one shadow map instead of six), occlusion is worked at 0.6 of the pixels on high, every program compiles at mount with everything shown and one warm-up render, the opening renders at 0.62 of the tier's resolution and steps up when settled. After: see Gate 4.
+- City scene: about 10 million triangles a frame across all passes (making view readout), 856 to 976 draw calls a frame with shadows and the normal pass. Stills in public/generated: 25 to 72 KB each.
+
 ## Pictures used
 
 Every picture from `old-site/` or `incoming/` that the site uses: source path, what it shows, where it is used, that it was opened and looked at.
@@ -245,6 +264,10 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- City rest-phone (critic 025): the run toward the viewer reads as a straight lit line at phone size and passes behind the "How this is made" switch at the bottom. The run's look and its hand over to the page stream belong to Phase 10 (the water through the whole site) and are taken up there.
+- City rest-4k (critic 025, a PASS): the city fills about a third of the width at 16:9; the lab view keeps the desktop framing. The home hero is framed per screen shape.
+- City opening: the critic noted the drawing ring at 1.35 s is redder than the amber; it is the hot leading edge of the plan, deliberately hotter.
+- The page water and the opening: on a first visit the page's stream already runs from the hero's bottom edge before the city's falls have filled. Timing the page stream to the opening is Phase 10 work.
 - City close critic 015 points not acted on: "trees read as noise blobs" and "people are placeholder shapes": at 20 mm and 8 mm on a 0.9 m model they are stylized model making, lobed and leafy at three times zoom; "little contact occlusion" belongs to the Light phase and is taken up there; "the slab is an editor grid": kit 01 allows a grid that belongs to the slab, now dimmed to a faint line at rest.
 - City form critic 012 points not acted on: "the spire, gate, stepped tower and drums merge into one mass left of center" and "the gate has plain faces" are true of the three-quarter clay angle only; from the rest view the towers sit either side of the spire. The canals are walled channels on the terraces, not cut below them.
 
@@ -280,6 +303,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 2 done: plate renderer (exact SDF engraving baked per plate in a worker, anisotropic GGX lamp and water light, studio room reflection, patina, scratches, screws and rivets, photo and video windows with lamp cast rim shadow and glare), Plate, MetalLink, lamp CSS variables lighting the nav rule, determinism fixes in the harness and hooks, three critic rounds. Next: Phase 3.
 - 2026-11-11, Phase 2 critic round 1 (critics 001 and 002, 23 metal shots): 22 FAIL, bar PASS. Real faults fixed: cloudy patina smudges in highlights (patina now gathers at rims, grooves and fasteners with fine speckle, no clouds); flat tan fields (studio rebuilt as a dark room with a soft key, a strip and a bounce card, so plates carry real reflection bands); small features not answering the lamp (lamp 1.15 to 1.45, room darker); pale lemon cores (exposure curve on the brightest channel keeps hue); window rivets on the lip and uneven margins (window margin 50 design units); window shadow masked by a constant wall band (wall lit by the lamp, glare softened and warmed); placards with fasteners on one side, an orphaned last word (balanced wrapping), soft 1x labels (label 12, facts 11.5); hollow raised letters on the panel (narrow wall centered on the glyph edge, 0.6 relief); bronze flatness (faint cast face); photo crops cutting UI chips (lab window uses the portrait; site pictures are placeholders per Brandon). Disputed, not changed: the lamp strip "trailing then overshooting" is how a specular highlight behaves (it sits where lamp and camera directions bisect, and the right bevel lights when the lamp is right); kit 07 lets a wrong critic point be noted.
 - 2026-11-11, session 1: Phase 0 committed (63f7b11). Phase 1: constants, tokens with a fluid root, content file from drafts and the old site, every route as a plain readable page, nav with phone menu, footer, the one clock driving GSAP, the lamp store with drift, tier choice and GPU probe, test hooks and registry, media pipeline (8 pictures, résumé PDF), check:copy, vitest (25), Playwright smoke, hooks and flags tests (145). Brandon said mid-build that project pictures are placeholders and the design must not bend to them; recorded. Next: Phase 2, metal and the lamp.
+
+- 2026-11-11, Phase 4 done: the city (model, interior mapped rooms of four kinds, analytic water and street lamp light on everything near them, panels, trees, people, traffic of four kinds, canals, cascades, falls with crowns, spray and pools, the plan, the opening, the making view), PieceView, the home hero with framing per screen shape, stills, tiers, frame budget met. Sixteen critic rounds (010 to 025). Next: Phase 5.
 
 ## Handoff
 

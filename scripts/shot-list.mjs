@@ -71,7 +71,7 @@ SHOTS['city/close-3'] = close([0, 12, 250], [20, 30, 0.3]);
 SHOTS['city/close-4'] = close([200, 0, 275], [30, 28, 0.28]);
 SHOTS['city/close-5'] = close([40, -110, 480], [28, 6, 0.62], [0.5, 0.6]);
 SHOTS['city/close-6'] = close([-40, 40, 100], [-15, 18, 0.3]);
-SHOTS['city/materials'] = close([0, 120, 0], [40, 20, 1.0]);
+SHOTS['city/materials'] = close([0, 210, 0], [40, 18, 2.25]);
 SHOTS['city/light'] = city([['lamp', 0.3, 0.35]]);
 SHOTS['city/light-2'] = city([['lamp', 0.75, 0.62]]);
 SHOTS['city/making'] = city([['piece:city.setMaking', true]]);
@@ -81,5 +81,11 @@ const opening = (vp, a, b) => city([['opening', a]], { vp, strip: { times: vp ==
 SHOTS['city/opening-desktop'] = opening('desktop', 0, 7.4);
 SHOTS['city/opening-phone'] = opening('phone', 0, 7.4);
 SHOTS['city/settle'] = opening('desktop', 5.0, 7.6);
+
+// ---- home: the page itself ------------------------------------------------------------------------
+for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
+
+// ---- tier: the hero and a room at the lower tiers ----------------------------------------------------
+for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 
 export { SHOTS };

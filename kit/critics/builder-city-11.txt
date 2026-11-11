@@ -1,0 +1,13 @@
+city/rest-phone | PASS | - | The settled city whole in frame at phone: spire, six towers, terraces, parks, canals and three falls landing on the lit plan, lamp shadows on the ground.
+city/rest-tablet | PASS | - | The settled city whole in frame at tablet: spire, six towers, terraces, parks, canals and three falls landing on the lit plan, lamp shadows on the ground.
+city/rest-desktop | PASS | - | The settled city whole in frame at desktop: spire, six towers, terraces, parks, canals and three falls landing on the lit plan, lamp shadows on the ground.
+city/rest-wide | PASS | - | The settled city whole in frame at wide: spire, six towers, terraces, parks, canals and three falls landing on the lit plan, lamp shadows on the ground.
+city/rest-4k | PASS | - | The settled city whole in frame at 4k: spire, six towers, terraces, parks, canals and three falls landing on the lit plan, lamp shadows on the ground.
+home/hero-desktop | PASS | - | Headline left and words right with the spire rising between them, the city filling the screen below, more than 80 percent of it above the fold, the front fall running on toward the page.
+home/hero-wide | PASS | - | Same layout at 1920: two line headline, words right, spire in the gap, city whole above the fold.
+home/hero-4k | PASS | - | Same layout at 4K with type grown by the fluid root; nothing small or lost.
+home/hero-tablet | PASS | - | Upright tablet stacks the words over a large city that fills the width; falls whole.
+home/hero-phone | PASS | - | Phone stacks headline, words and cue above the city, which fills the width with its three falls landing in view.
+tier/hero-mid | PASS | - | The hero at the mid tier keeps the same city, light and layout; it gives up resolution and occlusion, not character.
+tier/hero-low | PASS | - | The hero at the low tier keeps the same city, light and layout; it gives up resolution and occlusion, not character.
+tier/hero-static | PASS | - | The hero at the static tier keeps the same city, light and layout; it gives up resolution and occlusion, not character.

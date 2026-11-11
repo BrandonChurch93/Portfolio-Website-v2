@@ -7,6 +7,11 @@ export interface PieceOptions {
   entrance: boolean;
   // Called once the first frame is drawn.
   onReady?: () => void;
+  // Where the piece sits at rest in its host: shift pushes it down by that fraction of the host's height, scale
+  // moves the camera back (more than 1) or in. The entrance still uses the whole host.
+  frame?: { shift?: number; scale?: number };
+  // Start the entrance this many seconds in (the first paint already showed its beginning as a still).
+  entranceFrom?: number;
 }
 
 export interface Piece {

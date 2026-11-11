@@ -47,6 +47,8 @@
   --gut: clamp(1.375rem, 5vw, 4.5rem);
   --section: clamp(6rem, 12vw, 12rem);
   --max: 80rem;
+  /* Where the page column starts and ends: the nav, and anything pinned to the screen, align to this. */
+  --edge: max(var(--gut), calc((100vw - var(--max)) / 2));
   --max-text: 38rem;
   --nav-h: 4.25rem;
 

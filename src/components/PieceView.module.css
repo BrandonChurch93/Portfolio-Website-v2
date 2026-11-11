@@ -5,7 +5,7 @@
 
 .host :global(.piece-stats) {
   position: absolute;
-  left: var(--gut);
+  left: var(--edge);
   bottom: var(--space-5);
   z-index: 2;
   font-family: var(--font-mono);
@@ -23,7 +23,7 @@
 
 .making {
   position: absolute;
-  right: var(--gut);
+  right: var(--edge);
   bottom: var(--space-5);
   z-index: 2;
   display: inline-flex;
@@ -60,7 +60,8 @@
   border: 1px solid var(--accent);
 }
 
-.making[aria-pressed='true'] .dot {
+.making[aria-pressed='true'] .dot,
+.host[data-making='on'] .dot {
   background: var(--amber);
   border-color: var(--amber);
   box-shadow: 0 0 0.6rem var(--amber);

@@ -1,0 +1,137 @@
+.hero {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 34rem;
+  margin-top: calc(var(--nav-h) * -1);
+  overflow: hidden;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+.still {
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--dur-3) var(--ease-settle);
+}
+
+.still img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stillPlan {
+  opacity: 0;
+}
+
+:global(html[data-opening='play']) .stillPlan {
+  opacity: 1;
+}
+
+:global(html[data-opening='play']) .stillRest {
+  opacity: 0;
+}
+
+.hero[data-ready='yes'] .still {
+  opacity: 0;
+}
+
+.city {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.source {
+  position: absolute;
+  left: 50%;
+  top: 92%;
+  width: 1px;
+  height: 0;
+  pointer-events: none;
+}
+
+.words {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--nav-h) + clamp(0.75rem, 3vh, 4.5rem));
+  z-index: 2;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  padding: 0 var(--gut);
+  text-align: center;
+  pointer-events: none;
+}
+
+:global(html[data-opening='play']) .words {
+  opacity: 0;
+}
+
+.headline {
+  font-size: var(--step-5);
+  font-weight: 300;
+  letter-spacing: var(--track-display);
+  line-height: var(--lead-display);
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
+.sub {
+  font-size: var(--step-1);
+  color: var(--text-2);
+  max-width: 34rem;
+  text-wrap: balance;
+}
+
+.cue {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  pointer-events: auto;
+}
+
+.aside {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+}
+
+/* Wide screens: the headline on the left, the words about Brandon on the right, the spire rising between. */
+@media (min-aspect-ratio: 1/1) and (min-width: 821px) {
+  .words {
+    top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4.5rem));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(9rem, 16vw, 22rem);
+    align-items: last baseline;
+    justify-items: stretch;
+    text-align: left;
+  }
+
+  .headline {
+    justify-self: end;
+    text-align: right;
+    max-width: 12.5ch;
+  }
+
+  .aside {
+    justify-items: start;
+    max-width: 26rem;
+  }
+}
+
+.cue:focus-visible {
+  outline: var(--focus);
+  outline-offset: var(--focus-offset);
+}

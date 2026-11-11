@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Builder, at, cyl, fin, interp, lathe, loft, rbox, ring, seeded, slab, wall, xf, type Section } from '../../world/build';
+import { COLORS } from '../../config/site';
 import { interiorMaterial } from '../../world/interior';
 import { panelize } from '../../world/panels';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -16,7 +17,13 @@ const pol = (r: number, deg: number): [number, number] => [r * Math.sin(deg * D2
 export const CANALS = [0, 72, -72, 144, -144];
 // The water moves at the city's scale, not the model's: a scene gravity and a canal speed chosen so a fall off the
 // rim takes about two thirds of a second and reads heavy, as a big fall seen from far away does.
-const VCANAL = 50, G = 900, FALL_T = Math.sqrt((2 * CITY.LIFT) / G), LAND = R + 4 + VCANAL * FALL_T;
+const VCANAL = 50, G = 900, FALL_T = Math.sqrt((2 * CITY.LIFT) / G);
+// Where the front fall meets the ground, in millimetres from the centre: the start of the page's stream.
+export const LAND = R + 4 + VCANAL * FALL_T;
+// The run from the front pool toward the viewer: its length, where its fill begins, and how its distance maps
+// onto the fill so it fills in the opening's last moments.
+export const RUN_LEN = 2600;
+const RUN_S0 = 640, RUN_REVEAL = 0.06;
 
 export interface Rise { group: THREE.Group; t0: number; dur: number; height: number }
 export interface Mover { mesh: THREE.InstancedMesh; update: (t: number) => void }
@@ -66,13 +73,15 @@ void main(){
   float dk = uFall * clamp(vFlow.z / 200.0, 0.0, 1.0);
   float body = smoothstep(1.0, 0.75, av / (1.0 - 0.3 * dk));
   float edge = smoothstep(0.55, 0.92, av) * smoothstep(1.05, 0.9, av) * (1.0 - uFall);
-  float I = body * (0.55 + 0.75 * streak + 0.6 * glint) + edge * 0.45;
-  float tear = noise(vec2(v * 5.0 + vFlow.w * 7.0, u * 0.015));
-  I *= mix(1.0, smoothstep(0.15 + 0.45 * dk, 0.45 + 0.4 * dk, tear) * 1.4, uFall * smoothstep(5.0, 60.0, vFlow.z));
+  float I = min(1.7, body * (0.55 + 0.75 * streak + 0.6 * glint) + edge * 0.45);
+  // Lower down the curtain parts into separate strands with dark gaps between, and the strands thin.
+  float tear = noise(vec2(v * 4.0 + vFlow.w * 7.0, u * 0.012)) * 0.6 + noise(vec2(v * 11.0 - vFlow.w, u * 0.03)) * 0.4;
+  float strands = smoothstep(0.2 + 0.4 * dk, 0.32 + 0.4 * dk, tear);
+  I *= mix(1.0, strands * (1.2 + 0.5 * dk), uFall * smoothstep(5.0, 50.0, vFlow.z));
   // White water at the foot of each cascade.
   I += (1.0 - uFall) * smoothstep(3.0, 11.0, vFlow.z) * body * (0.9 + 0.8 * glint);
   float head = exp(-pow((uFill - vFlow.x) / 22.0, 2.0)) * 1.2;
-  vec3 c = mix(vec3(1.0, 0.45, 0.1), vec3(1.0, 0.66, 0.26), smoothstep(0.3, 1.1, I));
+  vec3 c = mix(vec3(1.0, 0.36, 0.06), vec3(1.0, 0.6, 0.2), smoothstep(0.35, 1.2, I));
   c = mix(c, vec3(1.0, 0.78, 0.46), smoothstep(1.3, 2.4, I));
   gl_FragColor = vec4(c * (I + head) * uGain * reveal, 1.0);
 }`;
@@ -109,9 +118,11 @@ void main(){
     float rr = 0.08 + ph * 0.85 + 0.015 * sin(a * 7.0 + uTime * 1.3 + float(i));
     rings += exp(-pow((r - rr) / (0.018 + ph * 0.03), 2.0)) * (1.0 - ph) * (1.0 - ph);
   }
-  float base = exp(-r * r * 6.0);
-  float core = exp(-r * r * 90.0);
-  vec3 c = vec3(1.0, 0.42, 0.1) * (base * 0.85 + rings * 0.55) + vec3(1.0, 0.72, 0.4) * core * 1.6;
+  // A sheet of light-water spreading from the impact, its rings running out and the sheet streaked with flow.
+  float base = exp(-r * r * 4.0);
+  float core = exp(-r * r * 60.0);
+  float streaks = 0.75 + 0.25 * sin(a * 23.0 + r * 9.0 - uTime * 2.0) * sin(a * 7.0 - uTime * 0.7);
+  vec3 c = vec3(1.0, 0.4, 0.09) * (base * 0.6 * streaks + rings * 1.05) + vec3(1.0, 0.56, 0.2) * core * 0.45;
   gl_FragColor = vec4(c * uOp * (1.0 - smoothstep(0.8, 1.0, r)), 1.0);
 }`;
 
@@ -154,7 +165,8 @@ void main(){
   float fingers = smoothstep(0.25, 0.65, cn(a * 2.3 + uTime * 0.8));
   float k = smoothstep(top, top - 0.35, vH) * mix(0.35, 1.0, fingers) * smoothstep(0.0, 0.12, vH);
   vec3 c = mix(vec3(1.0, 0.5, 0.15), vec3(1.0, 0.82, 0.55), smoothstep(0.6, 1.0, k));
-  gl_FragColor = vec4(c * k * uOp * 0.9, 1.0);
+  float rim = exp(-pow((vH - top * 0.85) / 0.07, 2.0)) * fingers;
+  gl_FragColor = vec4(c * (k * 0.75 + rim * 0.9) * uOp, 1.0);
 }`;
 
 // Drops riding down each fall on its own parabola, spreading as they go.
@@ -172,7 +184,7 @@ void main(){
   vec3 p = position + d3 * v * tt + side * spread + vec3(0.0, -0.5 * uG * tt * tt, 0.0);
   vK = 1.0 - 0.45 * k;
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
-  gl_PointSize = max(1.0, (0.8 + 1.2 * seed.z) * uPx / -mv.z);
+  gl_PointSize = max(1.5, (1.2 + 1.6 * seed.z) * uPx / -mv.z);
   gl_Position = projectionMatrix * mv;
 }`;
 
@@ -230,7 +242,7 @@ export function buildCity(): CityModel {
 
   // ---- materials ---------------------------------------------------------------------------------
   const P = (o: THREE.MeshPhysicalMaterialParameters, name: string) => { const m = new THREE.MeshPhysicalMaterial(o); m.name = name; return m; };
-  const ivory = panelize(P({ color: 0xe6dccb, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.3 }, 'ivory'), { scale: CITY.SCALE, size: [16, 10], depth: 0.3 });
+  const ivory = panelize(P({ color: 0xd9ceba, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.3 }, 'ivory'), { scale: CITY.SCALE, size: [16, 10], depth: 0.3 });
   const stone = panelize(P({ color: 0xc9bca6, roughness: 0.72 }, 'stone'), { scale: CITY.SCALE, size: [9, 3], depth: 0.3, vary: 0.1 });
   const brass = P({ color: 0xd0a45a, metalness: 1, roughness: 0.36 }, 'brass');
   const domeBrass = panelize(P({ color: 0xc89a52, metalness: 1, roughness: 0.5 }, 'domeBrass'), { scale: CITY.SCALE, size: [6, 4], depth: 0.25, vary: 0.1 });
@@ -251,7 +263,7 @@ export function buildCity(): CityModel {
   slit.name = 'slit';
   const lampHead = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffc27a).multiplyScalar(4) });
   lampHead.name = 'lampHead';
-  const beacon = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff8a3a).multiplyScalar(6) });
+  const beacon = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff8a3a).multiplyScalar(1.7) });
   beacon.name = 'beacon';
   // Light from the water and the street lamps onto everything built or planted near them.
   const glowU = cityLightUniforms();
@@ -259,7 +271,16 @@ export function buildCity(): CityModel {
   for (const mm of [ivory, stone, plazaM, terraceM, promM, lawnM, bed]) cityLight(mm, glowU, layout);
   organic(lawnM, 'lawn');
   for (const pm of [plazaM, terraceM, promM]) organic(pm, 'paving');
-  const roomsM = (seed: number, warmth: number, lit = 0.72) => { const m = interiorMaterial({ scale: CITY.SCALE, warmth, lit, seed, gain: 1.7 }); rooms.push(m); return m; };
+  // Rooms share a few materials by mood (warmth and how many are lit), so the whole city draws its windows in a
+  // handful of calls; each facade still gets its own pattern from the seed it writes into the room cells.
+  const roomCache = new Map<string, THREE.MeshStandardMaterial>();
+  const roomsM = (_seed: number, warmth: number, lit = 0.72) => {
+    const key = `${Math.round(warmth * 4) / 4}|${Math.round(lit * 10) / 10}`;
+    let m = roomCache.get(key);
+    if (!m) { m = interiorMaterial({ scale: CITY.SCALE, warmth: Math.round(warmth * 4) / 4, lit: Math.round(lit * 10) / 10, seed: roomCache.size * 7 + 3, gain: 1.35 }); rooms.push(m); roomCache.set(key, m); }
+    return m;
+  };
+  let facadeSeed = 1;
 
   // ---- the disc and its terraces ---------------------------------------------------------------------
   const base = new Builder();
@@ -302,8 +323,8 @@ export function buildCity(): CityModel {
 
   // ---- light water: the moat, five canals with cascades, falls off the rim --------------------------------
   const water: THREE.ShaderMaterial[] = [];
-  const canalM = waterMaterial(1.0);
-  const fallM = waterMaterial(1.15, 1, FALL_VS);
+  const canalM = waterMaterial(0.8);
+  const fallM = waterMaterial(0.85, 1, FALL_VS);
   water.push(canalM, fallM);
   const canalGroup = new THREE.Group();
   city.add(canalGroup);
@@ -328,7 +349,7 @@ export function buildCity(): CityModel {
       const v0 = VCANAL * (1 + layer * 0.18);
       for (let j = 0; j <= 40; j++) {
         const tt = (j / 40) * FALL_T, d = 0.5 * G * tt * tt;
-        fr.push({ c: new THREE.Vector3(0, 0.6 - d, R + 4 + v0 * tt + layer * 1.5), side: X, w: (w - 2 + layer * 5) * (1 + 0.35 * (d / CITY.LIFT)), s: s + v0 * tt + d, f: f + tt, d, seed: layer + ci * 3 });
+        fr.push({ c: new THREE.Vector3(0, 0.6 - d, R + 4 + v0 * tt + layer * 1.5), side: X, w: (w - 2 + layer * 6) * (1 + 1.7 * (d / CITY.LIFT) ** 1.4), s: s + v0 * tt + d, f: f + tt, d, seed: layer + ci * 3 });
       }
       const rot = new THREE.Matrix4().makeRotationY(deg * D2R);
       for (const row of fr) row.c.applyMatrix4(rot);
@@ -356,6 +377,20 @@ export function buildCity(): CityModel {
     b.build(canalGroup, `canal${ci}`);
     tris += b.tris;
   });
+  // From the front pool a shallow run of light-water flows over the ground toward the viewer and out of the first
+  // screen: where it leaves the hero, the page's own stream takes over.
+  {
+    const rows: Row[] = [];
+    const z0 = LAND + 30, z1 = LAND + RUN_LEN;
+    for (let z = z0; z <= z1; z += 12) {
+      const k = (z - z0) / (z1 - z0);
+      rows.push({ c: new THREE.Vector3(Math.sin(k * 5.5) * 9 * k, -CITY.LIFT + 0.8, z), side: X, w: 15 + 5 * k, s: RUN_S0 + (z - z0) * RUN_REVEAL, f: 40 + (z - z0) / 60, seed: 31 });
+    }
+    const m = new THREE.Mesh(strip(rows, 6), canalM);
+    m.frustumCulled = false;
+    m.userData.noWire = true;
+    root.add(m);
+  }
   // The moat round the spire.
   {
     // The moat fills before the canals: its distances run up to 0, where the canals start.
@@ -391,7 +426,7 @@ export function buildCity(): CityModel {
   const facade = (b: Builder, secs: Section[], o: { bays: number; floor: number; rooms: THREE.Material; frame: THREE.Material; seg?: number; belt?: number; ribs?: number; finDepth?: number; ribDepth?: number; slabOut?: number; seed?: number; cx?: number; cz?: number }) => {
     const seg = o.seg ?? Math.max(56, o.bays * 2);
     const M = at(o.cx ?? 0, 0, o.cz ?? 0);
-    b.add(loft(secs, seg, { bays: o.bays, floor: o.floor, depth: o.floor * 1.2, seed: o.seed ?? 0, cap: true }), o.rooms, M, { uv: 'keep' });
+    b.add(loft(secs, seg, { bays: o.bays, floor: o.floor, depth: o.floor * 1.2, seed: o.seed ?? facadeSeed++, cap: true }), o.rooms, M, { uv: 'keep' });
     const y0 = secs[0].y, y1 = secs[secs.length - 1].y;
     const floors = Math.max(1, Math.round((y1 - y0) / o.floor));
     for (let k = 0; k <= floors; k++) {
@@ -427,7 +462,7 @@ export function buildCity(): CityModel {
       blade.translate(0, 0, -2.5);
       S.b.add(blade, ivory, xf({ r: [0, (deg - 90) * D2R, 0] }));
       const edge = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.slice(0, 29).map((p) => new THREE.Vector3(p.x + 0.5, p.y, 0))), 80, 1.6, 8);
-      S.b.add(edge, brass, xf({ r: [0, (deg - 90) * D2R, 0] }));
+      S.b.add(edge, domeBrass, xf({ r: [0, (deg - 90) * D2R, 0] }));
       // Brass bands across the fin every so often.
       for (let i = 2; i < 24; i += 3) {
         const tt = i / 24, y = tt * BLADE;
@@ -829,7 +864,7 @@ export function buildCity(): CityModel {
     for (let k = 0; k < 5; k++) for (let a = 72 * k + 19; a < 72 * k + 55; a += 6) { const [x, z] = pol(326, a); const rot = xf({ p: [x, L0, z], r: [0, a * D2R, 0] }); b.add(rbox(4.2, 0.5, 1.3, 0.2), bronze, xf({ p: [0, 1.4, -1.6] }).premultiply(rot)); b.add(rbox(4.2, 1.4, 0.4, 0.15), bronze, xf({ p: [0, 2.1, -2.3] }).premultiply(rot)); for (const e of [-1.8, 1.8]) b.add(rbox(0.4, 1.4, 1, 0.1), dark, xf({ p: [e, 0.7, -1.6] }).premultiply(rot)); }
     b.build(folk, 'paths');
     // Shrubs in loose clusters on the lawn and round the trees.
-    const shrubG = (() => { const parts: THREE.BufferGeometry[] = []; const rs = seeded(77); for (let i = 0; i < 5; i++) { const g = new THREE.IcosahedronGeometry(1.1 + rs() * 0.7, 2); g.translate((rs() - 0.5) * 3, 1 + rs() * 0.8, (rs() - 0.5) * 3); parts.push(g); } const w = mergeList(parts); w.deleteAttribute('normal'); w.deleteAttribute('uv'); const g = mergeVertices(w, 1e-3); g.computeVertexNormals(); const p = g.getAttribute('position'); const col = new Float32Array(p.count * 3); for (let i = 0; i < p.count; i++) { const k = 0.5 + 0.22 * p.getY(i); col.set([k, k, k], i * 3); } g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); return g; })();
+    const shrubG = (() => { const parts: THREE.BufferGeometry[] = []; const rs = seeded(77); for (let i = 0; i < 5; i++) { const g = new THREE.IcosahedronGeometry(1.1 + rs() * 0.7, 1); g.translate((rs() - 0.5) * 3, 1 + rs() * 0.8, (rs() - 0.5) * 3); parts.push(g); } const w = mergeList(parts); w.deleteAttribute('normal'); w.deleteAttribute('uv'); const g = mergeVertices(w, 1e-3); g.computeVertexNormals(); const p = g.getAttribute('position'); const col = new Float32Array(p.count * 3); for (let i = 0; i < p.count; i++) { const k = 0.5 + 0.22 * p.getY(i); col.set([k, k, k], i * 3); } g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); return g; })();
     const shrubs: [number, number][] = [];
     for (let c = 0; c < 70; c++) { const deg = r() * 360, q = 298 + r() * 112; const [x0, z0] = pol(q, deg); for (let i = 0; i < 5; i++) { const x = x0 + (r() - 0.5) * 12, z = z0 + (r() - 0.5) * 12; const dd = Math.atan2(x, z) / D2R, qq = Math.hypot(x, z); if (CANALS.some((cc) => Math.abs(((dd - cc + 540) % 360) - 180) < 7) || Math.abs(qq - 326) < 8 || keepOut.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; shrubs.push([x, z]); } }
     const sim = new THREE.InstancedMesh(shrubG, leafM, shrubs.length);
@@ -965,8 +1000,49 @@ export function buildCity(): CityModel {
   const slabG = new THREE.CircleGeometry(4000, 128); slabG.rotateX(-Math.PI / 2);
   const gridTex = grid(); gridTex.repeat.set(40, 40);
   const fade = radial([[0, 1], [0.225, 1], [0.75, 0]]);
-  const slabM = new THREE.MeshStandardMaterial({ color: 0x0f0c0a, roughness: 0.55, metalness: 0.2, emissive: 0xffffff, emissiveMap: gridTex, emissiveIntensity: 0.32, alphaMap: fade, transparent: true });
+  const slabM = new THREE.MeshStandardMaterial({ color: 0x0f0c0a, roughness: 0.92, metalness: 0, emissive: 0xffa458, emissiveIntensity: 0.32, alphaMap: fade, transparent: true });
+  void gridTex;
   slabM.name = 'slab';
+  // Unlit, the slab is the page's own dark, so it fades into the page with no band.
+  const bgC = new THREE.Color(COLORS.bg);
+  const bgLin = [bgC.r, bgC.g, bgC.b];
+  // The grid belongs to the ground under the city only (kit 01): it fades out past the city's footprint.
+  // The ground keeps a faint polar plan of the city (its terrace rings, canal and sector lines, a fine polar mesh),
+  // the same drawing the opening traces in light, fading out past the city's footprint.
+  const planRings = [92, 104, 234, 292, R - 40, R].map((v) => v.toFixed(1)).join(', ');
+  const bgGlsl = bgLin.map((v) => v.toFixed(5)).join(', ');
+  slabM.userData.planDraw = { value: 2 };
+  slabM.onBeforeCompile = (sh) => {
+    sh.uniforms.uPlanDraw = slabM.userData.planDraw;
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vSlabPos;')
+      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvSlabPos = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+varying vec3 vSlabPos;
+uniform float uPlanDraw;
+const float PLAN_R[6] = float[](${planRings});
+float planLine(float d, float w){ float f = fwidth(d) + 1e-4; float ww = max(w, f * 0.75); return (1.0 - smoothstep(ww, ww + f, abs(d))) * (w / ww); }`)
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+{
+  vec2 q = vSlabPos.xz / ${CITY.SCALE.toFixed(6)};
+  float rr = length(q), a = atan(q.x, q.y);
+  float g = 0.0;
+  for (int i = 0; i < 6; i++) g = max(g, planLine(rr - PLAN_R[i], 0.5));
+  float sect = 6.2831853 / 10.0;
+  g = max(g, planLine((fract(a / sect + 0.5) - 0.5) * sect * rr, 0.45) * step(80.0, rr));
+  float fs = sect / 6.0;
+  float fine = max(planLine((fract(rr / 26.0 + 0.5) - 0.5) * 26.0, 0.25), planLine((fract(a / fs + 0.5) - 0.5) * fs * rr, 0.25)) * 0.35;
+  g = max(g, fine * step(60.0, rr));
+  // During the opening the plan is drawn outward from the centre behind a hot leading edge.
+  float front = uPlanDraw * ${(R + 260).toFixed(1)};
+  float drawn = 1.0 - smoothstep(front - 6.0, front + 2.0, rr);
+  float edge = exp(-pow((rr - front) / 10.0, 2.0)) * step(uPlanDraw, 1.5);
+  totalEmissiveRadiance *= g * (1.0 - smoothstep(${(R + 60).toFixed(1)}, ${(R + 260).toFixed(1)}, rr)) * (drawn + edge * 3.0) + emissive * edge * 0.35 * (1.0 - smoothstep(${(R + 60).toFixed(1)}, ${(R + 260).toFixed(1)}, rr));
+}
+totalEmissiveRadiance += vec3(${bgGlsl});`);
+  };
+  slabM.customProgramCacheKey = () => 'slab-polar-plan';
   const slabMesh = new THREE.Mesh(slabG, slabM);
   slabMesh.position.y = -CITY.LIFT;
   slabMesh.receiveShadow = true;
@@ -984,23 +1060,23 @@ export function buildCity(): CityModel {
   const mistTex = radial([[0, 0.55], [0.4, 0.18], [1, 0]]);
   for (const deg of CANALS) {
     const [x, z] = pol(LAND + 2, deg);
-    const n = deg === 0 ? 220 : 120;
-    for (let i = 0; i < n; i++) { sprayPos.push(x + (r() - 0.5) * 14, -CITY.LIFT + 0.5, z + (r() - 0.5) * 10); spraySeed.push(r(), r(), r(), 1.4 + r() * 1.8); }
+    const n = deg === 0 ? 420 : 280;
+    for (let i = 0; i < n; i++) { sprayPos.push(x + (r() - 0.5) * 14, -CITY.LIFT + 0.5, z + (r() - 0.5) * 10); spraySeed.push(r(), r(), r(), 2.4 + r() * 3.2); }
     const pm = poolM.clone();
     pm.uniforms.uSeed.value = r();
     pools.push(pm);
-    const pool = new THREE.Mesh(new THREE.CircleGeometry(deg === 0 ? 64 : 44, 64).rotateX(-Math.PI / 2), pm);
+    const pool = new THREE.Mesh(new THREE.CircleGeometry(deg === 0 ? 86 : 64, 96).rotateX(-Math.PI / 2), pm);
     pool.position.set(x, -CITY.LIFT + 0.5, z);
     pool.userData.noWire = true;
     root.add(pool);
     // A crown of water thrown up round the impact, flickering.
-    { const cg = new THREE.CylinderGeometry(deg === 0 ? 11 : 8, deg === 0 ? 5 : 3.6, deg === 0 ? 9 : 6.5, 64, 1, true); cg.translate(0, (deg === 0 ? 9 : 6.5) / 2, 0); const cm = crownM.clone(); cm.uniforms.uH.value = deg === 0 ? 9 : 6.5; cm.uniforms.uSeed.value = r() * 10; crowns.push(cm); const crown = new THREE.Mesh(cg, cm); crown.position.set(x, -CITY.LIFT + 0.4, z); crown.userData.noWire = true; root.add(crown); }
+    { const cg = new THREE.CylinderGeometry(deg === 0 ? 30 : 23, deg === 0 ? 9 : 7, deg === 0 ? 26 : 20, 96, 1, true); cg.translate(0, (deg === 0 ? 26 : 20) / 2, 0); const cm = crownM.clone(); cm.uniforms.uH.value = deg === 0 ? 26 : 20; cm.uniforms.uSeed.value = r() * 10; crowns.push(cm); const crown = new THREE.Mesh(cg, cm); crown.position.set(x, -CITY.LIFT + 0.4, z); crown.userData.noWire = true; root.add(crown); }
     // Mist hanging over the landing.
     const mm = new THREE.SpriteMaterial({ map: mistTex, color: new THREE.Color(0xff9a48).multiplyScalar(0.9), blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0 });
     mists.push(mm);
     const mist = new THREE.Sprite(mm);
-    mist.position.set(x, -CITY.LIFT + (deg === 0 ? 16 : 12), z);
-    mist.scale.setScalar(deg === 0 ? 70 : 50);
+    mist.position.set(x, -CITY.LIFT + (deg === 0 ? 24 : 18), z);
+    mist.scale.setScalar(deg === 0 ? 110 : 80);
     mist.userData.noWire = true;
     root.add(mist);
   }
@@ -1140,9 +1216,9 @@ function makeTree(kind: number, rnd: () => number): { leaf: THREE.BufferGeometry
       const a = (i / n) * Math.PI * 2 * 2.3 + rnd() * 0.8, rr = 1.4 + rnd() * 3.4, y = H + 0.5 + rnd() * 5;
       const x = Math.cos(a) * rr, z = Math.sin(a) * rr;
       if (i % 2 === 0) limb(new THREE.Vector3(0, H - 2.5, 0), new THREE.Vector3(x * 0.7, y - 0.8, z * 0.7), 0.22);
-      lump(1.5 + rnd() * 1.1, x, y, z, 0.8, 2);
+      lump(1.5 + rnd() * 1.1, x, y, z, 0.8, 1);
     }
-    lump(2.2, 0, H + 4.2, 0, 0.85, 2);
+    lump(2.2, 0, H + 4.2, 0, 0.85, 1);
   } else if (kind === 1) {
     const H = 3 + rnd();
     limb(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, H + 4, 0), 0.45);

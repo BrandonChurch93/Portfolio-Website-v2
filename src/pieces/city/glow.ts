@@ -90,7 +90,7 @@ float oNoise(vec3 x){ vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * 
   float pch = oNoise(gp * 0.035) * 0.6 + oNoise(gp * 0.11 + 7.0) * 0.4;
   float band = 0.5 + 0.5 * sin(atan(gp.x, gp.z) * 90.0);
   float blades = oNoise(vec3(gp.x * 2.4, 0.0, gp.z * 2.4));
-  diffuseColor.rgb *= 0.72 + 0.4 * pch;
+  diffuseColor.rgb *= 0.6 + 0.65 * pch;
   diffuseColor.rgb *= 0.94 + 0.08 * band;
   diffuseColor.rgb *= 0.86 + 0.28 * blades;
   diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.18, 1.05, 0.7), smoothstep(0.62, 0.8, oNoise(gp * 0.05 + 3.0)) * 0.6);`;

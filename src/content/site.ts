@@ -114,7 +114,7 @@ export const site = {
   },
 
   hero: {
-    headline: 'I build things I want to exist.',
+    headline: 'I build things I\u00a0want to exist.',
     sub: "I'm Brandon. Equal parts designer and engineer. I like making things that help people, and I usually start because something looks fun to try.",
     cue: 'Follow the water',
     cityAlt: 'A floating round city of the future, with a central spire, towers, parks and canals of golden water pouring off its rim.',

@@ -2,6 +2,7 @@ import { ROUTES } from '../config/site';
 import { projectBySlug, site, type Project } from '../content/site';
 import { ContactLinks } from '../components/ContactLinks';
 import { Doors } from '../components/Doors';
+import { Hero } from '../components/Hero';
 import { Ledger } from '../components/Ledger';
 import { Letter } from '../components/Letter';
 import { MetalLink } from '../components/MetalLink';
@@ -15,14 +16,7 @@ const featured = site.work.featured.map((s) => projectBySlug(s)).filter((p): p i
 export default function Home() {
   return (
     <main id="main" className={page.main}>
-      <section id="hero" className={styles.hero} aria-labelledby="hero-title">
-        <div className={styles.stage} aria-hidden="true" />
-        <div className={`${page.wrap} ${styles.heroWords}`}>
-          <h1 id="hero-title" className={styles.headline}>{site.hero.headline}</h1>
-          <p className={styles.heroSub}>{site.hero.sub}</p>
-          <a href="#work" className={styles.cue}>{site.hero.cue}</a>
-        </div>
-      </section>
+      <Hero />
 
       <section id="work" className={page.section} aria-labelledby="work-title">
         <div className={page.wrap}>

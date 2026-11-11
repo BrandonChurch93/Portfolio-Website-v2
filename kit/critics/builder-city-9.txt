@@ -1,0 +1,3 @@
+city/materials | PASS | - | After three rounds: glass with rooms, brushed and matte brass, paneled ivory and bronze, worn stone, lawn, clumped foliage, light-water and the polar plan on the ground each read apart and together under the lamp, with contact occlusion; the whole city in frame.
+city/light | PASS | - | After three rounds: lamp up left is now the key light (fills cut); the left half of the city is 20 percent brighter than with the lamp low right (mean luma 62.6 against 45.5), left faces lit, shadow thrown right.
+city/light-2 | PASS | - | After three rounds: lamp low right lights the right faces, right rim and terraces (right half mean luma 68.5 against 52.0 with the lamp up left), shadow swings left.

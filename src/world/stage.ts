@@ -5,6 +5,7 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { SimplexNoise } from 'three/addons/math/SimplexNoise.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import type { Tier } from '../config/site';
@@ -22,12 +23,15 @@ export interface StageOptions {
   far?: number;
   bloom?: { strength: number; threshold: number; radius: number };
   ao?: number;
+  aoIntensity?: number;
   envIntensity?: number;
+  lampTarget?: [number, number, number];
+  lampAngle?: number;
   exposure?: number;
 }
 
 const TIER_POST: Record<Tier, { ao: boolean; aoScale: number; shadow: number; smaa: boolean }> = {
-  high: { ao: true, aoScale: 1, shadow: 2048, smaa: true },
+  high: { ao: true, aoScale: 0.6, shadow: 2048, smaa: true },
   mid: { ao: true, aoScale: 0.5, shadow: 1024, smaa: true },
   low: { ao: false, aoScale: 0, shadow: 1024, smaa: false },
   static: { ao: true, aoScale: 0.5, shadow: 2048, smaa: true },
@@ -51,24 +55,37 @@ function seededNoise(size = 64): THREE.DataTexture {
   return t;
 }
 
+// Last pass: a fixed pattern of half-level noise, so dark glows fade smoothly instead of stepping through 8-bit
+// levels. Fixed per pixel, so a frozen frame is still the same image.
+function ditherPass(): ShaderPass {
+  return new ShaderPass({
+    uniforms: { tDiffuse: { value: null } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: 'uniform sampler2D tDiffuse; varying vec2 vUv; float h(vec2 p){ vec3 q = fract(vec3(p.xyx) * 0.1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); } void main(){ vec4 c = texture2D(tDiffuse, vUv); float n = h(gl_FragCoord.xy) + h(gl_FragCoord.xy + 17.0) - 1.0; gl_FragColor = vec4(c.rgb + n / 255.0, c.a); }',
+  });
+}
+
 export class Stage {
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
   composer: EffectComposer;
   renderPass: RenderPass;
-  lamp: THREE.PointLight;
+  lamp: THREE.SpotLight;
   private ao: GTAOPass | null = null;
   bloom: UnrealBloomPass;
   private smaa: SMAAPass | null = null;
   private envRT: THREE.WebGLRenderTarget;
   private making = false;
+  private exposureBefore = 1;
   private wire: THREE.Mesh[] = [];
   private stats: HTMLDivElement;
   tier: Tier;
   width = 1;
   height = 1;
   frameMs = 0;
+  // A factor on the tier's pixel ratio, for moments in motion where full resolution is not needed.
+  private resScale = 1;
 
   constructor(private host: HTMLElement, private canvas: HTMLCanvasElement, private o: StageOptions) {
     this.tier = o.tier;
@@ -86,7 +103,11 @@ export class Stage {
     this.scene.environmentIntensity = o.envIntensity ?? 0.2;
     this.camera = new THREE.PerspectiveCamera(o.fov ?? 32, 1, o.near ?? 0.05, o.far ?? 30);
 
-    this.lamp = new THREE.PointLight(0xffdcb4, 3.2, 0, 2);
+    // The lamp is a wide, soft spot aimed at the piece: it lights like a bulb in front of it, and its shadows take one
+    // map instead of a point light's six.
+    this.lamp = new THREE.SpotLight(0xffdcb4, 3.2, 0, o.lampAngle ?? 1.15, 0.7, 2);
+    this.lamp.target.position.set(...(o.lampTarget ?? [0, 0, 0]));
+    this.scene.add(this.lamp.target);
     this.lamp.castShadow = true;
     this.lamp.shadow.bias = -0.0012;
     this.lamp.shadow.normalBias = 0.003;
@@ -118,8 +139,12 @@ export class Stage {
     const t = TIER_POST[this.tier];
     if (t.ao) {
       this.ao = new GTAOPass(this.scene, this.camera, 256, 256);
-      this.ao.updateGtaoMaterial({ radius: this.o.ao ?? 0.035, distanceExponent: 1, thickness: 1, scale: 1, samples: this.tier === 'high' ? 16 : 8 });
+      this.ao.updateGtaoMaterial({ radius: this.o.ao ?? 0.035, distanceExponent: 1.6, thickness: 0.6, scale: 1.25, samples: this.tier === 'high' ? 16 : 8 });
+      this.ao.blendIntensity = this.o.aoIntensity ?? 1;
       this.ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: this.tier === 'high' ? 16 : 8 });
+      // Occlusion is soft; it is worked out at a fraction of the screen's pixels and blended up.
+      const aoPass = this.ao, aoSet = aoPass.setSize.bind(aoPass), sc = t.aoScale;
+      aoPass.setSize = (w: number, h: number) => aoSet(Math.max(1, Math.round(w * sc)), Math.max(1, Math.round(h * sc)));
       const pd = (this.ao as unknown as { pdMaterial: THREE.ShaderMaterial }).pdMaterial;
       pd.uniforms.tNoise.value = seededNoise();
       // Light (glows, light-water, additive veils) casts no occlusion: keep it out of the normal and depth pass.
@@ -139,9 +164,16 @@ export class Stage {
     c.addPass(this.bloom);
     c.addPass(new OutputPass());
     if (t.smaa) { this.smaa = new SMAAPass(); c.addPass(this.smaa); }
+    c.addPass(ditherPass());
     this.lamp.shadow.mapSize.set(t.shadow, t.shadow);
     this.lamp.shadow.map?.dispose();
     this.lamp.shadow.map = null as unknown as THREE.WebGLRenderTarget;
+  }
+
+  setResolutionScale(k: number): void {
+    if (k === this.resScale) return;
+    this.resScale = k;
+    this.resize();
   }
 
   setTier(tier: Tier): void {
@@ -154,7 +186,7 @@ export class Stage {
   resize(): void {
     const r = this.host.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
-    const dpr = pixelRatioFor(this.tier, devicePixelRatio || 1);
+    const dpr = pixelRatioFor(this.tier, devicePixelRatio || 1) * this.resScale;
     this.width = w;
     this.height = h;
     this.renderer.setPixelRatio(dpr);
@@ -170,12 +202,15 @@ export class Stage {
     if (on === this.making) return;
     this.making = on;
     if (on) {
-      const mat = new THREE.MeshBasicMaterial({ color: 0xd4a574, wireframe: true, transparent: true, opacity: 0.32, depthWrite: false, toneMapped: false });
+      // Wire over the built geometry only (instanced crowds and foliage would turn to fuzz), the lit surface
+      // dimmed underneath so the lines read and the materials still show through.
+      const mat = new THREE.MeshBasicMaterial({ color: 0xe8bd8a, wireframe: true, transparent: true, opacity: 0.75, depthWrite: false, toneMapped: false });
       const list: THREE.Mesh[] = [];
-      root.traverse((o) => { if (o instanceof THREE.Mesh && !o.userData.noWire && o.visible) list.push(o); });
+      root.traverse((o) => { if (o instanceof THREE.Mesh && !(o instanceof THREE.InstancedMesh) && !o.userData.noWire && o.visible) list.push(o); });
+      this.exposureBefore = this.renderer.toneMappingExposure;
+      this.renderer.toneMappingExposure = this.exposureBefore * 0.3;
       for (const o of list) {
-        const w = o instanceof THREE.InstancedMesh ? new THREE.InstancedMesh(o.geometry, mat, o.count) : new THREE.Mesh(o.geometry, mat);
-        if (o instanceof THREE.InstancedMesh && w instanceof THREE.InstancedMesh) w.instanceMatrix = o.instanceMatrix;
+        const w = new THREE.Mesh(o.geometry, mat);
         w.matrixAutoUpdate = false;
         w.matrix.copy(o.matrix);
         w.renderOrder = 10;
@@ -186,6 +221,7 @@ export class Stage {
     } else {
       for (const w of this.wire) w.parent?.remove(w);
       this.wire = [];
+      this.renderer.toneMappingExposure = this.exposureBefore;
     }
     this.host.dataset.making = on ? 'on' : 'off';
   }
