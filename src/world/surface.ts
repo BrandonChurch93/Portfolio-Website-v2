@@ -13,6 +13,7 @@ float wFbm(vec3 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++){ s += a 
 
 export interface Chunks {
   head?: string;
+  vhead?: string;
   vert?: string;
   color?: string;
   rough?: string;
@@ -27,7 +28,7 @@ export function shade<M extends THREE.MeshStandardMaterial>(m: M, key: string, c
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, m.userData.uniforms ?? {});
     sh.vertexShader = sh.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vObj;\nvarying vec3 vObjN;\nvarying vec3 vAxX;\nvarying vec3 vAxY;')
+      .replace('#include <common>', `#include <common>\nvarying vec3 vObj;\nvarying vec3 vObjN;\nvarying vec3 vAxX;\nvarying vec3 vAxY;\n${c.vhead ?? ''}`)
       .replace('#include <begin_vertex>', `#include <begin_vertex>\nvObj = position;\nvObjN = normal;\nvAxX = normalize(mat3(modelViewMatrix) * vec3(1.0, 0.0, 0.0));\nvAxY = normalize(mat3(modelViewMatrix) * vec3(0.0, 1.0, 0.0));\n${c.vert ?? ''}`);
     let f = sh.fragmentShader.replace('#include <common>', `#include <common>\nvarying vec3 vObj;\nvarying vec3 vObjN;\nvarying vec3 vAxX;\nvarying vec3 vAxY;\n${NOISE}\n${c.head ?? ''}`);
     if (c.color) f = f.replace('#include <color_fragment>', `#include <color_fragment>\n${c.color}`);

@@ -6,4 +6,5 @@ export const pieceLoaders: Record<string, () => Promise<PieceFactory>> = {
   workbench: () => import('./workbench/index').then((m) => m.createWorkbench),
   handheld: () => import('./handheld/index').then((m) => m.createHandheld),
   camera: () => import('./camera/index').then((m) => m.createCamera),
+  sculpture: () => import('./sculpture/index').then((m) => m.createSculpture),
 };

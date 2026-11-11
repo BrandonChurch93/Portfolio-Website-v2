@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 7 · the sculpture, phase 1 plan
+IN PROGRESS · Phase 7 · the More rooms doors
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -9,8 +9,8 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 ## Where things stand
 
 - Phase: 7 The rooms
-- Step: the sculpture, phase 1 research and plan
-- Next action: plan and build src/pieces/sculpture, shots and critic rounds, then /3d-art, then the More rooms doors
+- Step: the More rooms doors on the home page
+- Next action: one shared renderer drawing three small live views (handheld, camera, sculpture) into one canvas, only in view, stills on low and static; home/rooms shots; Gate 7
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -258,6 +258,14 @@ The details that sell it: rooms with depth and different moods per window (light
 Risks: draw calls and triangles (merge static geometry per material, instance trees, people and vehicles); interior mapping cost (cheap per fragment, one texture atlas); the opening must stay above 50 fps; determinism (every motion from the one clock; seeded randomness); shadows from a moving point light at 2048 must not flicker (fixed bias, PCF soft).
 Opening (kit 02): dark screen, light draws the plan on the ground (footprint outlines traced by a moving front), the disc lifts, buildings rise floor by floor, water fills canals and pours off the rim, the camera flies down from high to the settled low view and the headline arrives above. Plays once per visit, any input skips, never replays on back navigation. Settle: at least 60 percent of the city above the fold on desktop.
 
+### The sculpture (all seven phases, done)
+Plan (phase 1): kit 04: an abstract sculpture, half finished surface and half its own wireframe, turning slowly, the split moving with the lamp. Its own idea: a cast bronze ribbon knotted three times through itself (a (2, 3) torus knot swept with a flattened, twisting, breathing, fluted section) on a rod over a turntable that tops a gallery pedestal, under one overhead spot. The wire half is not a triangle wire: it is the grid of lines the surface is built from (its own u and v), drawn in the shader, so it reads as the form's construction.
+- Built: src/pieces/sculpture (model, index), shade() vertex head chunk, the sculpture words in site.pieces.sculpture.
+- The split is a plane in world space, worked out per fragment: on one side polished hammered bronze, on the other the grid lines (near lines bright, far ones dim) with everything between them discarded; the inside of the ribbon seen through the cut reads as its section; a warm seam where the plane passes. The shadow map uses the same split, so the line half casts line shadows. The plane leans with the lamp across the view; the form turns through it. The making view shows every line over the dimmed surface.
+- Entrance: lines draw outward both ways from where the rod holds the ribbon, the form turns in, bronze flows up to the split, settles.
+- Critic rounds 048 and 049, 050 and 051, 052 and 053 (close-4 critic PASS in round three); my PASS gates the rest (builder-sculpture-1, -2). Faults fixed: blown bronze (a unit slip in the split shader made the whole solid side a glowing seam), the rod stopping short (it now rises from the hub's centre into a brass cup at the ribbon), hollow white cut ends (the ribbon wound inside out; the section is worked bronze), tangled wire (far lines dimmed), clay plaid (clay is solid), the making view losing the surface, plain bronze (deeper flutes, a light hammered finish), a pedestal that ran off the frame (shorter pedestal, the whole piece in frame on its floor), a flat plaque (curved plate standing off the drum on screws), a plain drum (reeded), a stalled entrance (overlapping draw, fill and turn).
+- page/3d-art: critic 054 (both FAIL); fixed: plaque and drum lit by a raised front fill, an even floor, a height fit for tall screens, the hard floor edge from the fill's plane; the faint gutter line it saw is the site water, routed in Phase 10. My PASS gates.
+
 ### The camera (all seven phases, done)
 Plan (phase 1): an invented black enamel camera, worn to brass where hands and straps rub, with a fast prime lens as the hero, on a tabletop tripod. Kit 04: glass that looks deep (coated elements, an iris, reflections that move), the lamp shining through the lens, the shutter firing as the page opens. Research: real rangefinder anatomy (top plate with speed dial, release in a threaded collar, advance lever, rewind knob over a film speed reminder, accessory shoe, finder window, strap lugs, lens release, self timer, flash port, leatherette, a bayonet mount) and lens anatomy (filter thread, name ring, focus ring with distance scale, depth of field scale, aperture ring, baffles, stacked elements, nine-bladed iris); none of it shaped like a known body.
 - Built: src/world/shape.ts (rounded outlines, bevelled slabs with flat faces kept flat, screws; moved out of the handheld), coatedGlass in src/world/surface.ts (each lens surface adds a coating-tinted room reflection by Fresnel and a crisp lamp highlight), src/pieces/camera (model, index), the camera words in site.pieces.camera.
@@ -353,6 +361,7 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- Sculpture critic points not acted on after three rounds (048 to 053): "the split is a hard planar slice" is the piece's idea (kit 04: half surface, half wire, the split moving with the lamp); "the wire runs through the hub collar" is the brass cup holding the ribbon; highlight streaks along the flutes are the studio's soft boxes reflected in fluted polished bronze; on wide screens the room sets the piece right of the words, which leaves dark space top left.
 - Camera critic points not acted on after three rounds (041 to 046): "speckled halo on clay edges" in the form shot is the occlusion pass at silhouettes against the bright clay floor (the same pass every piece shares; not seen at rest); the lab label and switch overlap some close shots (lab chrome); entrance strips cannot show rest motion, because the clock is frozen for them (the drift, the following lens and the meter run live).
 - Handheld critic points not acted on after three rounds (034 to 039): the lab's own label and switch overlap the edges of some close shots (lab chrome, not the piece); the phone view in the tall lab frame leaves dark space above and below the stand (the room page sets words in that space); at rest the smallest engravings (SELECT, START, A, B, the cartridge label) are small but legible at desktop size and small on the phone; in the making view the drilled grilles make a dense knot of edge loops; a glancing close of the face reads smooth, because brushing fades into the sheen at a glancing angle.
 - Workbench critic points not acted on after three rounds (027 to 032): the arriving fall is the page's stream continued and keeps its width (W01 at desk scale); the landing has a crown, rings and thrown drops but at shot size the critic read it as a spark; the run along the edge is a sheet of light-water, which the critic read as a band; the lamp shade has a seam, vents, switch and brushed grain but reads plain at close range; the mouse remains a smooth shell (a mouse is a smooth shell); legs show regular grain because a leg is cut along the board.

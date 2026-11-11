@@ -1,0 +1,13 @@
+shots/sculpture/form.jpg | sha: 655b12e0ad73 | PASS | - | Clay reads from across the room: the knotted ribbon on its rod, turntable, reeded pedestal with its plate, on the floor.
+shots/sculpture/close-1.jpg | sha: f6b428a9ecb1 | PASS | - | Polished hammered bronze meeting its own line grid at the split, cut ends read as sections, the rod held in a brass cup.
+shots/sculpture/close-2.jpg | sha: 54396518619d | PASS | - | Fluted, hammered bronze with real reflections; the split edge and the grid beyond it.
+shots/sculpture/close-3.jpg | sha: 64a8f7abc31d | PASS | - | The grid side at close range, near lines over far ones, the bronze ending cleanly at the split.
+shots/sculpture/close-4.jpg | sha: bd2f918438a7 | PASS | - | Turntable: brass rim, inlaid rings, six screws, degree ticks, felt and stone.
+shots/sculpture/close-5.jpg | sha: e7d62f0e1179 | PASS | - | The curved plate standing off the drum on its screws, engraved title and line.
+shots/sculpture/close-6.jpg | sha: ea09ac4ada8a | PASS | - | Reeded drum, the plate, the plinth step and floor contact under the gallery light.
+shots/sculpture/light.jpg | sha: d69feed338ce | PASS | - | Lamp left: the split leans with it and the bronze highlight moves.
+shots/sculpture/light-2.jpg | sha: 56adb601030b | PASS | - | Lamp right: the split swings across and the highlights follow.
+shots/sculpture/making.jpg | sha: 48a88a781155 | PASS | - | Every line of the form over its dimmed surface, the pedestal in edges, readout in mono.
+shots/sculpture/rest-desktop.jpg | sha: 1ad37c37e437 | PASS | - | Half bronze, half line, turning on its pedestal in a pool of light; whole piece in frame.
+shots/sculpture/rest-phone.jpg | sha: 37e7f5130959 | PASS | - | Whole piece in frame at full density, plate legible.
+shots/sculpture/entrance.jpg | sha: b11a4e2d6eab | PASS | - | Lines draw out from the rod along the knot, the form turns in, bronze flows up to the split and settles.

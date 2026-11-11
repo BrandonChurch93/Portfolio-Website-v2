@@ -137,6 +137,24 @@ SHOTS['camera/rest-desktop'] = cam([]);
 SHOTS['camera/rest-phone'] = cam([], { vp: 'phone' });
 SHOTS['camera/entrance'] = cam([['opening', 0]], { strip: { times: steps12(0, 2.6), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
 
+// ---- sculpture: /lab/piece/sculpture, the piece alone at rest --------------------------------------
+// aim takes millimetres of the room (the pedestal top at y 0, the form centred at y 250); view takes degrees and metres.
+const sc = (steps, extra = {}) => ({ route: '/lab/piece/sculpture/', vp: 'desktop', steps: [['freeze', 10], ['lamp', 0.55, 0.3], ...steps], ...extra });
+const sclose = (aim, view, lamp = [0.55, 0.35]) => sc([['lamp', ...lamp], ['piece:sculpture.aim', ...aim], ['piece:sculpture.view', ...view]]);
+SHOTS['sculpture/form'] = sc([['piece:sculpture.clay', true], ['piece:sculpture.view', 30, 12, 2.1]]);
+SHOTS['sculpture/close-1'] = sclose([0, 250, 0], [18, 12, 0.34]);
+SHOTS['sculpture/close-2'] = sclose([-90, 260, 40], [-12, 20, 0.22]);
+SHOTS['sculpture/close-3'] = sclose([90, 250, 30], [40, 8, 0.22]);
+SHOTS['sculpture/close-4'] = sclose([0, 15, 60], [10, 28, 0.3]);
+SHOTS['sculpture/close-5'] = sclose([0, -96, 130], [0, 4, 0.3]);
+SHOTS['sculpture/close-6'] = sclose([40, -200, 120], [22, 8, 0.55]);
+SHOTS['sculpture/light'] = sc([['lamp', 0.2, 0.3]]);
+SHOTS['sculpture/light-2'] = sc([['lamp', 0.85, 0.6]]);
+SHOTS['sculpture/making'] = sc([['piece:sculpture.setMaking', true]]);
+SHOTS['sculpture/rest-desktop'] = sc([]);
+SHOTS['sculpture/rest-phone'] = sc([], { vp: 'phone' });
+SHOTS['sculpture/entrance'] = sc([['opening', 0]], { strip: { times: steps12(0, 3.2), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
+
 // ---- home: the page itself ------------------------------------------------------------------------
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });
@@ -149,6 +167,7 @@ for (const v of VPS) SHOTS['page/skills-' + v] = { route: '/skills/', vp: v, ste
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/room-' + tr] = { route: '/games/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] };
 for (const v of VPS) SHOTS['page/games-' + v] = pageShot('/games/')(v);
 for (const v of VPS) SHOTS['page/photography-' + v] = pageShot('/photography/')(v);
+for (const v of VPS) SHOTS['page/3d-art-' + v] = pageShot('/3d-art/')(v);
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 
 export { SHOTS };
