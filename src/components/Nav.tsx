@@ -3,17 +3,13 @@
 import { SiteLink } from './SiteLink';
 import { usePathname } from 'next/navigation';
 import { useEffect, useId, useState } from 'react';
-import { ROUTES, SHOW_3D_ART, SITE_NAME } from '../config/site';
+import { ROUTES, SITE_NAME } from '../config/site';
 import { site } from '../content/site';
 import styles from './Nav.module.css';
 
 const ITEMS = [
   { href: ROUTES.work, label: site.ui.nav.work },
-  { href: ROUTES.clients, label: site.ui.nav.clients },
   { href: ROUTES.skills, label: site.ui.nav.skills },
-  { href: ROUTES.games, label: site.ui.nav.games },
-  { href: ROUTES.photography, label: site.ui.nav.photography },
-  ...(SHOW_3D_ART ? [{ href: ROUTES.art3d, label: site.ui.nav.art3d }] : []),
   { href: ROUTES.about, label: site.ui.nav.about },
   { href: ROUTES.resume, label: site.ui.nav.resume },
 ];

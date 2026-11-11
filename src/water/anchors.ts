@@ -2,7 +2,7 @@ import type { Anchor, AnchorKind, Rect, RouteOptions } from './route';
 
 // Reads the water's anchors from the page. Sections mark where the water may touch them:
 //   data-water="weave|corner|split|edge|pool"  data-water-side="left|right"
-//   data-water-frame="#id" (split)  data-water-from="0.08,0.76" data-water-to="0.89,0.98" (edge, fractions of the box)
+//   data-water-frame="#id" (split)  data-water-join="#id" (split: the control the halves meet behind)  data-water-from="0.08,0.76" data-water-to="0.89,0.98" (edge, fractions of the box)
 //   data-water-at="0.0,0.8" (pool: where it enters a piece that carries it on, a fraction of the box)
 //   data-water-start (the source: bottom center, or data-water-x as a fraction of its width)
 //   data-water-avoid (blocks of text it must not cross)  data-water-column (the page column it weaves around)
@@ -43,6 +43,8 @@ export function readAnchors(root: ParentNode, narrowBelow: number): { anchors: A
     if (kind === 'split' && el.dataset.waterFrame) {
       const f = document.querySelector(el.dataset.waterFrame);
       if (f) a.frame = pageRect(f);
+      const j = el.dataset.waterJoin ? document.querySelector(el.dataset.waterJoin) : null;
+      if (j) a.join = pageRect(j);
     }
     if (kind === 'pool') {
       const at = frac(el.dataset.waterAt ?? null);

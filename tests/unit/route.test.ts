@@ -186,3 +186,76 @@ describe('route builder · the end of a page with text below the last anchor', (
     expect(maxKink(route)).toBeLessThan(0.45);
   });
 });
+
+// The home page's work wall: the city's water falls onto a lintel set in from the cards, pours onto the top corners of
+// the outer cards, clings down both sides and meets behind the link under the wall.
+describe('route builder · the work wall', () => {
+  for (const narrow of [false, true]) {
+    const W = narrow ? 390 : 1440, left = narrow ? 22 : 160, right = W - left, inset = narrow ? 16 : 40;
+    const grid = rect(left, 1190, right - left, narrow ? 1600 : 900);
+    const bar = rect(left + inset, 1010, right - left - inset * 2, 56);
+    const more = rect(W / 2 - 110, grid.bottom + 60, 220, 48);
+    const head = rect(W / 2 - 150, more.bottom + 190, 300, 110);
+    const deskTop = head.bottom + 60;
+    const anchors: Anchor[] = [
+      { id: 'work', kind: 'split', rect: bar, frame: grid, join: more },
+      { id: 'desk', kind: 'edge', rect: rect(left, deskTop, right - left, 500), from: { x: left + 70, y: deskTop + 320 }, to: { x: right - 70, y: deskTop + 380 } },
+    ];
+    const o: RouteOptions = { start: { x: W / 2, y: 830 }, column: { left, right }, narrow, width: W, avoid: [head], endY: deskTop + 1200 };
+    const route = buildRoute(anchors, o);
+    const name = narrow ? 'phone' : 'desktop';
+    const split = route.landings.find((l) => l.anchor === 'work')!;
+    const halves = route.branches.filter((b) => Math.abs(b.samples[0].s - split.s) < 1e-6);
+    const inJoin = (p: { x: number; y: number }) => p.x > more.left && p.x < more.right && p.y > more.top && p.y < more.bottom;
+
+    it(`${name}: reaches the middle of the lintel in one fall`, () => {
+      expect(split.dir).toBe(0);
+      expect(Math.abs(split.x - W / 2)).toBeLessThan(1);
+      const first = route.branches[0].samples;
+      expect(first.every((p) => p.kind === KIND_ID.fall)).toBe(true);
+      expect(first.at(-1)!.y).toBeCloseTo(split.y, 3);
+    });
+
+    it(`${name}: pours onto the top corner of each outer card`, () => {
+      for (const [id, corner, dir] of [['work:landL', grid.left, -1], ['work:landR', grid.right, 1]] as const) {
+        const l = route.landings.find((x) => x.anchor === id)!;
+        expect(l, id).toBeDefined();
+        expect(l.dir).toBe(dir);
+        expect(l.y).toBeLessThan(grid.top);
+        expect(l.y).toBeGreaterThan(grid.top - 4);
+        const inFromCorner = dir * (corner - l.x);
+        expect(inFromCorner).toBeGreaterThanOrEqual(8 - 1e-6);
+        expect(inFromCorner).toBeLessThanOrEqual(34 + 1e-6);
+      }
+    });
+
+    it(`${name}: clings down both sides just outside the cards and never runs across them`, () => {
+      const clings = route.branches.flatMap((b) => b.samples).filter((p) => p.kind === KIND_ID.cling && p.y > grid.top + 20 && p.y < grid.bottom);
+      expect(clings.some((p) => p.x < grid.left && p.x > grid.left - 8)).toBe(true);
+      expect(clings.some((p) => p.x > grid.right && p.x < grid.right + 8)).toBe(true);
+      expect(crossings(route, [rect(grid.left + 12, grid.top + 12, grid.right - grid.left - 24, grid.bottom - grid.top - 24)], 0)).toEqual([]);
+    });
+
+    it(`${name}: the two sides share their distances, meet behind the link, and one stream goes on from there`, () => {
+      // Four strands leave the middle: each side's run and pour, then its cling and turn in after the landing.
+      const lands = route.landings.filter((l) => l.anchor.startsWith('work:land'));
+      expect(halves.length).toBe(2);
+      expect(Math.abs(lands[0].s - lands[1].s)).toBeLessThan(1e-6);
+      const sides = route.branches.filter((b) => Math.abs(b.samples[0].s - lands[0].s) < 1e-6);
+      expect(sides.length).toBe(2);
+      const ends = sides.map((b) => b.samples.at(-1)!);
+      for (const e of ends) expect(inJoin(e)).toBe(true);
+      expect(Math.abs(ends[0].s - ends[1].s)).toBeLessThan(1e-6);
+      const after = route.branches.find((b) => Math.abs(b.samples[0].s - ends[0].s) < 1e-6 && !sides.includes(b))!;
+      expect(after).toBeDefined();
+      expect(inJoin(after.samples[0])).toBe(true);
+    });
+
+    it(`${name}: goes on to the desk, crosses no text, and has no kink`, () => {
+      expect(route.landings.map((l) => l.anchor)).toContain('desk');
+      expect(crossings(route, [head])).toEqual([]);
+      expect(maxKink(route)).toBeLessThan(0.45);
+      for (const b of route.branches) for (let i = 1; i < b.samples.length; i++) expect(b.samples[i].s).toBeGreaterThan(b.samples[i - 1].s);
+    });
+  }
+});

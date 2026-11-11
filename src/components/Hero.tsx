@@ -62,7 +62,7 @@ export function Hero() {
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-title" data-ready={ready ? 'yes' : 'no'}>
       {/* The stills are in the page's HTML, so the first paint shows the city before any script runs. */}
-      <div className={styles.stage}>
+      <div className={`${styles.stage} ${styles.fade}`}>
         <picture className={`${styles.still} ${styles.stillRest}`}>
           <source media="(max-aspect-ratio: 1/1)" srcSet={HERO.stills.city.tall} />
           <img src={HERO.stills.city.wide} alt="" width={1440} height={900} />
@@ -79,7 +79,6 @@ export function Hero() {
         <h1 id="hero-title" className={styles.headline} data-water-avoid="">{site.hero.headline}</h1>
         <div className={styles.aside} data-water-avoid="">
           <p className={styles.sub}>{site.hero.sub}</p>
-          <a href="#work" className={styles.cue}>{site.hero.cue}</a>
         </div>
       </div>
     </section>

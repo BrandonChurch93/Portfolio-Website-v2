@@ -1,0 +1,218 @@
+.wall {
+  /* How far the lintel is set in from the cards: its pours land on the cards' top corners. */
+  --lintel-inset: clamp(1rem, 2.2vw, 2rem);
+  /* Words and switches keep clear of the two falls between the lintel and the cards. */
+  --fall-clear: calc(var(--lintel-inset) + 1.4rem);
+  display: grid;
+}
+
+.lintelWrap {
+  margin: 0 var(--lintel-inset);
+}
+
+.lintel {
+  width: 100%;
+}
+
+.sub {
+  justify-self: center;
+  margin-top: var(--space-6);
+  padding: 0 var(--fall-clear);
+  text-align: center;
+  color: var(--text-2);
+  font-size: var(--step-1);
+}
+
+.cats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-7);
+  padding: 0 var(--fall-clear);
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2.2vw, 2rem);
+}
+
+.item {
+  display: block;
+}
+
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+  transition: transform var(--dur-2) var(--ease-settle), border-color var(--dur-2) var(--ease-settle);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-strong);
+}
+
+.card:focus-visible {
+  outline: var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+.window {
+  aspect-ratio: var(--window-plate);
+  overflow: hidden;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover {
+  display: grid;
+  place-content: center;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-5);
+  text-align: center;
+  background: radial-gradient(90% 70% at 50% 100%, rgba(255, 157, 60, 0.1), rgba(12, 10, 9, 0) 70%);
+}
+
+.coverName {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 300;
+  letter-spacing: var(--track-tight);
+  color: var(--text-2);
+}
+
+.coverNote {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 400;
+  letter-spacing: var(--track-tight);
+  line-height: 1.15;
+}
+
+.why {
+  color: var(--text-2);
+}
+
+.tags {
+  list-style: none;
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tag {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: 0.02em;
+  color: var(--text-3);
+}
+
+.room {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+}
+
+.roomView {
+  aspect-ratio: 16 / 10;
+  background: radial-gradient(80% 60% at 50% 70%, rgba(255, 157, 60, 0.12), rgba(12, 10, 9, 0) 70%), var(--bg);
+}
+
+.roomWords {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-6) var(--space-6) 0;
+}
+
+.roomNote {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-3);
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(3rem, 5vw, 4.5rem);
+}
+
+.moreBox {
+  display: inline-block;
+}
+
+.more .moreLink {
+  display: block;
+  margin-top: 0;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .room {
+    grid-template-columns: 1fr;
+  }
+
+  .roomWords {
+    padding: 0 var(--space-5) var(--space-6);
+  }
+}
+
+/* A phone shows four at a time. */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .item:nth-child(n + 5) {
+    display: none;
+  }
+}

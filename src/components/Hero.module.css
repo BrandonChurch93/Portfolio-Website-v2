@@ -12,6 +12,13 @@
   inset: 0;
 }
 
+/* The foot of the stage fades into the page, so the city's fall hands over to the page's stream with no edge. */
+.fade canvas,
+.fade .still {
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0) calc(100% - 7rem), rgb(0 0 0 / 0) 100%);
+  mask-image: linear-gradient(to bottom, rgb(0 0 0) calc(100% - 7rem), rgb(0 0 0 / 0) 100%);
+}
+
 .still {
   position: absolute;
   inset: 0;
@@ -90,18 +97,6 @@
   text-wrap: balance;
 }
 
-.cue {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--touch);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--accent);
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  pointer-events: auto;
-}
-
 .aside {
   display: grid;
   gap: var(--space-2);
@@ -129,9 +124,4 @@
     justify-items: start;
     max-width: 26rem;
   }
-}
-
-.cue:focus-visible {
-  outline: var(--focus);
-  outline-offset: var(--focus-offset);
 }

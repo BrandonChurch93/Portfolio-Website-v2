@@ -591,6 +591,8 @@ Newest last. Date and time, what was done, what is next.
 
 - 2026-11-11, after BUILD COMPLETE, at Brandon's request: origin added (his GitHub repository) and main pushed. A crawl of every page on the dev server, loaded directly and reached by links at desktop and phone, found the hero's inline script rendered by React on client navigation ("Encountered a script tag") and a hydration warning on <html>; the script now sits in the root layout's head, <html> takes suppressHydrationWarning for that one attribute, and the hero clears the attribute when the opening ends. Left: Next dev preloads the not-found page's styles on every route and warns they were unused (dev only; the production build is clean, gauntlet A6). The shots predate these source edits; a retake will confirm them.
 
+- 2026-11-11, review stage, Fable with Brandon on branch fable/phase-2-layout-water (see kit/addenda/01-review-direction.md): the home page recomposed as Hero, Work wall, Skills, About, Contact; client work and the rooms sections removed from home; the water's route rebuilt as ten stations (falls onto the work lintel, pours onto the outer cards' top corners, clings down both sides, meets behind View all work, then the desk, the ledger, the portrait, the pool); the faint channel ahead of the front removed. typecheck, 125 unit tests, build and check:copy pass. Browser tests and the shot gate not run; some describe the old home page (listed in the addendum). Next: Brandon's verdict, then Phase 3 (cards and buttons in the real metal).
+
 ## Handoff
 
 ### What was built

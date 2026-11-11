@@ -20,6 +20,8 @@ export interface Anchor {
   side?: 'left' | 'right';
   // split: the section the two falls frame, rejoining under it.
   frame?: Rect;
+  // split with a bar narrower than its frame: the control the two halves meet behind, under the frame.
+  join?: Rect;
   // edge (a desk front seen in perspective): where it lands and where it pours, page px.
   from?: { x: number; y: number };
   to?: { x: number; y: number };
@@ -82,7 +84,7 @@ export const WATER = {
   gravity: 2600,
   step: 3,
   speed: { run: 240, surface: 230, cling: 120 },
-  width: { run: 13, surface: 7.5, cling: 8, fall: 12 },
+  width: { run: 13, surface: 7.5, cling: 8, fall: 12, side: 11 },
   // A phone keeps a narrower stream: its margins are tiny.
   narrowScale: 0.38,
   gutter: 44,
@@ -185,15 +187,15 @@ class Pen {
     }
   }
 
-  lineTo(x: number, y: number, kind: Exclude<StrandKind, 'fall'>): void {
+  lineTo(x: number, y: number, kind: Exclude<StrandKind, 'fall'>, width: number = WATER.width[kind]): void {
     this.begin(kind);
     const n = Math.max(1, Math.ceil(Math.hypot(x - this.x, y - this.y) / WATER.step));
     const x0 = this.x, y0 = this.y;
-    const from = this.lastHw(WATER.width[kind]), total = Math.hypot(x - x0, y - y0);
+    const from = this.lastHw(width), total = Math.hypot(x - x0, y - y0);
     for (let k = 1; k <= n; k++) {
       const t = k / n;
       const nx = x0 + (x - x0) * t, ny = y0 + (y - y0) * t;
-      this.push(nx, ny, kind, this.eased(WATER.width[kind], from, total * t), 0, Math.hypot(nx - this.x, ny - this.y) / WATER.speed[kind]);
+      this.push(nx, ny, kind, this.eased(width, from, total * t), 0, Math.hypot(nx - this.x, ny - this.y) / WATER.speed[kind]);
     }
   }
 
@@ -353,11 +355,59 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
     } else if (a.kind === 'split') {
       const cx = (r.left + r.right) / 2;
       const ly = r.top - WATER.lip;
-      arrive(pen, cx, ly);
+      // From straight above and not far (the city's water onto the work title) it is one clean fall, with no run first.
+      const room = ly - pen.y;
+      if (Math.abs(pen.x - cx) < 8 && room > 4 && room <= WATER.maxFall * 2) pen.fallTo(cx, ly, WATER.speed.run * 0.9, g);
+      else arrive(pen, cx, ly);
       landings.push({ x: cx, y: ly, s: pen.s, f: pen.f, dir: 0, strength: 1.25, anchor: a.id });
       touch.push({ anchor: a.id, x: cx, y: ly, s: pen.s });
       close(pen);
       const frame = a.frame ?? r;
+      // A bar set in from its frame: each pour lands on the top corner of the frame's outer card, rounds the corner,
+      // clings down the card edges and turns in under the frame. The halves meet behind the control under it (join),
+      // which hides the meeting, and one stream leaves from there.
+      if (a.frame && r.left - frame.left > 10 && frame.right - r.right > 10 && frame.top - ly > 30) {
+        const sill = a.join ? (a.join.top + a.join.bottom) / 2 : frame.bottom + (o.narrow ? 46 : 72);
+        const ends: Pen[] = [];
+        for (const dir of [-1, 1] as const) {
+          const side = dir > 0 ? 'R' : 'L';
+          const p = pen.clone();
+          const ex = dir > 0 ? r.right - 6 : r.left + 6;
+          const corner = dir > 0 ? frame.right : frame.left;
+          const fy = frame.top - WATER.lip;
+          p.lineTo(ex, ly, 'surface');
+          // It lets go of the end as steeply as it must for its own arc to come down on the card, at least 8 in from
+          // the corner: a longer drop needs a steeper start. The fall then follows that arc, so there is no kink.
+          const arcX = (turn: number) => {
+            const vv = WATER.speed.surface * 0.95, vx = Math.cos(turn) * vv, vy = Math.sin(turn) * vv;
+            const T = (-vy + Math.sqrt(vy * vy + 2 * g * Math.max(1, fy - ly - 6 * (1 - Math.cos(turn))))) / g;
+            return ex + dir * (6 * Math.sin(turn) + vx * T);
+          };
+          let turn = Math.PI / 3;
+          while (turn < 1.5 && dir * (corner - arcX(turn)) < 8) turn += 0.03;
+          const v = p.cling(dir, 6, turn);
+          touch.push({ anchor: `${a.id}:pour${side}`, x: p.x, y: p.y, s: p.s });
+          const lx = corner - dir * Math.min(34, Math.max(8, dir * (corner - arcX(turn))));
+          p.fallTo(lx, fy, v.vy, g);
+          landings.push({ x: lx, y: fy, s: p.s, f: p.f, dir, strength: 0.8, anchor: `${a.id}:land${side}` });
+          touch.push({ anchor: `${a.id}:land${side}`, x: lx, y: fy, s: p.s });
+          close(p);
+          const q = new Pen(p.x, p.y, p.s, p.f, wScale);
+          q.lineTo(corner - dir * 6, fy, 'surface');
+          // Radius 12 from 6 inside the corner: it comes round to 6 outside the card's edge and runs down it, gathering
+          // into a fuller sheet than a corner's cling, since this run is the frame of the wall.
+          q.cling(dir, 12, Math.PI / 2);
+          q.lineTo(q.x, frame.bottom + 4, 'cling', WATER.width.side);
+          touch.push({ anchor: `${a.id}:side${side}`, x: q.x, y: (frame.top + frame.bottom) / 2, s: q.s });
+          q.bendTo(cx + dir * 3, sill, Math.max(8, Math.min(o.narrow ? 22 : 44, sill - q.y - 2)));
+          ends.push(q);
+        }
+        for (const q of ends) close(q);
+        const s = Math.max(...ends.map((q) => q.s)), f = Math.max(...ends.map((q) => q.f));
+        pen = new Pen(cx, sill, s, f, wScale);
+        touch.push({ anchor: `${a.id}:join`, x: cx, y: sill, s });
+        continue;
+      }
       // Low enough below the section that the two halves curve in gently, never hook.
       // Low enough below the section that the halves curve in gently, but above the next block of text.
       const nextText = avoid.filter((q) => q.top > frame.bottom + 20).sort((m, n) => m.top - n.top)[0];

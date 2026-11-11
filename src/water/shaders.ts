@@ -104,9 +104,8 @@ void main(){
     // A running sheet is a thin bright bead with ripples travelling along it.
     I += sheet * body * 0.25 * (0.6 + 0.4 * sin(u * 0.07 - 1.5));
   }
+  // Nothing is drawn ahead of the front: the water goes where it goes, with no trace of the way shown first.
   vec3 col = ramp(I) * reveal;
-  // The dry channel ahead of the front: a faint warm trace of where the water will go.
-  col += vec3(0.5, 0.32, 0.16) * smoothstep(0.75, 0.95, av) * smoothstep(1.0, 0.95, av) * 0.12 * (1.0 - reveal);
   frag = vec4(col, 0.0);
 }`;
 

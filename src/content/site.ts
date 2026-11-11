@@ -56,6 +56,18 @@ export interface SkillArea {
   usedIn: string[];
 }
 
+export interface WorkCategory {
+  id: 'software' | 'games' | 'art3d' | 'photography';
+  name: string;
+}
+
+export interface AboutTab {
+  id: string;
+  name: string;
+  lead: string;
+  body: string[];
+}
+
 export interface Door {
   route: 'games' | 'photography' | 'art3d';
   name: string;
@@ -124,21 +136,30 @@ export const site = {
 
   // Source: kit/05-CONTENT.md hero draft; the city description is the piece itself.
   hero: {
-    headline: 'I build things I\u00a0want to exist.',
-    sub: "I'm Brandon. Equal parts designer and engineer. I like making things that help people, and I usually start because something looks fun to try.",
-    cue: 'Follow the water',
+    headline: 'AI Product Engineer',
+    sub: 'I believe the next decade will bring an explosion of scientific discovery and new human prosperity. I am making my contribution: AI products, end to end, solving problems at every scale.',
     cityAlt: 'A floating round city of the future, with a central spire, towers, parks and canals of golden water pouring off its rim.',
   },
 
   // Source: headings from the kit 05 draft; each project notes its own source below.
   work: {
-    heading: 'Things I built',
-    sub: "A few I'm proud of. Each one started with a reason.",
+    heading: 'Work',
+    sub: 'Everything I have built. Software first.',
+    // The home page wall: one section, a category at a time, six at most. The All work page shows everything.
+    categoriesLabel: 'Kinds of work',
+    categories: [
+      { id: 'software', name: 'Software' },
+      { id: 'games', name: 'Games' },
+      { id: 'art3d', name: '3D art' },
+      { id: 'photography', name: 'Photography' },
+    ] satisfies WorkCategory[],
+    wall: ['pc-builder', 'design-system-extractor', 'red-team-arena', 'ask-the-claude-docs', 'proactive-ui-for-ai-glasses', 'generative-ui-github'] satisfies Slug[],
+    pictureToCome: 'Picture to come',
     pageHeading: 'Everything I built',
     pageSub: 'Each one started with a reason. Some of them are live.',
     featured: ['pc-builder', 'design-system-extractor', 'red-team-arena', 'ask-the-claude-docs'] satisfies Slug[],
     finishes: { 'pc-builder': 'aged', 'design-system-extractor': 'bronze', 'red-team-arena': 'panel', 'ask-the-claude-docs': 'aged' } satisfies Partial<Record<Slug, Finish>>,
-    link: 'Everything else',
+    link: 'View all work',
     projects: [
       {
         // Source: kit 05 draft only (not on the old site, so no image or link; the stack is the draft's facts).
@@ -415,6 +436,36 @@ export const site = {
       'Thanks for looking around.',
     ],
     signature: 'Brandon',
+    // The home page: three short tabs beside the portrait, each something a résumé cannot say. The first stands alone.
+    tabsLabel: 'About Brandon',
+    tabs: [
+      {
+        id: 'me',
+        name: 'About me',
+        lead: 'I am equal parts designer and engineer.',
+        body: [
+          'What I care about most is the experience of solving a real problem, and doing it tastefully.',
+          'Away from product work I make games, sculpt in 3D and shoot portraits.',
+        ],
+      },
+      {
+        id: 'next',
+        name: 'What I want next',
+        lead: 'I believe the next decade will bring an explosion of scientific discovery and new human prosperity.',
+        body: [
+          'I want to contribute to it: working on cutting edge technology, pushing design, and building things that make life better for people.',
+        ],
+      },
+      {
+        id: 'how',
+        name: 'How I work',
+        lead: 'I take a product from the first conversation to production.',
+        body: [
+          'I sit down with the people who have the problem, design the fix, build it, test it with real users and ship it.',
+          'I build with AI every day, and I read what the agents write.',
+        ],
+      },
+    ] satisfies AboutTab[],
     portrait: { id: 'portrait', alt: 'Brandon Church in warm amber light, looking off to the side' } satisfies MediaRef,
   },
 

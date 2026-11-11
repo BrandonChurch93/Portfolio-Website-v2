@@ -50,7 +50,7 @@ export const READING_LINE = 0.66;
 // A piece mounts within this many viewport heights of the screen and disposes beyond the second number. At most max
 // pieces hold a WebGL context at once (the doors' small views count as one).
 export const PIECE_MOUNT = { near: 1, far: 2.5, max: 2 } as const;
-// At and above this width the featured work steps down in two columns (src/app/home.module.css matches it).
+// Below this width the work wall drops from three columns to two (src/components/WorkWall.module.css matches it).
 export const BREAKPOINT_WORK_COLUMNS = 1100;
 
 // ---- tiers --------------------------------------------------------------------------------------
