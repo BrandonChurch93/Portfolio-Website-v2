@@ -621,7 +621,7 @@ The full list with every unfixed critic point and its reason is under "For revie
 
 ### Needed from Brandon
 
-- REPO_URL: none was set, so main is committed on this Mac and not pushed. Set REPO_URL and run node scripts/push.mjs.
+- REPO_URL: none was set, so main is committed on this Mac and not pushed. Set REPO_URL and run node scripts/push.mjs. At the final commit node scripts/push.mjs printed: NOT PUSHED: there is no remote named origin. REPO_URL was NONE or was never added.
 - New project pictures. Export each at least 2400 px wide, 16:10, with the subject in the middle 60 percent: plates crop to a window beside the words on wide screens and above them on phones, project pages show it at about 16:9 inside a brass frame. Add or swap the entry in scripts/media.mjs (PICTURES), run npm run media, and in src/content/site.ts set the picture's focus ([x, y] from 0 to 1, the point that stays in view) and zoom (1 just covers the window) on its media entry.
 - PC Builder and Red Team Arena: facts beyond the kit draft, a picture or video, and a link.
 - Any project video for the photo windows (copied as it is by scripts/media.mjs).
