@@ -10,7 +10,7 @@ export const KIND_ID: Record<StrandKind, number> = { run: 0, surface: 1, cling: 
 
 export interface Rect { left: number; top: number; right: number; bottom: number }
 
-export type AnchorKind = 'weave' | 'corner' | 'split' | 'pool' | 'edge';
+export type AnchorKind = 'weave' | 'corner' | 'split' | 'pool' | 'edge' | 'behind';
 
 export interface Anchor {
   id: string;
@@ -30,6 +30,7 @@ export interface Anchor {
   // weave: run down this page x instead of a gutter (a gap between two columns of things).
   x?: number;
   // pool: where the stream enters a 3D piece that carries it on into its own pool, page px. The page draws no pool.
+  // behind: the point behind the thing (a portrait) that the stream sweeps through, page px.
   at?: { x: number; y: number };
 }
 
@@ -187,6 +188,24 @@ class Pen {
     }
   }
 
+  // A free curve to (x, y) through two control points, for a sweep that is not straight down the page.
+  bezierTo(c1x: number, c1y: number, c2x: number, c2y: number, x: number, y: number): void {
+    this.begin('run');
+    const x0 = this.x, y0 = this.y;
+    const len = (Math.hypot(c1x - x0, c1y - y0) + Math.hypot(c2x - c1x, c2y - c1y) + Math.hypot(x - c2x, y - c2y) + Math.hypot(x - x0, y - y0)) / 2;
+    const n = Math.max(4, Math.ceil(len / WATER.step));
+    const from = this.lastHw(WATER.width.run);
+    let d = 0;
+    for (let k = 1; k <= n; k++) {
+      const t = k / n, u = 1 - t;
+      const bx = u * u * u * x0 + 3 * u * u * t * c1x + 3 * u * t * t * c2x + t * t * t * x;
+      const by = u * u * u * y0 + 3 * u * u * t * c1y + 3 * u * t * t * c2y + t * t * t * y;
+      const ds = Math.hypot(bx - this.x, by - this.y);
+      d += ds;
+      this.push(bx, by, 'run', this.eased(WATER.width.run, from, d), 0, ds / WATER.speed.run);
+    }
+  }
+
   lineTo(x: number, y: number, kind: Exclude<StrandKind, 'fall'>, width: number = WATER.width[kind]): void {
     this.begin(kind);
     const n = Math.max(1, Math.ceil(Math.hypot(x - this.x, y - this.y) / WATER.step));
@@ -327,6 +346,21 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       travel(pen, x, y0);
       pen.lineTo(x, r.bottom + 16, 'run');
       touch.push({ anchor: a.id, x, y: (r.top + r.bottom) / 2, s: pen.s });
+    } else if (a.kind === 'behind') {
+      // Behind a portrait: it comes down at the top corner on the side it is already on, sweeps in at an angle
+      // through the point behind the subject, and leaves under the opposite lower corner, heading down again.
+      const w = r.right - r.left, h = r.bottom - r.top;
+      const d = (a.side ?? (pen.x >= (r.left + r.right) / 2 ? 'right' : 'left')) === 'right' ? 1 : -1;
+      const mid = (r.left + r.right) / 2;
+      const ex = mid + d * w * 0.43, ey = r.top + h * 0.04;
+      // With too little room above to come in gently, it keeps to its own way and passes the portrait by.
+      if (ey - pen.y < 60) continue;
+      const b = a.at ?? { x: mid, y: r.top + h * 0.62 };
+      const out = { x: mid - d * w * 0.34, y: r.bottom + 14 };
+      travel(pen, ex, ey);
+      pen.bezierTo(ex, ey + h * 0.22, b.x + d * w * 0.26, b.y - h * 0.16, b.x, b.y);
+      touch.push({ anchor: a.id, x: b.x, y: b.y, s: pen.s });
+      pen.bezierTo(b.x - d * w * 0.26, b.y + h * 0.16, out.x, out.y - h * 0.14, out.x, out.y);
     } else if (a.kind === 'corner') {
       const land = a.side ?? 'right';
       const dir: 1 | -1 = land === 'right' ? -1 : 1;

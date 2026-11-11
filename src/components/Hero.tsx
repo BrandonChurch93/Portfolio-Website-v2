@@ -8,15 +8,18 @@ import type { Piece } from '../world/piece';
 import { PieceView } from './PieceView';
 import styles from './Hero.module.css';
 
-type City = Piece & { openingState?: () => { t: number; end: number }; anchor?: () => { x: number; y: number } | null };
+type City = Piece & { openingState?: () => { t: number; end: number; settle?: number; settled?: number }; anchor?: () => { x: number; y: number } | null };
 
 const smooth = (k: number) => { const c = Math.min(1, Math.max(0, k)); return c * c * (3 - 2 * c); };
 
-// The home hero: the city fills the first screen, builds itself, settles low, and the headline arrives above it.
-// The front fall's landing is where the page's stream starts.
+// The home hero: the city fills the first screen and builds itself in the middle of it, then sinks low as the
+// headline arrives a third of the way down. Its lower part runs on below the first screen. The front fall's landing
+// is where the page's stream starts.
 export function Hero() {
   const words = useRef<HTMLDivElement>(null);
+  const box = useRef<HTMLDivElement>(null);
   const start = useRef<HTMLDivElement>(null);
+  const sunk = useRef(-1);
   const city = useRef<City | null>(null);
   const [ready, setReady] = useState(false);
   const [frame, setFrame] = useState<{ shift: number; scale: number } | null>(null);
@@ -48,9 +51,17 @@ export function Hero() {
       const k = s ? smooth((s.t - (s.end - HERO.wordsIn[0])) / (HERO.wordsIn[0] - HERO.wordsIn[1])) : playing ? 0 : 1;
       w.style.opacity = k.toFixed(3);
       w.style.transform = `translateY(${((1 - k) * 18).toFixed(2)}px)`;
-      // The page's stream waits for the city's own water to pour off the rim and land.
+      // The stage sinks with the city: the whole first screen during the build, then down to its resting place.
+      const sink = s ? (s.settle ?? 1) : playing ? 0 : 1;
+      if (sink !== sunk.current) {
+        box.current?.style.setProperty('--settle', sink.toFixed(4));
+        // At rest the source is where the page's stream starts: the route is laid out again from there.
+        if (sink === 1 && sunk.current !== -1) place();
+        sunk.current = sink;
+      }
+      // The page's stream waits for the city's own water to pour off the rim and land, and for the city to come to rest.
       const src = start.current;
-      if (src) { const hold = playing && !!s && s.t < HERO.waterFrom; if ((src.dataset.waterHold === '1') !== hold) src.dataset.waterHold = hold ? '1' : ''; }
+      if (src) { const hold = playing && !!s && s.t < Math.max(HERO.waterFrom, s.settled ?? 0); if ((src.dataset.waterHold === '1') !== hold) src.dataset.waterHold = hold ? '1' : ''; }
     };
     const off = clock.onFrame(show);
     const ro = new ResizeObserver(() => place());
@@ -62,7 +73,7 @@ export function Hero() {
   return (
     <section id="hero" className={styles.hero} aria-labelledby="hero-title" data-ready={ready ? 'yes' : 'no'}>
       {/* The stills are in the page's HTML, so the first paint shows the city before any script runs. */}
-      <div className={`${styles.stage} ${styles.fade}`}>
+      <div ref={box} className={styles.stageBox}>
         <picture className={`${styles.still} ${styles.stillRest}`}>
           <source media="(max-aspect-ratio: 1/1)" srcSet={HERO.stills.city.tall} />
           <img src={HERO.stills.city.wide} alt="" width={1440} height={900} />
@@ -72,9 +83,9 @@ export function Hero() {
           <img src={HERO.stills.plan.wide} alt="" width={1440} height={900} />
         </picture>
         {frame && <PieceView name="city" entrance once={HERO.once} frame={frame} entranceFrom={HERO.planStillAt} onPiece={onPiece} className={styles.stage} />}
+        <div ref={start} className={styles.source} data-water-start="" />
       </div>
       <div className={styles.city} role="img" aria-label={site.hero.cityAlt} />
-      <div ref={start} className={styles.source} data-water-start="" />
       <div ref={words} className={styles.words}>
         <h1 id="hero-title" className={styles.headline} data-water-avoid="">{site.hero.headline}</h1>
         <div className={styles.aside} data-water-avoid="">

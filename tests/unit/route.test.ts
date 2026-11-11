@@ -259,3 +259,32 @@ describe('route builder · the work wall', () => {
     });
   }
 });
+
+describe('route builder · behind the portrait', () => {
+  const words = rect(160, 1400, 520, 420);
+  const portrait = rect(760, 1300, 520, 650);
+  const anchors: Anchor[] = [{ id: 'portrait', kind: 'behind', rect: portrait, at: { x: 1020, y: 1703 } }];
+  const o: RouteOptions = { start: { x: 1330, y: 700 }, column: { left: 160, right: 1280 }, narrow: false, width: 1440, avoid: [words], endY: 2600 };
+  const route = buildRoute(anchors, o);
+  const all = route.branches.flatMap((b) => b.samples);
+
+  it('comes in at the top corner on its own side and sweeps through the point behind him at an angle', () => {
+    const t = route.touch.find((x) => x.anchor === 'portrait')!;
+    expect(t).toBeDefined();
+    expect(Math.abs(t.x - 1020)).toBeLessThan(1);
+    const inTop = all.filter((p) => p.y > portrait.top && p.y < portrait.top + 80);
+    expect(inTop.length).toBeGreaterThan(0);
+    for (const p of inTop) expect(p.x).toBeGreaterThan(1020 + 120);
+    // Through the point it is still moving sideways as well as down: it does not drop straight through his head.
+    const at = all.findIndex((p) => Math.abs(p.s - t.s) < 1e-6);
+    const before = all[at - 6], after = all[at + 6];
+    expect(Math.abs(after.x - before.x)).toBeGreaterThan(Math.abs(after.y - before.y) * 0.6);
+  });
+
+  it('leaves under the far lower corner, crosses no text, and has no kink', () => {
+    const below = all.filter((p) => p.y > portrait.bottom && p.y < portrait.bottom + 30);
+    expect(below.some((p) => p.x < 1020 - 120)).toBe(true);
+    expect(crossings(route, [words])).toEqual([]);
+    expect(maxKink(route)).toBeLessThan(0.45);
+  });
+});

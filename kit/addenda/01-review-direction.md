@@ -71,16 +71,24 @@ He approves each phase before the next starts.
 - `src/content/site.ts`: hero copy from the live site, `work.categories`, `work.wall`, `about.tabs`. All of it is draft for Brandon to rewrite.
 - `tests/unit/route.test.ts`: ten new tests for the work wall on desktop and phone.
 
+## Changes after Brandon saw Phase 2 (same day)
+
+His words: the hero's text was "way too close" to the top, "it should be like 1/3 of the way down", the city can move down too, and the opening "animates it in the center of the screen and then moves it down as the content comes in". And the water should not go "into my head directly": it should come "down at an angle" and swoop in behind him, as in the blueprint.
+
+- **Hero staging.** The stage is one screen tall and the hero is taller than the screen by `--hero-drop` (19svh wide, 12svh otherwise). During the build `--settle` is 0 and the city fills the first screen, in the middle. Over `OPENING.settle` (5.2 to 7.0 s) the stage sinks by `--hero-drop` and the piece applies its own frame shift, so the city comes to rest low with its lower part below the first screen. The words sit at `--hero-words-top` (31svh wide, 20svh otherwise). The stream waits until the city is at rest, and the route is laid out again from the source's resting place. `openingState()` now also returns `settle` and `settled`. The source element moved inside the stage so it sinks with it.
+- **Behind the portrait.** A new anchor kind, `behind`: the stream comes down at the top corner on the side it is on, sweeps at an angle through `data-water-at`, and leaves under the far lower corner. Brandon is cut out of his photograph (`PORTRAIT_CUT` in `src/config/site.ts`, files `public/media/portrait-cut-*.webp`, made by hand from the photograph he supplied with a matting model), so the stream is really behind him. A low warm light sits behind his head and shoulders.
+- The city's opening strips and the hero and About shots in the Builder's ledger are out of date with this.
+
 ## What is knowingly unfinished after Phase 2
 
 - The cards are plain. They get their metal in Phase 3.
 - Two of the six software cards have no picture (PC Builder, Red Team Arena). They show the project's name and "Picture to come".
 - Games, 3D art and Photography have no work yet, so each shows its piece and its line.
-- The portrait is the photograph with soft edges, not yet cut out. The stream shows faintly through its faded top and foot.
+- The cut out portrait is not in the media pipeline yet (`scripts/media.mjs`); Phase 6 folds it in.
 - The skills ledger still lists Games and Photography rows that point at rooms that no longer exist.
 - The pages `/clients/`, `/games/`, `/photography/`, `/3d-art/`, `/about/` and `/skills/` are as the Builder left them.
 - Browser tests (`npx playwright test`) and the shot gate (`npm run check:shots`) were not run. Some describe the old home page and must be brought up to date in Phase 6: `tests/e2e/gauntlet.spec.ts` E9 (doors), `tests/e2e/flags.spec.ts` (doors and the 3D art nav link), `tests/e2e/hooks.spec.ts` (scrolls to `clients`), and the home shots in `scripts/shot-list.mjs`.
 
 ## Checks run for Phase 2
 
-`npm run typecheck`, `npm run test` (125 pass), `npm run build` and `npm run check:copy` (0 problems) all pass. The home page was looked at in screenshots at 1440 by 900 and 390 by 844 with the water's front held at each station. Those were taken with software rendering, so motion and frame time were not judged. Brandon judges motion on his own machine.
+`npm run typecheck`, `npm run test` (127 pass), `npm run build` and `npm run check:copy` (0 problems) all pass. The home page was looked at in screenshots at 1440 by 900 and 390 by 844 with the water's front held at each station. Those were taken with software rendering, so motion and frame time were not judged. Brandon judges motion on his own machine.

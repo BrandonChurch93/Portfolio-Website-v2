@@ -1,10 +1,29 @@
 .hero {
+  /* How far the stage sinks once the city is built, and where the words sit. Wide screens are set further down. */
+  --hero-drop: 12svh;
+  --hero-words-top: 20svh;
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(100vh + 12vh);
+  height: calc(100svh + var(--hero-drop));
   min-height: 34rem;
   margin-top: calc(var(--nav-h) * -1);
   overflow: hidden;
+}
+
+/* One screen tall. --settle runs from 0 (the build, filling the first screen) to 1 (at rest, sunk by --hero-drop);
+   Hero.tsx writes it each frame of the opening. Without the opening it is at rest. */
+.stageBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100svh;
+  transform: translate3d(0, calc(var(--settle, 1) * var(--hero-drop)), 0);
+}
+
+:global(html[data-opening='play']) .stageBox {
+  --settle: 0;
 }
 
 .stage {
@@ -12,11 +31,12 @@
   inset: 0;
 }
 
-/* The foot of the stage fades into the page, so the city's fall hands over to the page's stream with no edge. */
-.fade canvas,
-.fade .still {
-  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0) calc(100% - 7rem), rgb(0 0 0 / 0) 100%);
-  mask-image: linear-gradient(to bottom, rgb(0 0 0) calc(100% - 7rem), rgb(0 0 0 / 0) 100%);
+/* The foot of the stage fades into the page, so the city's fall hands over to the page's stream with no edge. Its
+   head fades too as it sinks, and is gone before it clears the nav, so no edge ever shows behind the words. */
+.stageBox canvas,
+.stageBox .still {
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / calc(1 - var(--settle, 1) * 2.6)) 0, rgb(0 0 0) 18%, rgb(0 0 0) calc(100% - 7rem), rgb(0 0 0 / 0) 100%);
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / calc(1 - var(--settle, 1) * 2.6)) 0, rgb(0 0 0) 18%, rgb(0 0 0) calc(100% - 7rem), rgb(0 0 0 / 0) 100%);
 }
 
 .still {
@@ -67,7 +87,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(var(--nav-h) + clamp(0.75rem, 3vh, 4.5rem));
+  top: var(--hero-words-top);
   z-index: 2;
   display: grid;
   gap: var(--space-3);
@@ -105,8 +125,12 @@
 
 /* Wide screens: the headline on the left, the words about Brandon on the right, the spire rising between. */
 @media (min-aspect-ratio: 1/1) and (min-width: 821px) {
+  .hero {
+    --hero-drop: 19svh;
+    --hero-words-top: 31svh;
+  }
+
   .words {
-    top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4.5rem));
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: clamp(9rem, 16vw, 22rem);
     align-items: last baseline;

@@ -132,6 +132,18 @@ export const SETTLE = { frames: 3, timeoutMs: 60000, pictureMs: 15000 } as const
 
 export const MEDIA_WIDTHS = [480, 960, 1600, 2400] as const;
 
+// Brandon cut out of his portrait photograph, so the water can pass behind him (About on the home page). Made by
+// hand at review from the photograph he supplied; Phase 6 folds it into scripts/media.mjs.
+export const PORTRAIT_CUT = {
+  w: 2048,
+  h: 1986,
+  srcs: [
+    { w: 960, src: '/media/portrait-cut-960.webp' },
+    { w: 1600, src: '/media/portrait-cut-1600.webp' },
+    { w: 2048, src: '/media/portrait-cut-2048.webp' },
+  ],
+} as const;
+
 // Photo windows have designed shapes. Pictures are cropped to fill them; the shape never bends to a picture.
 // Brandon exports new project pictures at these ratios (see the Handoff in kit/PROGRESS.md).
 export const WINDOW_ASPECT = { plate: 16 / 10, project: 16 / 9, portrait: 4 / 5 } as const;

@@ -27,6 +27,8 @@ export const OPENING = {
   fill: [4.7, 6.6],
   pools: [6.0, 6.9],
   camera: [0.2, 7.2],
+  // The city builds in the middle of the screen, then sinks to where it rests as the page's words come in.
+  settle: [5.2, 7.0],
   movers: [4.6, 5.6],
   lampOn: [1.7, 3.4],
   end: 7.4,
@@ -157,7 +159,7 @@ export function createCity(): Piece {
     }
     // The opening is in motion; it renders at three quarters of the tier's resolution, then steps up when it settles.
     stage.setResolutionScale(o < OPENING.end && !clock.isFrozen() ? OPENING_RES : 1);
-    const shift = viewForced ? 0 : frameOpt.shift * smooth(span(o, OPENING.camera));
+    const shift = viewForced ? 0 : frameOpt.shift * smooth(span(o, OPENING.settle));
     if (shift > 0) stage.camera.setViewOffset(stage.width, stage.height, 0, -shift * stage.height, stage.width, stage.height);
     else if (stage.camera.view) stage.camera.clearViewOffset();
     if (clayOn) model.root.traverse((ob) => { if (ob.userData.clayHidden) ob.visible = false; });
@@ -276,8 +278,9 @@ export function createCity(): Piece {
       stage.bloom.enabled = !on;
       frame();
     },
-    // Where the opening is, for a page that times things to it (seconds, and when it ends).
-    openingState() { return { t: openingTime(), end: OPENING.end }; },
+    // Where the opening is, for a page that times things to it: seconds, when it ends, how far the city has sunk to its
+    // resting place (0 to 1) and the second at which it gets there.
+    openingState() { const o = openingTime(); return { t: o, end: OPENING.end, settle: smooth(span(o, OPENING.settle)), settled: OPENING.settle[1] }; },
     // Where the front fall lands on screen at rest, as a fraction of the host: the page's stream starts there.
     anchor() {
       if (!stage) return null;

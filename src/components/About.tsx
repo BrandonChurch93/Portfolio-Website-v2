@@ -1,15 +1,14 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { BREAKPOINT_ONE_COLUMN } from '../config/site';
+import { PORTRAIT_CUT } from '../config/site';
 import { site } from '../content/site';
 import { MetalButton, onTabKeys } from './MetalButton';
-import { Picture } from './Picture';
 import styles from './About.module.css';
 
-// About on the home page: three short tabs beside a large portrait. The portrait has no frame. Its edges fade into the
-// page, it shifts a little against the lamp, and the water runs down behind it. The panels share one cell, so
-// changing tab never moves the page.
+// About on the home page: three short tabs beside a large portrait. Brandon is cut out of his photograph and has no
+// frame: he shifts a little against the lamp, and the water sweeps in behind him at an angle and lights his outline.
+// The panels share one cell, so changing tab never moves the page.
 export function About({ headingId }: { headingId: string }) {
   const a = site.about;
   const [tab, setTab] = useState<string>(a.tabs[0].id);
@@ -32,8 +31,19 @@ export function About({ headingId }: { headingId: string }) {
           ))}
         </div>
       </div>
-      <figure className={styles.portrait} id="about-portrait" data-water="weave" data-water-id="portrait" data-water-above={BREAKPOINT_ONE_COLUMN} data-water-line="#about-portrait">
-        <Picture media={a.portrait} sizes="(max-width: 820px) 92vw, 44vw" className={styles.photo} />
+      <figure className={styles.portrait} id="about-portrait" data-water="behind" data-water-at="0.51,0.6">
+        <span className={styles.aura} aria-hidden="true" />
+        <img
+          className={styles.photo}
+          src={PORTRAIT_CUT.srcs[PORTRAIT_CUT.srcs.length - 1].src}
+          srcSet={PORTRAIT_CUT.srcs.map((x) => `${x.src} ${x.w}w`).join(', ')}
+          sizes="(max-width: 820px) 96vw, 48vw"
+          width={PORTRAIT_CUT.w}
+          height={PORTRAIT_CUT.h}
+          alt={a.portrait.alt}
+          loading="lazy"
+          decoding="async"
+        />
       </figure>
     </div>
   );
