@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 10 · start
+IN PROGRESS · Phase 11 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 10 The water through the whole site
-- Step: start (read 03 in full, 07)
-- Next action: check incoming/ and REPO_URL; then the page water itself (the look critics 062 and 063 failed on every page) and the routes (About portrait, doors, room pages, plate edges, the not-found bends, the hero timing)
+- Phase: 11 Tiers, speed, access, hardening
+- Step: start (read 06 tiers and speed, 07, 09)
+- Next action: check incoming/ and REPO_URL; tier shots for the rooms and hero, frame budgets at every tier, access (keyboard, reduced motion, contrast), hardening
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -28,7 +28,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 | 7 | The rooms | done | 2026-11-11, commit "Phase 7 the rooms" |
 | 8 | About, contact and the rocket | done | 2026-11-11, commit "Phase 8 About, contact and the rocket" |
 | 9 | The other pages | done | 2026-11-11, commit "Phase 9 the other pages" |
-| 10 | The water through the whole site | | |
+| 10 | The water through the whole site | done | 2026-11-11, commit "Phase 10 the water through the whole site" |
 | 11 | Tiers, speed, access, hardening | | |
 | 12 | Final pass | | |
 
@@ -48,6 +48,18 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 10
+- Shots pass: node scripts/check-shots.mjs home page water passed 97 of 97 (home 37 with the two scroll strips, page 50, water 10), all taken from the gate build. Critic rounds this phase: 062 and 063 (pages), 064 (water), 065 (home), 066 (pages), 067 (water and the scroll strips; light-plate critic PASS). Every water shot has critic verdicts from more than three rounds across Phases 3 and 10; every home and page desktop and phone shot has had a critic look; my PASS on the current images gates (builder-gate10-1, -2).
+- No shot shows water crossing text: every image in the three groups opened (sheets by section, all five viewports); the route builder's tests prove it on fixtures (a ledger under the desk, text below the last anchor, the footer, both layouts).
+- Checked at Phase 10 start: no incoming/, REPO_URL NONE.
+- Frame time, M4 Pro ANGLE Metal headed, 1440x900 at 2x, tier high: home at the hero median 8.3 ms, p95 9.5, worst 10.2; home a third of the way down (plates, water, the desk near) median 8.3, p95 16.2, worst 41.4 (a piece mounting).
+- typecheck clean, unit tests 58 passed, check:copy 0 problems (146 files, 30 pages), Chromium suite 146 passed.
+
+### Phase 10 notes (done)
+- The page water's body rebuilt (stuck rule, once): a lens of light with a core thread and two braided threads, fine caustics, sparse glints, a two scale halo, a flared head, short round motes; long runs meander (Pen.wander, tested); the pour off the desk stops above the next text (the ledger crossing found in the scroll strip, tested); every block of reading text now marked data-water-avoid; About: the stream runs behind the portrait (weave on its centre line); the phone split joins in the left margin as a tributary (tested); the page stream waits for the city's water to land in the opening (HERO.waterFrom); scroll strips home/scroll-desktop and -phone (scrollFrac hook).
+- After 064 to 066 and 067: a fuller glassy body (wider, a lit rim, a hot pale gold head, a stronger two scale halo), wider falls, pours that leave a corner at the sheet's speed, crowns laid out as a ring so the rim reads, a pool that is a lit surface (light from below, caustics in patches, a bright meniscus, quieter rings), the desk's own water on the same look and below the tone curve's shoulder, columns from the content box of the real page column (data-water-column="parent" on page heads), a stream never on the screen's edge, a portrait weave only with room to come in gently (and not on one column layouts), the end of a route going round any text below (the ledger on /skills, the footer), a near opaque nav, a compact switch on phones, longer cling and frame strips so the moves finish. Found a nondeterminism on the way: the desk's tools kept whatever lift the lamp gave them before a freeze; a frozen clock now clears it (rest state), and the skills shots retake identically.
+- Critics 064 (water), 065 (home), 066 (pages): all FAIL. The rebuild overshot into a thin even neon line with no body; columns came from the page head's text measure, so the stream ran over plates and behind bars and was clipped at the screen edge; the pool is rings in a void; crowns read as spark fountains; the portrait weave cramps the phone and /about; the desk's own water kept the old look. Fixing in that order.
 
 ### Gate 9
 - Shots pass: node scripts/check-shots.mjs page/work page/project page/clients page/resume page/notfound passed 25 of 25. Critic 063 looked once at desktop and phone (all FAIL); the real page faults fixed; the page water (the main point of every line) is Phase 10; my PASS on the new images (builder-pages9-1).
@@ -205,6 +217,8 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - The rocket's name stencilled on its hull is Lumen, words in site.pieces.rocket, an invented name like the handheld's game. Rule 2.
 - At the end of a page, or on a page that cannot scroll, the water's head goes to the end of its route instead of stopping at the reading line. Found when the not-found pool stayed dry. Rule 1 (kit 03: it moves down the page with the visitor; at the end there is no further to go).
 - Share images: the site's is the city settled; a project's is its own picture. JPEG, because some link previews still refuse WebP. Rule 3.
+- The page water's body was rebuilt once (kit 07 stuck rule) after critics failed its look on every page: a lens of light with a core thread and braided threads instead of advected fbm blotches. Rule 1 (W01, G06 against the second pass).
+- On a phone the split rejoins in the left margin and the stream goes on from the half that arrives first; the other half comes in as a tributary, so the water never waits at a join. Rule 2.
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -446,6 +460,9 @@ Things Brandon should look at first: faults a critic named that were not fixed a
 - The Claude Docs picture is cut through a line of its own text in the narrow work windows at some widths; it is a placeholder Brandon is replacing, and its focus and zoom are set in its media entry.
 - Contact: the flume runs on past the point where the stream joins it, out through the stage's side fade; the critic read that as cut by the viewport.
 
+- Water critic points not acted on (067, after more than three rounds): the crown at the instant of impact still reads partly as spray before its rim rises; the run strip shows the stream beside a paragraph, which has no surface to make a sheet on (sheets are where it runs on metal); the lab's Fall label sits where the feed enters that lab panel; on a phone the margin streams run close to the text because the margins are 20 px.
+- The scroll strips stop the water's front at the reading line in each frozen frame (the water follows the visitor's scroll), so the desk is dry in the frame where the desk is first in view; it fills one frame later.
+
 ## Needed from Brandon (collected as found; copied into the Handoff in Phase 12)
 
 - PC Builder: any facts beyond the kit draft, a picture or video, and a link. Its plate uses the plain layout (no window) until then.
@@ -483,6 +500,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 8 done: About with the portrait in an aged brass frame plate; the rocket through its seven phases (riveted stencilled hull, plated pad in a glossy light-water pool with reflections and ripples, a lattice tower on piers, assembly on scroll, the launch once per visit at the page end with smoke and the pool answering), three critic rounds; Contact as the last screen with brass links in the stage's sky; the page's stream handed to the rocket's flume and poured into the pool. Next: Phase 9.
 
 - 2026-11-11, Phase 9 done: project pages framed in brass under glass, picture focus and zoom in the content file, fuller plain plates, fitted placards, the résumé's lines, the not-found page's pool, share images, sitemap, robots, icon. Next: Phase 10, the water, starting with its look on every page.
+
+- 2026-11-11, Phase 10 done: the water rebuilt to a glassy braided ribbon with a halo and a hot head; routes that meander, never cross text, keep off screen edges, go behind the portrait where there is room, round every block of text to the foot of the page; pools as lit surfaces; the hero's stream waits for the city's water; home scroll strips; the desk's tools rest under a frozen clock. Next: Phase 11.
 
 ## Handoff
 

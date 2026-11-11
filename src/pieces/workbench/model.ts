@@ -431,8 +431,9 @@ export function buildBench(): BenchModel {
   const G = 2600, VRUN = 240, LIFTIN = 2400;
   const land = new THREE.Vector3(-W / 2 + 26, 0.6, FRONT - 14);
   const pour = new THREE.Vector3(W / 2 - 10, 0.6, FRONT - 14);
-  const waterRun = waterMaterial(0.62);
-  const waterFall = waterMaterial(0.85, true);
+  // Held below the tone curve's shoulder, so the amber stays amber on the desk and never washes to cream.
+  const waterRun = waterMaterial(0.5);
+  const waterFall = waterMaterial(0.52, true);
   const water = [waterRun, waterFall];
   let s = 0, f = 0;
   {

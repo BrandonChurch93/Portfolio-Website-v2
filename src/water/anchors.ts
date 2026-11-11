@@ -12,6 +12,11 @@ const pageRect = (el: Element): Rect => {
   return { left: r.left + scrollX, top: r.top + scrollY, right: r.right + scrollX, bottom: r.bottom + scrollY };
 };
 
+const contentRect = (el: Element): Rect => {
+  const r = pageRect(el), cs = getComputedStyle(el);
+  return { left: r.left + parseFloat(cs.paddingLeft || '0'), right: r.right - parseFloat(cs.paddingRight || '0'), top: r.top, bottom: r.bottom };
+};
+
 const frac = (v: string | null): [number, number] | null => {
   if (!v) return null;
   const [a, b] = v.split(',').map(Number);
@@ -24,6 +29,7 @@ export function readAnchors(root: ParentNode, narrowBelow: number): { anchors: A
     if (!el.offsetParent && el.getClientRects().length === 0) return;
     // An anchor that only applies below a width (a layout that changes shape above it).
     if (el.dataset.waterBelow && document.documentElement.clientWidth >= Number(el.dataset.waterBelow)) return;
+    if (el.dataset.waterAbove && document.documentElement.clientWidth < Number(el.dataset.waterAbove)) return;
     const kind = el.dataset.water as AnchorKind;
     const rect = pageRect(el);
     const a: Anchor = { id: el.id || el.dataset.waterId || `a${i}`, kind, rect };
@@ -53,11 +59,15 @@ export function readAnchors(root: ParentNode, narrowBelow: number): { anchors: A
   });
   const width = document.documentElement.clientWidth;
   const narrow = width < narrowBelow;
-  const colEl = root.querySelector('[data-water-column]');
-  const col = colEl ? pageRect(colEl) : { left: width * 0.08, right: width * 0.92, top: 0, bottom: 0 };
+  // The page column: the content box of the marked element (data-water-column="parent" marks a child of it), so a
+  // wrap's padding counts as gutter, not column.
+  const mark = root.querySelector<HTMLElement>('[data-water-column]');
+  const colEl = mark?.dataset.waterColumn === 'parent' ? mark.parentElement : mark;
+  const col = colEl ? contentRect(colEl) : { left: width * 0.08, right: width * 0.92, top: 0, bottom: 0 };
   const startEl = root.querySelector<HTMLElement>('[data-water-start]');
   // No source on this page: the stream enters from the top, in the right hand gutter, never down the middle.
-  let start = { x: narrow ? (col.right + width) / 2 : Math.min(width - 24, col.right + 44), y: 0 };
+  // It never sits on the screen's edge: the glow needs room.
+  let start = { x: Math.min((col.right + width) / 2, width - (narrow ? 12 : 34)), y: 0 };
   if (startEl) {
     const r = pageRect(startEl);
     const fx = Number(startEl.dataset.waterX ?? 0.5);

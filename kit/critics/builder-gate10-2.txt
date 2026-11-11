@@ -1,0 +1,12 @@
+shots/home/clients-4k.jpg | sha: 21961d41bac8 | PASS | - | It lands on the bar with a crown and thrown drops, runs both ways, pours off both ends and frames the placards, rejoining under them (in the left margin on a phone); the side placards warm.
+shots/home/skills-phone.jpg | sha: 3ae758e8c725 | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-tablet.jpg | sha: cda7a64a8e05 | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-desktop.jpg | sha: 071cd44be8cc | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-wide.jpg | sha: c1ab42e4795e | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-4k.jpg | sha: 5e0d3d1a5e89 | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/page/clients-4k.jpg | sha: 8d53609f5180 | PASS | - | Bar and placards, the stream in the gutter beside them.
+shots/page/skills-phone.jpg | sha: c2ae9ac0d4cd | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-tablet.jpg | sha: 27b6729c711b | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-desktop.jpg | sha: d16bc05cb7c4 | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-wide.jpg | sha: 97f60cbfce14 | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-4k.jpg | sha: a138d3c9a9a8 | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.

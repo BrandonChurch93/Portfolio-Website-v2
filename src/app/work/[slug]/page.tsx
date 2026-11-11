@@ -35,8 +35,8 @@ export default async function ProjectPage({ params }: Props) {
   const media = p.media[0];
   return (
     <main id="main" className={page.main}>
-      <article className={page.wrap}>
-        <header className={styles.head}>
+      <article className={page.wrap} data-water-column="">
+        <header className={styles.head} data-water-avoid="">
           <p className={page.eyebrow}>
             <Link href={ROUTES.work} className={styles.back}>{site.ui.allWork}</Link>
           </p>
@@ -52,7 +52,7 @@ export default async function ProjectPage({ params }: Props) {
             </Plate>
           </figure>
         ) : null}
-        <div className={styles.grid}>
+        <div className={styles.grid} data-water-avoid="">
           <section className={styles.why} aria-labelledby="why">
             <h2 id="why" className={styles.label}>{site.ui.projectWhy}</h2>
             <p className={styles.reason}>{p.why}</p>

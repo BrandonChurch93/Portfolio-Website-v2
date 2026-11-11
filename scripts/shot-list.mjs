@@ -53,10 +53,10 @@ SHOTS['water/body'] = { route: '/lab/water/', vp: 'desktop', steps: [['scrollTo'
 SHOTS['water/run'] = waterMove('run', 0, 1.75);
 SHOTS['water/fall'] = waterMove('fall', 0, 0.63);
 SHOTS['water/land'] = waterMove('land', 0.3, 1.5, { target: '#move-land [data-water]', pad: 150 });
-SHOTS['water/cling'] = waterMove('cling', 0, 1.4, { target: '#move-cling [data-water]', pad: 110 });
+SHOTS['water/cling'] = waterMove('cling', 0, 3.2, { target: '#move-cling [data-water]', pad: 110 });
 SHOTS['water/pour'] = waterMove('pour', 0, 1.05, { target: '#move-pour [data-water]', pad: 160 });
 SHOTS['water/split'] = waterMove('split', 0.3, 2.4);
-SHOTS['water/frame'] = waterMove('frame', 0, 3.2);
+SHOTS['water/frame'] = waterMove('frame', 0, 4.4);
 SHOTS['water/pool'] = waterMove('pool', 0, 2.8, { target: '#move-pool [data-water]', pad: 120 });
 SHOTS['water/light-plate'] = { route: '/lab/water/', vp: 'desktop', steps: [['scrollTo', 'move-light'], ['freeze', 3], ['water.head', 1], ['lamp', 0.08, 0.95]] };
 
@@ -184,6 +184,8 @@ for (const v of VPS) SHOTS['home/about-' + v] = section('about')(v);
 // the water at its end; narrow layouts stack the words above it, so the shot starts at the section.
 for (const v of VPS) SHOTS['home/contact-' + v] = ['phone', 'tablet'].includes(v) ? section('contact')(v) : { route: '/', vp: v, steps: [['freeze', 30], ['scrollTo', 1e7], ['lamp', 0.6, 0.35], ['water.head', 1]] };
 for (const v of VPS) { SHOTS['home/work-' + v] = section('work')(v); SHOTS['home/clients-' + v] = section('clients')(v); SHOTS['home/skills-' + v] = section('skills-desk')(v); }
+// ---- home: the whole page scrolled from the top to the end, the water following (12 frames)
+for (const v of ['desktop', 'phone']) SHOTS['home/scroll-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.6, 0.35]], strip: { times: steps12(0, 1), frame: [['scrollFrac', '$t']], cols: v === 'phone' ? 6 : 4, caption: (t) => `${Math.round(t * 100)} percent down` } };
 // ---- page: one route per screen, from its top -------------------------------------------------------
 const pageShot = (route) => (v) => ({ route, vp: v, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] });
 for (const v of VPS) SHOTS['page/skills-' + v] = { route: '/skills/', vp: v, steps: [['scrollTo', 'skills-desk'], ['freeze', 30], ['lamp', 0.6, 0.35]] };

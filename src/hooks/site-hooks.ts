@@ -9,6 +9,7 @@ export interface SiteHooks {
   freeze(t: number | null): void;
   lamp(x: number, y: number): void;
   scrollTo(idOrY: string | number): Promise<true>;
+  scrollFrac(k: number): Promise<true>;
   tier(name: Tier | null): void;
   opening(t: number): void;
   water: { head(v: number | string): void; move(name: string, t: number): void };
@@ -85,6 +86,12 @@ export function installHooks(): void {
         await settle();
       }
       return true;
+    },
+    // A fraction of the way down the page, 0 at the top and 1 at the end: for strips of a whole page scroll.
+    async scrollFrac(k) {
+      await settle();
+      const max = document.documentElement.scrollHeight - innerHeight;
+      return this.scrollTo(Math.round(Math.max(0, Math.min(1, k)) * max));
     },
     tier(name) {
       if (name !== null && !TIERS.includes(name)) throw new Error(`tier: ${name} is not one of ${TIERS.join(', ')}`);

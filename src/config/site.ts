@@ -109,6 +109,8 @@ export const HERO = {
   // Tall screens (phone, tablet upright) stack the words over the city; wide ones set them either side of the spire.
   frame: { tall: { shift: 0.15, scale: 1.12 }, upright: { shift: 0.165, scale: 1.12 }, wide: { shift: 0.12, scale: 1.0 } },
   once: 'city-opening',
+  // Seconds into the opening when the city's front fall lands in its pool; the page's stream runs on from then.
+  waterFrom: 6.3,
   planStillAt: 1.0,
   stills: {
     city: { wide: '/generated/city-rest-wide.webp', tall: '/generated/city-rest-tall.webp' },

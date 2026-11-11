@@ -9,7 +9,7 @@ export function Doors({ doors }: { doors: readonly Door[] }) {
   const open = doors.filter((d) => d.route !== 'art3d' || SHOW_3D_ART);
   return (
     <div data-doors="">
-    <ul className={styles.doors} data-count={open.length}>
+    <ul className={styles.doors} data-count={open.length} data-water-avoid="">
       {open.map((d) => (
         <li key={d.route} className={styles.door}>
           <Link href={ROUTES[d.route]} className={styles.link} data-door={d.route}>

@@ -41,19 +41,27 @@ void main(){
   if (reveal <= 0.0) discard;
   float v = vLane, av = abs(v);
   float u = (vFlow.y - uTime) * 60.0 + vFlow.w * 31.0;
-  float a = fbm(vec2(u * 0.022, v * 2.4 + vFlow.w));
-  float b = fbm(vec2(u * 0.06 + 9.0, v * 4.2 - uTime * 0.15));
-  float streak = pow(1.0 - abs(2.0 * a - 1.0), 4.0);
-  float glint = pow(1.0 - abs(2.0 * b - 1.0), 8.0);
+  // The same water as the page's: a lens of light with a core thread and two braided threads, fine caustics, sparse
+  // glints and a rim that catches light, carried at the water's own speed (u runs at 60 a second here).
   float dk = uFall * clamp(vFlow.z / 200.0, 0.0, 1.0);
-  float body = smoothstep(1.0, 0.75, av / (1.0 - 0.3 * dk));
-  float edge = smoothstep(0.55, 0.92, av) * smoothstep(1.05, 0.9, av) * (1.0 - uFall);
-  float I = min(1.7, body * (0.55 + 0.75 * streak + 0.6 * glint) + edge * 0.45);
+  float avn = av / (1.0 - 0.3 * dk);
+  float body = smoothstep(1.0, 0.5, avn);
+  float lens = 1.0 - avn * avn;
+  float wa = noise(vec2(u * 0.024, uTime * 0.11 + vFlow.w)) - 0.5, wb = noise(vec2(u * 0.036 + 17.0, uTime * 0.13)) - 0.5;
+  float core = exp(-pow((v - wa * 0.5) / 0.3, 2.0));
+  float thA = exp(-pow((v - 0.55 * sin(u * 0.072 + wa * 4.0)) / 0.1, 2.0));
+  float thB = exp(-pow((v + 0.5 * sin(u * 0.056 + 1.9 + wb * 4.0)) / 0.085, 2.0));
+  float a = fbm(vec2(u * 0.064, v * 1.6 + uTime * 0.2));
+  float r1 = pow(1.0 - abs(2.0 * a - 1.0), 6.0);
+  float glint = smoothstep(0.86, 0.985, noise(vec2(u * 0.44 + 4.0, v * 4.0 + uTime * 0.8))) * smoothstep(0.95, 0.4, avn);
+  float rim = exp(-pow((avn - 0.78) / 0.12, 2.0));
+  float edge = smoothstep(0.62, 0.9, av) * smoothstep(1.02, 0.88, av) * (1.0 - uFall);
+  float I = min(1.6, body * (0.42 * lens + 0.8 * core + 0.55 * thA + 0.45 * thB + r1 * 0.32 + glint * 1.2 + rim * 0.38) + edge * 0.22);
   float tear = noise(vec2(v * 4.0 + vFlow.w * 7.0, u * 0.012)) * 0.6 + noise(vec2(v * 11.0 - vFlow.w, u * 0.03)) * 0.4;
   float strands = smoothstep(0.2 + 0.4 * dk, 0.32 + 0.4 * dk, tear);
   I *= mix(1.0, strands * (1.2 + 0.5 * dk), uFall * smoothstep(5.0, 50.0, vFlow.z));
   float head = exp(-pow((uFill - vFlow.x) / 22.0, 2.0)) * 1.2;
-  vec3 c = mix(vec3(1.0, 0.36, 0.06), vec3(1.0, 0.6, 0.2), smoothstep(0.35, 1.2, I));
+  vec3 c = mix(vec3(1.0, 0.34, 0.05), vec3(1.0, 0.56, 0.16), smoothstep(0.35, 1.2, I));
   c = mix(c, vec3(1.0, 0.78, 0.46), smoothstep(1.3, 2.4, I));
   gl_FragColor = vec4(c * (I + head) * uGain * reveal, 1.0);
 }`;

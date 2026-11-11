@@ -15,7 +15,7 @@ export default function Resume() {
   const r = site.resume;
   return (
     <main id="main" className={page.main}>
-      <article className={`${page.wrap} ${styles.sheet}`}>
+      <article className={`${page.wrap} ${styles.sheet}`} data-water-avoid="" data-water-column="">
         <header className={styles.head}>
           <p className={page.eyebrow}>{r.heading}</p>
           <h1 className={page.title}>{r.name}</h1>

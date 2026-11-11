@@ -147,7 +147,9 @@ export function createWorkbench(): Piece {
 
   // Tools near the lamp lift a few millimetres and turn a degree or two.
   const play = () => {
-    if (!stage || !model || clock.isFrozen()) return;
+    if (!stage || !model) return;
+    // A frozen clock is the rest state: no lift, whatever the lamp did before the freeze.
+    if (clock.isFrozen()) { lift.clear(); return; }
     const tmp = new THREE.Vector3();
     for (const tl of model.tools) {
       tmp.setFromMatrixPosition(tl.rest).multiplyScalar(BENCH.SCALE);

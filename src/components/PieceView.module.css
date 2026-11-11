@@ -78,3 +78,12 @@
   bottom: auto;
   top: calc(var(--nav-h) + var(--space-4));
 }
+
+/* On a phone the switch is compact, so it never sits in the path of the water coming down the middle of a hero. */
+@media (max-width: 520px) {
+  .making {
+    padding: 0 var(--space-2);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+  }
+}

@@ -5,7 +5,7 @@ import styles from './Ledger.module.css';
 // The skills ledger: one wide row per area. Name, a few sentences, the tools, where they were used. Rows, not columns.
 export function Ledger({ areas }: { areas: readonly SkillArea[] }) {
   return (
-    <ol className={styles.ledger}>
+    <ol className={styles.ledger} data-water-avoid="">
       {areas.map((a, i) => (
         <li key={a.name} className={styles.row}>
           <div className={styles.head}>

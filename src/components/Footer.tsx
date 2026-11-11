@@ -6,7 +6,7 @@ import styles from './Footer.module.css';
 export function Footer() {
   return (
     <footer className={styles.foot}>
-      <div className={styles.inner}>
+      <div className={styles.inner} data-water-avoid="">
         <p className={styles.line}>{site.footer.line}</p>
         <ul className={styles.links}>
           {site.contact.links.map((l) => (

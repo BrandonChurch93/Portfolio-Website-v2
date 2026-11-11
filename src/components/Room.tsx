@@ -11,7 +11,7 @@ export function Room({ heading, sub, note, pieceAlt, piece, children }: { headin
         <div className={styles.stage} role="img" aria-label={pieceAlt}>
           <RoomStage piece={piece} className={styles.fill} />
         </div>
-        <div className={`${page.wrap} ${styles.words}`}>
+        <div className={`${page.wrap} ${styles.words}`} data-water-avoid="">
           <h1 id="room-title" className={page.title}>{heading}</h1>
           <p className={page.lede}>{sub}</p>
         </div>

@@ -1,3 +1,4 @@
+import { BREAKPOINT_ONE_COLUMN } from '../config/site';
 import { site } from '../content/site';
 import { MEDIA } from '../content/media.generated';
 import { Picture } from './Picture';
@@ -12,12 +13,13 @@ export function Letter({ headingLevel = 2, headingId }: { headingLevel?: 1 | 2; 
   const a = site.about;
   return (
     <div className={styles.about}>
-      <figure className={styles.portrait}>
+      {/* The water bends behind the portrait: it runs down the frame's centre line, hidden by the plate, and comes out below. */}
+      <figure className={styles.portrait} id={`${headingId ?? 'about'}-portrait`} data-water="weave" data-water-above={BREAKPOINT_ONE_COLUMN} data-water-line={`#${headingId ?? 'about'}-portrait`}>
         <Plate finish="aged" kind="frame" label={a.signature} photo={{ src: largest(a.portrait.id), focus: [0.5, 0.32] }} className={styles.frame}>
           <Picture media={a.portrait} sizes="(max-width: 820px) 80vw, 30vw" className={styles.photo} />
         </Plate>
       </figure>
-      <div className={styles.letter}>
+      <div className={styles.letter} data-water-avoid="">
         <H className={styles.heading} id={headingId}>{a.heading}</H>
         <div className={styles.body}>
           {a.letter.map((p) => <p key={p}>{p}</p>)}

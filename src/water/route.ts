@@ -82,8 +82,9 @@ export const WATER = {
   gravity: 2600,
   step: 3,
   speed: { run: 240, surface: 230, cling: 120 },
-  width: { run: 11, surface: 7, cling: 7.5, fall: 9 },
-  narrowScale: 0.45,
+  width: { run: 13, surface: 7.5, cling: 8, fall: 12 },
+  // A phone keeps a narrower stream: its margins are tiny.
+  narrowScale: 0.38,
   gutter: 44,
   narrowGutter: 14,
   landInset: 16,
@@ -91,9 +92,11 @@ export const WATER = {
   maxFall: 220,
   minFall: 70,
   // How far beside a block of text the water keeps when it goes round it.
-  clear: 34,
+  clear: 46,
   // Moving across to a new line, the water drops this far while it crosses, so the turn is a soft step, not a corner.
   crossDrop: 56,
+  // A long run meanders a little as it goes, never straight down a gutter: this far either side, this long a bend.
+  wander: { amp: 12, wave: 460, minRun: 260 },
 } as const;
 
 class Pen {
@@ -161,6 +164,27 @@ class Pen {
     if (Math.abs(x - this.x) > 1) this.lineTo(x, y, 'run');
   }
 
+  // A long run down to (x, y) that meanders up to amp either side of its line, starting and ending straight, so it
+  // meets what comes before and after without a kink.
+  wander(x: number, y: number, amp: number): void {
+    const x0 = this.x, y0 = this.y, L = y - y0;
+    if (amp < 1 || L < WATER.wander.minRun || Math.abs(x - x0) > 2) { this.lineTo(x, y, 'run'); return; }
+    this.begin('run');
+    const n = Math.max(2, Math.ceil(L / WATER.step));
+    const waves = Math.max(1, Math.round(L / WATER.wander.wave));
+    const phase = (y0 * 0.0137) % 1 > 0.5 ? 1 : -1;
+    const from = this.lastHw(WATER.width.run);
+    let d = 0;
+    for (let k = 1; k <= n; k++) {
+      const t = k / n, env = Math.sin(Math.PI * t) ** 2;
+      const nx = x0 + (x - x0) * t + phase * amp * env * Math.sin(Math.PI * 2 * waves * t * 0.5);
+      const ny = y0 + L * t;
+      const ds = Math.hypot(nx - this.x, ny - this.y);
+      d += ds;
+      this.push(nx, ny, 'run', this.eased(WATER.width.run, from, d), 0, ds / WATER.speed.run);
+    }
+  }
+
   lineTo(x: number, y: number, kind: Exclude<StrandKind, 'fall'>): void {
     this.begin(kind);
     const n = Math.max(1, Math.ceil(Math.hypot(x - this.x, y - this.y) / WATER.step));
@@ -184,7 +208,7 @@ class Pen {
       const x = cx + dir * Math.sin(a) * r, y = cy - Math.cos(a) * r;
       this.push(x, y, 'cling', WATER.width.cling, 0, Math.hypot(x - this.x, y - this.y) / WATER.speed.cling);
     }
-    const v = WATER.speed.cling * 1.15;
+    const v = WATER.speed.surface * 0.95;
     return { vx: dir * Math.cos(turn) * v, vy: Math.sin(turn) * v };
   }
 
@@ -256,6 +280,8 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
   // Run down the page to (x, y). If a block lies across the way, get to x in the clear space above it first.
   // Run down the page to (x, y), going round any block of text on the way: beside it, on the side nearer the target,
   // then across in the clear space below it.
+  // How far a run beside text or in a gutter may meander: none on a phone, never nearer the text or the page edge.
+  const meander = (x: number) => (o.narrow ? 0 : Math.max(0, Math.min(WATER.wander.amp, WATER.clear - 18, x - 18, o.width - 18 - x)));
   const besideX = (r: Rect, left: boolean) => (left
     ? Math.max(4, r.left - (o.narrow ? Math.max(6, r.left / 2) : WATER.clear))
     : Math.min(o.width - 4, r.right + (o.narrow ? Math.max(6, (o.width - r.right) / 2) : WATER.clear)));
@@ -268,7 +294,7 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       if (!crosses) continue;
       const side = besideX(r, x < (r.left + r.right) / 2);
       if (Math.abs(p.x - side) > 1) p.curveTo(side, Math.max(p.y + 24, r.top - 28), 'run');
-      if (p.y < r.bottom + 18) p.lineTo(side, Math.min(y - 4, r.bottom + 18), 'run');
+      if (p.y < r.bottom + 18) p.wander(side, Math.min(y - 4, r.bottom + 18), meander(side));
     }
     p.curveTo(x, y, 'run');
   };
@@ -286,6 +312,9 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
   for (const a of sorted) {
     const r = a.rect;
     if (a.kind === 'weave') {
+      // A line through something (behind the portrait) needs room above it to come in gently; with too little (the
+      // portrait at the very top of a page) the water keeps to its own gutter and passes it by.
+      if (a.x !== undefined && r.top - pen.y < Math.max(220, Math.abs(a.x - pen.x) * 0.45)) continue;
       const x = a.x ?? gutterX(a.side ?? 'right', r);
       // Never back up the page: a weave that starts above the water joins it where it already is.
       const y0 = Math.max(r.top, pen.y + (Math.abs(x - pen.x) > 1 ? WATER.crossDrop : 0));
@@ -314,7 +343,9 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       restart();
       pen.lineTo(a.to.x - dir * 6, a.to.y - WATER.lip, 'surface');
       const v = pen.cling(dir, 6);
-      pen.fall(v.vx, v.vy, Math.min(r.bottom + 60, pen.y + WATER.maxFall), g);
+      // It falls free, but never into the next block of text: it stops above it, and the route goes round it.
+      const below = avoid.filter((q) => q.top > pen.y + 10 && pen.x > q.left - 20 && pen.x < q.right + 20).sort((m, n) => m.top - n.top)[0];
+      pen.fall(v.vx, v.vy, Math.max(pen.y + 24, Math.min(r.bottom + 60, pen.y + WATER.maxFall, below ? below.top - 70 : Infinity)), g);
     } else if (a.kind === 'split') {
       const cx = (r.left + r.right) / 2;
       const ly = r.top - WATER.lip;
@@ -327,6 +358,9 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       // Low enough below the section that the halves curve in gently, but above the next block of text.
       const nextText = avoid.filter((q) => q.top > frame.bottom + 20).sort((m, n) => m.top - n.top)[0];
       const joinY = Math.min(frame.bottom + (o.narrow ? 140 : 260), nextText ? Math.max(frame.bottom + 70, nextText.top - 40) : Infinity);
+      // On a phone the halves join in the left margin, where the stream goes on: the right half crosses under the
+      // section in the gap. On wide screens they meet in the middle under it.
+      const jx = o.narrow ? gutterX('left', { ...frame, left: Math.min(r.left, frame.left), right: Math.max(r.right, frame.right) }) : cx;
       const ends: Pen[] = [];
       for (const dir of [-1, 1] as const) {
         const p = pen.clone();
@@ -339,14 +373,17 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
         p.fall(v.vx, v.vy, ly + (o.narrow ? 50 : 70), g);
         p.curveTo(fx, Math.min(frame.top + 140, frame.bottom), 'run');
         p.lineTo(fx, frame.bottom + 18, 'run');
-        p.curveTo(cx + dir * 3, joinY, 'run');
+        if (o.narrow && dir < 0) p.lineTo(jx, joinY, 'run');
+        else p.curveTo(jx + (o.narrow ? 0 : dir * 3), joinY, 'run');
         ends.push(p);
       }
       for (const p of ends) close(p);
-      const s = Math.max(...ends.map((p) => p.s));
-      const f = Math.max(...ends.map((p) => p.f));
-      pen = new Pen(cx, joinY, s, f, wScale);
-      touch.push({ anchor: `${a.id}:join`, x: cx, y: joinY, s });
+      // Wide: the mirror halves meet together. Phone: the left half carries straight on and the right comes in later as a
+      // tributary, so the stream never waits at the join.
+      const s = o.narrow ? ends[0].s : Math.max(...ends.map((p) => p.s));
+      const f = o.narrow ? ends[0].f : Math.max(...ends.map((p) => p.f));
+      pen = new Pen(jx, joinY, s, f, wScale);
+      touch.push({ anchor: `${a.id}:join`, x: jx, y: joinY, s });
     } else if (a.kind === 'pool' && a.at) {
       // Handed to a piece: it comes level into the piece's edge, which carries it on.
       const inward = a.at.x <= (r.left + r.right) / 2 ? 1 : -1;
@@ -370,8 +407,11 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
     }
   }
   if (!ended && o.endY > pen.y + 40) {
-    const x = pen.x;
-    pen.curveTo(x, o.endY, 'run');
+    // To the foot of the page, round any text still below (the ledger under a desk, the footer).
+    const under = avoid.filter((q) => q.bottom > pen.y + 8 && q.top < o.endY && pen.x > q.left - 20 && pen.x < q.right + 20).sort((m, n) => m.top - n.top)[0];
+    const x = under ? besideX(under, pen.x < (under.left + under.right) / 2) : pen.x;
+    if (under) travel(pen, x, o.endY);
+    else pen.wander(x, o.endY, meander(x));
   }
   close(pen);
   for (const b of branches) normals(b.samples);

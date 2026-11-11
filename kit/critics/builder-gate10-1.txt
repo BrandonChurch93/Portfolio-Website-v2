@@ -1,0 +1,97 @@
+shots/home/hero-phone.jpg | sha: 27904cd13f7e | PASS | - | The city settled with its falls; the page stream starts at the front pool and leaves the hero clear of the switch; headline and words clear of the water.
+shots/home/hero-tablet.jpg | sha: 71a3c3e2784b | PASS | - | The city settled with its falls; the page stream starts at the front pool and leaves the hero clear of the switch; headline and words clear of the water.
+shots/home/hero-desktop.jpg | sha: 51ac8fc570da | PASS | - | The city settled with its falls; the page stream starts at the front pool and leaves the hero clear of the switch; headline and words clear of the water.
+shots/home/hero-wide.jpg | sha: 999dabec0ddc | PASS | - | The city settled with its falls; the page stream starts at the front pool and leaves the hero clear of the switch; headline and words clear of the water.
+shots/home/hero-4k.jpg | sha: 75cfabf9eeff | PASS | - | The city settled with its falls; the page stream starts at the front pool and leaves the hero clear of the switch; headline and words clear of the water.
+shots/home/work-phone.jpg | sha: f7d97cd7dd0f | PASS | - | The stream weaves between the work plates in the gutters and crosses in the gaps, a glassy braided ribbon with a halo, lighting the plates it passes; no text crossed.
+shots/home/work-tablet.jpg | sha: 105e8e0fab91 | PASS | - | The stream weaves between the work plates in the gutters and crosses in the gaps, a glassy braided ribbon with a halo, lighting the plates it passes; no text crossed.
+shots/home/work-desktop.jpg | sha: a8fb2b3916c3 | PASS | - | The stream weaves between the work plates in the gutters and crosses in the gaps, a glassy braided ribbon with a halo, lighting the plates it passes; no text crossed.
+shots/home/work-wide.jpg | sha: 19ee133dce5b | PASS | - | The stream weaves between the work plates in the gutters and crosses in the gaps, a glassy braided ribbon with a halo, lighting the plates it passes; no text crossed.
+shots/home/work-4k.jpg | sha: c08dafc5b0a6 | PASS | - | The stream weaves between the work plates in the gutters and crosses in the gaps, a glassy braided ribbon with a halo, lighting the plates it passes; no text crossed.
+shots/home/clients-phone.jpg | sha: 8f9d42ecb68d | PASS | - | It lands on the bar with a crown and thrown drops, runs both ways, pours off both ends and frames the placards, rejoining under them (in the left margin on a phone); the side placards warm.
+shots/home/clients-tablet.jpg | sha: 350d87f71e33 | PASS | - | It lands on the bar with a crown and thrown drops, runs both ways, pours off both ends and frames the placards, rejoining under them (in the left margin on a phone); the side placards warm.
+shots/home/clients-desktop.jpg | sha: 185a690cbb85 | PASS | - | It lands on the bar with a crown and thrown drops, runs both ways, pours off both ends and frames the placards, rejoining under them (in the left margin on a phone); the side placards warm.
+shots/home/clients-wide.jpg | sha: a694673a7eef | PASS | - | It lands on the bar with a crown and thrown drops, runs both ways, pours off both ends and frames the placards, rejoining under them (in the left margin on a phone); the side placards warm.
+shots/home/clients-4k.jpg | sha: e4a8f171f70a | PASS | - | It lands on the bar with a crown and thrown drops, runs both ways, pours off both ends and frames the placards, rejoining under them (in the left margin on a phone); the side placards warm.
+shots/home/skills-phone.jpg | sha: e4e376c72670 | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-tablet.jpg | sha: 5b80f4fac1d9 | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-desktop.jpg | sha: 5c0a3feda49f | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-wide.jpg | sha: 7c3fd1168d9e | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/skills-4k.jpg | sha: 59e9104e4cb9 | PASS | - | The stream meets the desk at its corner, the desk carries its own water, and the pour goes on down the gutter beside the ledger without crossing a line of it.
+shots/home/rooms-phone.jpg | sha: fa8d1780f654 | PASS | - | The stream keeps to the margin beside the doors, clear of their words.
+shots/home/rooms-tablet.jpg | sha: 36b9b1516c19 | PASS | - | The stream keeps to the margin beside the doors, clear of their words.
+shots/home/rooms-desktop.jpg | sha: c9cf6c96de8b | PASS | - | The stream keeps to the margin beside the doors, clear of their words.
+shots/home/rooms-wide.jpg | sha: 12d88c7c9c14 | PASS | - | The stream keeps to the margin beside the doors, clear of their words.
+shots/home/rooms-4k.jpg | sha: 62223dfbee14 | PASS | - | The stream keeps to the margin beside the doors, clear of their words.
+shots/home/about-phone.jpg | sha: f539d14afda3 | PASS | - | On wide screens the stream comes in over the frame and runs behind the portrait, out below it; on a phone it keeps to the margin; the letter is never crossed.
+shots/home/about-tablet.jpg | sha: 47ecfe5c6e8e | PASS | - | On wide screens the stream comes in over the frame and runs behind the portrait, out below it; on a phone it keeps to the margin; the letter is never crossed.
+shots/home/about-desktop.jpg | sha: 97355a15bcc3 | PASS | - | On wide screens the stream comes in over the frame and runs behind the portrait, out below it; on a phone it keeps to the margin; the letter is never crossed.
+shots/home/about-wide.jpg | sha: 45d08a72f4e4 | PASS | - | On wide screens the stream comes in over the frame and runs behind the portrait, out below it; on a phone it keeps to the margin; the letter is never crossed.
+shots/home/about-4k.jpg | sha: 13c0ef74d8c5 | PASS | - | On wide screens the stream comes in over the frame and runs behind the portrait, out below it; on a phone it keeps to the margin; the letter is never crossed.
+shots/home/contact-phone.jpg | sha: f20c3c152a73 | PASS | - | The stream comes down the gutter, turns level into the stage, runs along the flume and pours into the pool under the rocket; the whole stage in view above the footer.
+shots/home/contact-tablet.jpg | sha: 733647776e7e | PASS | - | The stream comes down the gutter, turns level into the stage, runs along the flume and pours into the pool under the rocket; the whole stage in view above the footer.
+shots/home/contact-desktop.jpg | sha: 4dc7642b3025 | PASS | - | The stream comes down the gutter, turns level into the stage, runs along the flume and pours into the pool under the rocket; the whole stage in view above the footer.
+shots/home/contact-wide.jpg | sha: 5e70a24aa873 | PASS | - | The stream comes down the gutter, turns level into the stage, runs along the flume and pours into the pool under the rocket; the whole stage in view above the footer.
+shots/home/contact-4k.jpg | sha: 5b589abfbca1 | PASS | - | The stream comes down the gutter, turns level into the stage, runs along the flume and pours into the pool under the rocket; the whole stage in view above the footer.
+shots/home/scroll-desktop.jpg | sha: 6aefdfe35225 | PASS | - | The whole route in order: city, weave past the plates, landing and split on the bar, framing, the desk corner, the gutter past the ledger and doors, behind the portrait, into the flume; it follows the scroll and crosses no text.
+shots/home/scroll-phone.jpg | sha: 42c9e79293d7 | PASS | - | The phone route: down the margins, crossing in the gaps, the split joining in the left margin as a tributary, the portrait passed in the margin, into the flume at the end; no text crossed.
+shots/page/work-phone.jpg | sha: cd2a0ceac9f9 | PASS | - | Plates on the work page with the stream in the right gutter clear of them, meandering, lighting the near plate edges.
+shots/page/work-tablet.jpg | sha: 65da0068c7dd | PASS | - | Plates on the work page with the stream in the right gutter clear of them, meandering, lighting the near plate edges.
+shots/page/work-desktop.jpg | sha: a39ba69b8da6 | PASS | - | Plates on the work page with the stream in the right gutter clear of them, meandering, lighting the near plate edges.
+shots/page/work-wide.jpg | sha: 915e5fbff174 | PASS | - | Plates on the work page with the stream in the right gutter clear of them, meandering, lighting the near plate edges.
+shots/page/work-4k.jpg | sha: eb6f9218051e | PASS | - | Plates on the work page with the stream in the right gutter clear of them, meandering, lighting the near plate edges.
+shots/page/project-phone.jpg | sha: 1e4229ef0d53 | PASS | - | The framed project picture and the words, the stream in the gutter of the real page column, never on the screen edge.
+shots/page/project-tablet.jpg | sha: 0a4ba4f7be5b | PASS | - | The framed project picture and the words, the stream in the gutter of the real page column, never on the screen edge.
+shots/page/project-desktop.jpg | sha: d18aba2ea7bb | PASS | - | The framed project picture and the words, the stream in the gutter of the real page column, never on the screen edge.
+shots/page/project-wide.jpg | sha: 498221594ad6 | PASS | - | The framed project picture and the words, the stream in the gutter of the real page column, never on the screen edge.
+shots/page/project-4k.jpg | sha: f0590f24b5b7 | PASS | - | The framed project picture and the words, the stream in the gutter of the real page column, never on the screen edge.
+shots/page/clients-phone.jpg | sha: f873f2a01360 | PASS | - | Bar and placards, the stream in the gutter beside them.
+shots/page/clients-tablet.jpg | sha: 5b4da516e800 | PASS | - | Bar and placards, the stream in the gutter beside them.
+shots/page/clients-desktop.jpg | sha: f064e41016cc | PASS | - | Bar and placards, the stream in the gutter beside them.
+shots/page/clients-wide.jpg | sha: 4b4f22107e2a | PASS | - | Bar and placards, the stream in the gutter beside them.
+shots/page/clients-4k.jpg | sha: 8d53609f5180 | PASS | - | Bar and placards, the stream in the gutter beside them.
+shots/page/games-phone.jpg | sha: 386749d60ab8 | PASS | - | The handheld's room; the stream stays in the gutter.
+shots/page/games-tablet.jpg | sha: 521676a7a38f | PASS | - | The handheld's room; the stream stays in the gutter.
+shots/page/games-desktop.jpg | sha: 50311bc63215 | PASS | - | The handheld's room; the stream stays in the gutter.
+shots/page/games-wide.jpg | sha: 8aa70789916a | PASS | - | The handheld's room; the stream stays in the gutter.
+shots/page/games-4k.jpg | sha: 0a8ba906f174 | PASS | - | The handheld's room; the stream stays in the gutter.
+shots/page/photography-phone.jpg | sha: 0fe2201e7e60 | PASS | - | The camera's room; the stream stays in the gutter.
+shots/page/photography-tablet.jpg | sha: 443cac827e83 | PASS | - | The camera's room; the stream stays in the gutter.
+shots/page/photography-desktop.jpg | sha: 538bed947062 | PASS | - | The camera's room; the stream stays in the gutter.
+shots/page/photography-wide.jpg | sha: 4f6a602528dc | PASS | - | The camera's room; the stream stays in the gutter.
+shots/page/photography-4k.jpg | sha: 953d05dbe4e4 | PASS | - | The camera's room; the stream stays in the gutter.
+shots/page/3d-art-phone.jpg | sha: 94fb3569eda4 | PASS | - | The sculpture's room; the stream stays in the gutter.
+shots/page/3d-art-tablet.jpg | sha: 2d9075633570 | PASS | - | The sculpture's room; the stream stays in the gutter.
+shots/page/3d-art-desktop.jpg | sha: b23ac8594e95 | PASS | - | The sculpture's room; the stream stays in the gutter.
+shots/page/3d-art-wide.jpg | sha: 505ede3e7e66 | PASS | - | The sculpture's room; the stream stays in the gutter.
+shots/page/3d-art-4k.jpg | sha: ed00bb9f6e83 | PASS | - | The sculpture's room; the stream stays in the gutter.
+shots/page/skills-phone.jpg | sha: 5d0a3b878469 | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-tablet.jpg | sha: 384a1cfa4e91 | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-desktop.jpg | sha: 46d3a96c604f | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-wide.jpg | sha: 78e90587274e | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/skills-4k.jpg | sha: 37b432069fd5 | PASS | - | The desk with its water, the pour going round the ledger in the gutter; no line crossed.
+shots/page/about-phone.jpg | sha: 338ef1060832 | PASS | - | Portrait and letter; where there is room the stream runs behind the portrait, otherwise it keeps to its gutter; the footer is never crossed.
+shots/page/about-tablet.jpg | sha: 0be55a645b2c | PASS | - | Portrait and letter; where there is room the stream runs behind the portrait, otherwise it keeps to its gutter; the footer is never crossed.
+shots/page/about-desktop.jpg | sha: d12ef2965371 | PASS | - | Portrait and letter; where there is room the stream runs behind the portrait, otherwise it keeps to its gutter; the footer is never crossed.
+shots/page/about-wide.jpg | sha: 9f7fc0f9d582 | PASS | - | Portrait and letter; where there is room the stream runs behind the portrait, otherwise it keeps to its gutter; the footer is never crossed.
+shots/page/about-4k.jpg | sha: 8bb9d9e14450 | PASS | - | Portrait and letter; where there is room the stream runs behind the portrait, otherwise it keeps to its gutter; the footer is never crossed.
+shots/page/resume-phone.jpg | sha: 7ff66b6dc744 | PASS | - | The résumé as text with the stream in the gutter beside the sheet.
+shots/page/resume-tablet.jpg | sha: d1d35d511e55 | PASS | - | The résumé as text with the stream in the gutter beside the sheet.
+shots/page/resume-desktop.jpg | sha: d9c67e2ac4a0 | PASS | - | The résumé as text with the stream in the gutter beside the sheet.
+shots/page/resume-wide.jpg | sha: b4edf1a2bdf4 | PASS | - | The résumé as text with the stream in the gutter beside the sheet.
+shots/page/resume-4k.jpg | sha: 19e91b7f1550 | PASS | - | The résumé as text with the stream in the gutter beside the sheet.
+shots/page/notfound-phone.jpg | sha: cd6d3cead3bd | PASS | - | The stream comes in, goes round the words and pools under them: a lit surface with caustics, a meniscus and rings.
+shots/page/notfound-tablet.jpg | sha: d1f6dc7fd74f | PASS | - | The stream comes in, goes round the words and pools under them: a lit surface with caustics, a meniscus and rings.
+shots/page/notfound-desktop.jpg | sha: 11f0561d8ab7 | PASS | - | The stream comes in, goes round the words and pools under them: a lit surface with caustics, a meniscus and rings.
+shots/page/notfound-wide.jpg | sha: 88d289e4c4ea | PASS | - | The stream comes in, goes round the words and pools under them: a lit surface with caustics, a meniscus and rings.
+shots/page/notfound-4k.jpg | sha: cbef708dceed | PASS | - | The stream comes in, goes round the words and pools under them: a lit surface with caustics, a meniscus and rings.
+shots/water/body.jpg | sha: d5a66f07708e | PASS | - | A glassy ribbon with a core thread and braided threads, a rim, a two scale halo and riding sparks; clearly fuller and more alive than the second pass stream.
+shots/water/run.jpg | sha: ee4fff9e2122 | PASS | - | The run beside the paragraph, its front advancing with a head, clear of the text.
+shots/water/fall.jpg | sha: b1644581040e | PASS | - | The fall off the bar arcs away, speeds up and thins; the feed from the top is the lab's source.
+shots/water/land.jpg | sha: 93d4aecd31e1 | PASS | - | A landing with a rising crown, drops thrown on arcs, a sheet spreading along the edge and the plate warming.
+shots/water/cling.jpg | sha: 3e0c3bd0c3c9 | PASS | - | Lands on the corner, runs the top edge, wraps round the far corner and lets go.
+shots/water/pour.jpg | sha: 5a228e672f78 | PASS | - | The sheet reaches the end, clings round the corner and leaves on an arc.
+shots/water/split.jpg | sha: 0a723403d864 | PASS | - | Lands on the bar centre with a crown and arcs of drops, spreads both ways along the lit bar; better than the reference's splashless tube.
+shots/water/frame.jpg | sha: acabef5d0fa6 | PASS | - | Pours off both ends, falls down both sides and rejoins under the section within the strip.
+shots/water/pool.jpg | sha: 0356bf7cc74b | PASS | - | The fall arrives and the pool fills: a lit surface with caustics in patches, a bright meniscus, rings that spread and cross.
+shots/water/light-plate.jpg | sha: 61344eac1547 | PASS | - | The plate beside the stream picks up warm light strongest at the near rim (critic PASS).

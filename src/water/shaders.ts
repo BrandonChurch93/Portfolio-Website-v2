@@ -35,7 +35,7 @@ void main(){
   float bead = 1.0 + 0.55 * exp(-pow((uHead - s) / 14.0, 2.0)) * step(0.5, aD.w) * step(aD.w, 1.5);
   float grow = mix(0.35, 1.0, smoothstep(0.0, 34.0, s - uStartS));
   // The front narrows to a rounded tip instead of ending in a blunt cap.
-  float front = mix(0.2, 1.0, smoothstep(uHead + 2.0, uHead - 46.0, s));
+  float front = mix(0.55, 1.0, smoothstep(uHead + 2.0, uHead - 22.0, s));
   // The stream breathes: its width swells and narrows along the way, slowly changing with time.
   float breathe = 1.0 + 0.16 * sin(s * 0.012 + aD.y * 1.3) + 0.09 * sin(s * 0.031 + 2.0 - aD.y * 0.7);
   float w = hw * bead * grow * front * breathe * uWiden;
@@ -61,9 +61,12 @@ void main(){
   float u = (f - t) * 240.0;
 
   if (uHalo > 0.5){
-    float g = exp(-v * v * 2.2);
-    float pulse = 0.8 + 0.2 * noise(vec2(u * 0.004, t * 0.3));
-    frag = vec4(vec3(1.0, 0.46, 0.1) * g * (0.2 * pulse * reveal + 0.16 * head) * (1.0 - fall * 0.3), 0.0);
+    // Two scales of glow: a tight warm one that hugs the stream and a wide faint one that lights the page.
+    float tight = exp(-v * v * 34.0), wide = exp(-v * v * 3.2);
+    float pulse = 0.82 + 0.18 * noise(vec2(u * 0.004, t * 0.3));
+    float flare = exp(-pow((uHead - s) / 26.0, 2.0)) * smoothstep(uHead + 30.0, uHead - 4.0, s);
+    vec3 glow = vec3(1.0, 0.5, 0.12) * (tight * 0.7 + wide * 0.36) * pulse * reveal + vec3(1.0, 0.66, 0.3) * (tight * 1.6 + wide * 0.6) * flare;
+    frag = vec4(glow * (1.0 - fall * 0.25), 0.0);
     return;
   }
 
@@ -78,22 +81,21 @@ void main(){
     float surge = pow(0.5 + 0.5 * sin(s * 0.0085 - t * 2.9), 10.0);
     I = body * (0.2 + 0.52 * th + caust * 0.5 + surge * 0.55) + head * 1.9 * body;
   } else {
-    // Approach B: a soft rounded body whose currents are advected noise, two layers at different rates so it never
-    // reads as a sliding texture, with glints riding on top and a brighter lip where it is thin.
-    body = smoothstep(1.0, 0.62, av);
-    float edge = smoothstep(0.55, 0.92, av) * smoothstep(1.05, 0.9, av);
-    float a = fbm(vec2(u * 0.0105, v * 1.15 + t * 0.21));
-    float b = fbm(vec2((f - t * 0.82) * 240.0 * 0.019 + 31.0, v * 2.1 - t * 0.17));
-    float braidA = exp(-pow((v - 0.62 * (a - 0.5) * 2.0) / 0.24, 2.0));
-    float braidB = exp(-pow((v + 0.58 * (b - 0.5) * 2.0) / 0.19, 2.0));
-    float caust = pow(max(0.0, fbm(vec2(u * 0.031, v * 2.8 + t * 0.6)) - 0.18), 2.2) * 3.6;
-    float glint = smoothstep(0.82, 0.98, noise(vec2(u * 0.09 + 4.0, v * 5.0 + t * 0.9)));
-    // Caustic lines: ridges of the advected noise, the bright network light makes through moving water.
-    float r1 = pow(1.0 - abs(2.0 * a - 1.0), 3.0);
-    float r2 = pow(1.0 - abs(2.0 * b - 1.0), 5.0);
-    // Dark channels between the currents, so the body has depth and is never an even tube.
-    float chan = 0.45 + 0.55 * smoothstep(0.25, 0.62, a);
-    I = body * chan * (0.14 + 0.5 * braidA + 0.36 * braidB + r1 * 0.75 + r2 * 0.65 + caust + glint * 1.2) + edge * 0.42 + head * 0.9 * body;
+    // Approach B: a ribbon of light lit like a lens: a bright core thread that wanders slowly, two thin threads braiding
+    // round it, fine caustic ridges underneath and sparse glints, all carried at the water's own speed. The rim is soft.
+    body = smoothstep(1.0, 0.5, av);
+    float lens = 1.0 - av * av;
+    // Glass: the rim of the ribbon catches light too, so it reads as a body of water, not a line.
+    float rim = exp(-pow((av - 0.78) / 0.12, 2.0));
+    float wa = noise(vec2(u * 0.006, t * 0.11)) - 0.5, wb = noise(vec2(u * 0.009 + 17.0, t * 0.13)) - 0.5;
+    float core = exp(-pow((v - wa * 0.45) / 0.38, 2.0));
+    float thA = exp(-pow((v - 0.55 * sin(u * 0.018 + wa * 4.0)) / 0.1, 2.0));
+    float thB = exp(-pow((v + 0.5 * sin(u * 0.014 + 1.9 + wb * 4.0)) / 0.085, 2.0));
+    float a = fbm(vec2(u * 0.016, v * 1.6 + t * 0.2));
+    float r1 = pow(1.0 - abs(2.0 * a - 1.0), 6.0);
+    float glint = smoothstep(0.86, 0.985, noise(vec2(u * 0.11 + 4.0, v * 4.0 + t * 0.8))) * smoothstep(0.95, 0.4, av);
+    float edge = smoothstep(0.62, 0.9, av) * smoothstep(1.02, 0.88, av);
+    I = body * (0.56 * lens + 0.8 * core + 0.55 * thA + 0.45 * thB + r1 * 0.32 + glint * 1.2 + rim * 0.38) + edge * 0.22 + head * 2.4 * body * (0.4 + 0.6 * lens);
     // Falling, it thins and tears into strands and drops; the longer the drop, the more torn.
     float tear = smoothstep(30.0, 260.0, vDrop) * fall;
     float strands = smoothstep(0.36 + 0.26 * tear, 0.66, noise(vec2(v * 1.8 + 3.0, u * 0.0045)));
@@ -119,6 +121,7 @@ uniform sampler2D uRoute;     // rows are branches; columns uniform in travel ti
 uniform int uRow; uniform float uF0, uF1; uniform int uCols;
 uniform vec4 uLand;           // x, y, impact time, direction
 uniform float uLandStrength;
+uniform float uN;             // how many crown fingers this tier draws
 uniform vec4 uHeadPos;        // x, y, direction x, direction y
 out vec2 vL; out vec2 vSeg; out float vR; out float vI; out float vHot;
 
@@ -138,16 +141,16 @@ void main(){
     // Motes riding the flow: each moves at exactly the water's speed, so they race down falls.
     float span = uF1 - uF0;
     float f = uF0 + fract(hash1(fi * 1.7) + uTime / max(span, 0.5)) * span;
-    vec4 p = routeAt(f), q = routeAt(f - 0.035);
+    vec4 p = routeAt(f), q = routeAt(f - 0.008);
     // Most ride inside the body; one in four drifts just outside it, in the glow.
-    float out_ = step(0.75, hash1(fi * 8.3));
-    float side = (hash1(fi * 3.1) - 0.5) * mix(1.5, 4.6, out_) + 0.25 * sin(uTime * (0.7 + hash1(fi)) + fi);
+    float out_ = step(0.55, hash1(fi * 8.3));
+    float side = (hash1(fi * 3.1) - 0.5) * mix(1.4, 6.5, out_) + 0.35 * sin(uTime * (0.7 + hash1(fi)) + fi);
     vec2 d = normalize(p.xy - q.xy + 1e-4), n = vec2(-d.y, d.x);
     A = p.xy + n * side * p.w; B = q.xy + n * side * p.w;
     float shown = smoothstep(uHead + 2.0, uHead - 20.0, p.z);
     float tw = 0.45 + 0.55 * noise(vec2(fi * 7.3, uTime * 2.2));
-    r = (1.1 + hash1(fi * 5.7) * 1.5) * uScale;
-    I = shown * tw * 1.5;
+    r = (0.7 + pow(hash1(fi * 5.7), 2.0) * 1.4) * uScale;
+    I = shown * tw * mix(1.6, 1.1, out_);
     hot = hash1(fi * 9.1);
   } else if (uType == 1){
     // Sparks thrown at the moving front.
@@ -182,19 +185,19 @@ void main(){
       float k = first > 0.5 ? 0.0 : floor(ph) + 1.0;
       float a = first > 0.5 ? tau : fract(ph) * P;
       float amp = first > 0.5 ? 1.0 : 0.58 + 0.3 * hash1(fi * 11.0 + k * 3.7);
-      float theta = (fi + hash1(fi + k)) / 28.0 * 6.2832;
+      float theta = (fi + hash1(fi + k)) / max(uN, 1.0) * 6.2832;
       float c = cos(theta);
       float bias = dir == 0.0 ? 1.0 : 1.0 + 0.6 * sign(c) * dir;
-      float vy = (330.0 + 190.0 * hash1(fi * 2.9 + k)) * amp * uLandStrength * bias * uScale;
+      float vy = (250.0 + 130.0 * hash1(fi * 2.9 + k)) * amp * uLandStrength * bias * uScale;
       float R = (5.0 + a * (110.0 + 60.0 * hash1(fi * 8.1 + k)) * amp) * uScale;
       float h = max(0.0, vy * a - 0.5 * g * a * a);
-      float lean = 0.35 + 0.25 * hash1(fi * 6.6);
+      float lean = 0.7 + 0.35 * hash1(fi * 6.6);
       // Each finger is a curved wall in four segments, flaring outward as it rises, with a bead at its rim.
-      vec2 base = o + vec2(c * R, 0.0);
+      vec2 base = o + vec2(c * R, -sin(theta) * R * 0.28);
       float u0 = min(sub, 3.0) / 4.0, u1 = (min(sub, 3.0) + 1.0) / 4.0;
       vec2 P0 = base + vec2(c * h * lean * u0 * u0, -h * u0), P1 = base + vec2(c * h * lean * u1 * u1, -h * u1);
       A = P1; B = P0;
-      r = (1.5 + 1.1 * hash1(fi * 4.4)) * uScale * (1.25 - 0.55 * u1);
+      r = (2.3 + 1.4 * hash1(fi * 4.4)) * uScale * (1.3 - 0.5 * u1);
       if (sub > 3.5){ vec2 tip = base + vec2(c * h * lean, -h); A = tip; B = tip; r = (2.4 + 1.6 * hash1(fi * 7.1)) * uScale; }
       float life = 1.0 - smoothstep(0.0, 2.0 * vy / g, a);
       I = life * (0.55 + 0.45 * amp) * (0.6 + 0.4 * abs(sin(theta)));
@@ -309,16 +312,19 @@ void main(){
     // Rings are circles on the water, foreshortened exactly as the pool is: circles in its own coordinates.
     vec2 d = vQ - src;
     float R = a * (k < 2 ? 1.6 : 0.9);
-    float w = 0.025 + a * 0.03;
+    float w = 0.016 + a * 0.022;
     rings += exp(-pow((length(d) - R) / w, 2.0)) * (1.0 - a) * (k < 2 ? 1.8 : 1.05);
   }
   // A launch sends one big ring across the pool.
   float ka = uTime - uKickTime;
   float kick = uKick * step(0.0, ka) * exp(-pow((length(vQ) - ka * 0.9) / 0.06, 2.0)) * exp(-ka * 0.8) * 1.6;
-  float under = exp(-r * r * 1.6) * 0.32;
+  float under = 0.1 + exp(-r * r * 1.3) * 0.5;
+  float a1 = fbm(px * 0.045 + vec2(uTime * 0.18, -uTime * 0.11)), a2 = fbm(px * 0.06 + 7.0 - vec2(uTime * 0.13, uTime * 0.09));
+  float caust = pow(1.0 - abs(a1 - a2), 12.0) * 0.32 * smoothstep(0.3, 0.75, fbm(px * 0.012 + 3.0 + uTime * 0.05));
   float shimmer = 0.06 * fbm(px * 0.05 + uTime * 0.3);
-  float meniscus = exp(-pow((r - 0.97) / 0.045, 2.0)) * 0.18;
-  float I = (under + shimmer + rings * 0.9 + kick) * inside + meniscus;
+  float meniscus = exp(-pow((r - 0.975) / 0.022, 2.0)) * 0.55 + exp(-pow((r - 0.95) / 0.07, 2.0)) * 0.12;
+  float inflow = exp(-length((vQ - vec2(0.0, -0.55)) * vec2(1.0, 1.6)) * 4.0) * 0.45;
+  float I = (under + caust + shimmer + inflow + rings * 0.38 + kick) * inside + meniscus;
   vec3 col = mix(vec3(0.75, 0.26, 0.03), vec3(1.0, 0.68, 0.28), smoothstep(0.1, 0.9, I)) * I * min(1.0, uWet * 1.5);
   frag = vec4(col, 0.0);
 }`;

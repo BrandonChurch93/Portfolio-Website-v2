@@ -60,9 +60,15 @@ for (const [name, make] of [['desktop', desktop], ['phone', phone]] as const) {
       expect(halves.length).toBe(2);
       const after = route.branches.find((b) => b.samples[0].s > split.s && !halves.includes(b))!;
       const ends = halves.map((b) => b.samples[b.samples.length - 1].s);
-      expect(after.samples[0].s).toBeCloseTo(Math.max(...ends), 6);
-      // The halves are near mirror images, so neither waits long for the other.
-      expect(Math.abs(ends[0] - ends[1])).toBeLessThan(40);
+      if (name === 'desktop') {
+        expect(after.samples[0].s).toBeCloseTo(Math.max(...ends), 6);
+        // The halves are near mirror images, so neither waits long for the other.
+        expect(Math.abs(ends[0] - ends[1])).toBeLessThan(40);
+      } else {
+        // On the phone the stream goes on from the half that arrives first; the other joins it as a tributary.
+        expect(after.samples[0].s).toBeCloseTo(Math.min(...ends), 6);
+        expect(Math.abs(after.samples[0].x - halves[0].samples.at(-1)!.x)).toBeLessThan(2);
+      }
     });
 
     it('speeds up as it falls, and thins', () => {
@@ -135,4 +141,48 @@ describe('route builder · handed to a piece', () => {
       expect(maxKink(route)).toBeLessThan(0.45);
     });
   }
+});
+
+describe('route builder · a long run with nothing to meet', () => {
+  for (const narrow of [false, true]) {
+    const o: RouteOptions = { start: { x: 1372, y: 0 }, column: { left: 160, right: 1280 }, narrow, width: 1440, avoid: [], endY: 3200 };
+    const route = buildRoute([], o);
+    const xs = route.branches.flatMap((b) => b.samples.map((p) => p.x));
+    const off = Math.max(...xs.map((x) => Math.abs(x - o.start.x)));
+
+    it(`${narrow ? 'phone' : 'desktop'}: ${narrow ? 'runs straight in the narrow margin' : 'meanders a little, never straight down the gutter'}`, () => {
+      if (narrow) expect(off).toBeLessThan(1);
+      else { expect(off).toBeGreaterThan(6); expect(off).toBeLessThanOrEqual(12.5); }
+    });
+
+    it(`${narrow ? 'phone' : 'desktop'}: has no kink and keeps rising along the way`, () => {
+      expect(maxKink(route)).toBeLessThan(0.45);
+      for (const b of route.branches) for (let i = 1; i < b.samples.length; i++) expect(b.samples[i].s).toBeGreaterThan(b.samples[i - 1].s);
+    });
+  }
+});
+
+describe('route builder · text right under the desk', () => {
+  const { text, anchors, o } = desktop();
+  // The skills ledger starts just below the desk, across the whole column.
+  const ledger = rect(160, 3790, 1120, 520);
+  const all = [...text, ledger];
+  const route = buildRoute(anchors, { ...o, avoid: all });
+  it('pours off the desk and goes round the ledger without crossing it', () => {
+    expect(crossings(route, all)).toEqual([]);
+    expect(maxKink(route)).toBeLessThan(0.45);
+  });
+});
+
+describe('route builder · the end of a page with text below the last anchor', () => {
+  const desk = rect(160, 900, 640, 300);
+  const ledger = rect(160, 1230, 640, 900);
+  const footer = rect(160, 2300, 640, 120);
+  const anchors: Anchor[] = [{ id: 'desk', kind: 'edge', rect: desk, from: { x: 200, y: 1080 }, to: { x: 750, y: 1110 } }];
+  const o: RouteOptions = { start: { x: 790, y: 0 }, column: { left: 160, right: 800 }, narrow: false, width: 834, avoid: [ledger, footer], endY: 2480 };
+  const route = buildRoute(anchors, o);
+  it('goes round the ledger and the footer on its way to the foot of the page', () => {
+    expect(crossings(route, [ledger, footer])).toEqual([]);
+    expect(maxKink(route)).toBeLessThan(0.45);
+  });
 });

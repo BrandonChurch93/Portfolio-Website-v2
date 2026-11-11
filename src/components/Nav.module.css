@@ -3,7 +3,7 @@
   inset: 0 0 auto 0;
   z-index: var(--z-nav);
   height: var(--nav-h);
-  background: linear-gradient(180deg, rgba(12, 10, 9, 0.92) 0%, rgba(12, 10, 9, 0.62) 70%, rgba(12, 10, 9, 0) 100%);
+  background: linear-gradient(180deg, rgba(12, 10, 9, 0.96) 0%, rgba(12, 10, 9, 0.9) 100%);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }

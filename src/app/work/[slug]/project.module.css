@@ -37,9 +37,9 @@
   white-space: nowrap;
 }
 
-.facts li + li::before {
+.facts li:not(:last-child)::after {
   content: '·';
-  margin-right: var(--space-5);
+  margin-left: var(--space-5);
   color: var(--accent);
 }
 

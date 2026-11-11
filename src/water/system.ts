@@ -37,8 +37,8 @@ export interface WaterOptions {
 
 // Particle counts per tier: character stays, cost goes.
 const BUDGET: Record<Tier, { riders: number; crown: number; drops: number; boil: number; sparks: number; halo: boolean }> = {
-  high: { riders: 1, crown: 28, drops: 44, boil: 10, sparks: 26, halo: true },
-  mid: { riders: 0.7, crown: 22, drops: 32, boil: 8, sparks: 18, halo: true },
+  high: { riders: 1, crown: 40, drops: 44, boil: 10, sparks: 26, halo: true },
+  mid: { riders: 0.7, crown: 32, drops: 32, boil: 8, sparks: 18, halo: true },
   low: { riders: 0.4, crown: 16, drops: 20, boil: 5, sparks: 10, halo: false },
   static: { riders: 0.6, crown: 0, drops: 0, boil: 0, sparks: 0, halo: true },
 };
@@ -276,6 +276,8 @@ export class WaterSystem {
     const r = this.route!;
     if (this.move) return sAtFlowTime(r, this.move.fEntry + this.move.t);
     if (this.forced !== null) return this.forced;
+    // While the page's source is still filling (the city's opening), the stream has not started.
+    if (document.querySelector('[data-water-start][data-water-hold="1"]')) return 0;
     if (tiers.get() === 'static' || matchMedia('(prefers-reduced-motion: reduce)').matches) return r.total;
     // At the end of the page (or on a page too short to scroll) the stream runs all the way to its end.
     if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) return r.total;
@@ -324,7 +326,7 @@ export class WaterSystem {
     gl.uniform1f(this.body.u('uPhone'), narrow ? 1 : 0);
     for (const pass of budget.halo ? [1, 0] : [0]) {
       gl.uniform1f(this.body.u('uHalo'), pass);
-      gl.uniform1f(this.body.u('uWiden'), pass ? 13 : 1.6);
+      gl.uniform1f(this.body.u('uWiden'), pass ? 6 : 1.3);
       for (const b of this.branches) {
         gl.uniform1f(this.body.u('uStartS'), b.startS > 0 ? b.startS : -1e4);
         gl.bindVertexArray(b.vao);
@@ -386,6 +388,7 @@ export class WaterSystem {
         gl.uniform4f(this.part.u('uLand'), L.x, L.y, imp, L.dir);
         gl.uniform1f(this.part.u('uLandStrength'), L.strength);
         if (this.approach === 'a') { type(6); gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, 30); return; }
+        gl.uniform1f(this.part.u('uN'), budget.crown);
         type(2); gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, budget.crown * 5);
         type(3); gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, budget.drops * 4);
         type(4); gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, 2);

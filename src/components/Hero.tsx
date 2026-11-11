@@ -50,6 +50,9 @@ export function Hero() {
       const k = s ? smooth((s.t - (s.end - HERO.wordsIn[0])) / (HERO.wordsIn[0] - HERO.wordsIn[1])) : playing ? 0 : 1;
       w.style.opacity = k.toFixed(3);
       w.style.transform = `translateY(${((1 - k) * 18).toFixed(2)}px)`;
+      // The page's stream waits for the city's own water to pour off the rim and land.
+      const src = start.current;
+      if (src) { const hold = playing && !!s && s.t < HERO.waterFrom; if ((src.dataset.waterHold === '1') !== hold) src.dataset.waterHold = hold ? '1' : ''; }
     };
     const off = clock.onFrame(show);
     const ro = new ResizeObserver(() => place());
