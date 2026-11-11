@@ -3,6 +3,7 @@ import { projectBySlug, site, type Project } from '../content/site';
 import { ContactLinks } from '../components/ContactLinks';
 import { Doors } from '../components/Doors';
 import { Hero } from '../components/Hero';
+import { Launchpad } from '../components/Launchpad';
 import { Workbench } from '../components/Workbench';
 import { Ledger } from '../components/Ledger';
 import { Letter } from '../components/Letter';
@@ -75,12 +76,13 @@ export default function Home() {
 
       <section id="contact" className={page.section} aria-labelledby="contact-title">
         <div className={page.wrap}>
-          <header className={page.sectionHead} data-water-avoid="">
-            <h2 id="contact-title" className={page.h2}>{site.contact.heading}</h2>
-            <p className={page.sub}>{site.contact.line}</p>
-          </header>
-          <ContactLinks />
-          <div className={styles.pad} aria-hidden="true" />
+          <Launchpad>
+            <header className={page.sectionHead} data-water-avoid="">
+              <h2 id="contact-title" className={page.h2}>{site.contact.heading}</h2>
+              <p className={page.sub}>{site.contact.line}</p>
+            </header>
+            <ContactLinks />
+          </Launchpad>
         </div>
       </section>
     </main>

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { dropScale } from '../../world/lightwater';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import { COLORS, type Tier } from '../../config/site';
 import { clock } from '../../world/clock';
@@ -18,6 +19,9 @@ const TARGET = [46, 300, 0] as const;
 const LAMP_Z = 0.55;
 const LAMP_POWER = 1.8;
 const LAUNCH_FLAG = 'played:rocket-launch';
+const LAUNCH_RES = 0.7;
+// How fast the water's front comes along the flume once the page's stream reaches the stage, mm/s.
+const WATER_SPEED = 520;
 // The entrance: the pool fills with light, the floods come on, the beacons start.
 export const ENTRANCE = { pool: [0, 1.8] as const, floods: 1.3, flicker: 0.5, end: 3.2 } as const;
 // Assembly, as fractions of the scroll through the section: the gantry, stage one, stage two, the nose, the arms, the lights.
@@ -51,6 +55,7 @@ export function createRocket(): Piece {
   let launchAt: number | null = null;
   let launchOverride: number | null = null;
   let launched = false;
+  let waterAt: number | null = null;
   let lampUV = { x: 0.55, y: 0.3 };
   let view = { ...REST };
   let viewForced = false;
@@ -69,7 +74,7 @@ export function createRocket(): Piece {
       const asp = stage.width / Math.max(1, stage.height);
       const hw = Math.tan(((stage.camera.fov / 2) * Math.PI) / 180) * asp;
       const th = Math.tan(((stage.camera.fov / 2) * Math.PI) / 180);
-      d = asp < 0.8 ? Math.max(d, 0.3 / hw, 0.5 / th) * frameOpt.scale : Math.max(d, 0.62 / hw) * frameOpt.scale;
+      d = asp < 0.8 ? Math.max(d, 0.3 / hw, 0.46 / th) * frameOpt.scale : Math.max(d, 0.62 / hw) * frameOpt.scale;
       d *= v.pull ?? 1;
     }
     const a = v.az * D2R, e = v.el * D2R;
@@ -172,7 +177,18 @@ export function createRocket(): Piece {
     m.smoke.visible = L !== null && !stage.clay;
     // The pool: rings and light; it answers the launch, then settles.
     const surge = L === null ? 0 : smooth(span(lt, LAUNCH.ignite, LAUNCH.lift + 0.8)) * (1 - smoothSafe(lt, 4, 9));
+    // The water along the flume: full in a still, arriving with the entrance in the lab, and in the page once the
+    // page's stream reaches the stage.
+    const fl = m.flume;
+    const wet = entranceOverride !== null ? Math.max(0, o - 0.3) * 760 : still() ? fl.sEnd + 2000 : waterAt === null ? 0 : (t - waterAt) * WATER_SPEED;
+    for (const w of m.water) { w.uniforms.uFill.value = wet; w.uniforms.uTime.value = t; w.uniforms.uGain.value = (w.userData.gain ?? 0.6) * (stage.clay ? 0 : 1); }
+    const px = dropScale(stage.camera, stage.height * stage.renderer.getPixelRatio(), RKT.SCALE);
+    m.drops.uniforms.uTime.value = t; m.drops.uniforms.uPx.value = px; m.drops.uniforms.uOp.value = wet > fl.sLand && !stage.clay ? 1 : 0;
+    m.ride.uniforms.uTime.value = t; m.ride.uniforms.uFill.value = wet; m.ride.uniforms.uPx.value = px;
+    const inlet = smooth(clamp01((wet - fl.sLand) / 260));
+    m.inletLight.intensity = stage.clay ? 0 : 0.012 * smooth(clamp01(wet / 300));
     const pu = m.pool.userData.uniforms;
+    pu.uInlet.value.z = inlet;
     const fill = smooth(span(o, ...ENTRANCE.pool));
     pu.uTime.value = t;
     pu.uSurge.value = surge;
@@ -202,6 +218,8 @@ export function createRocket(): Piece {
     }
     if (stage.scene.fog instanceof THREE.Fog) { const cd = stage.camera.position.distanceTo(target()); stage.scene.fog.near = cd + 0.4; stage.scene.fog.far = cd + 3.2; }
     stage.lamp.intensity = LAMP_POWER * smooth(span(o, 0, 0.8));
+    // The launch renders at a lower resolution while it plays (motion, exhaust and smoke hide it) and steps back up.
+    stage.setResolutionScale(L !== null && lt < LAUNCH.end - 1 && !still() ? LAUNCH_RES : 1);
     stage.hideForClay(m.root);
     if (launchAt !== null && lt > LAUNCH.end) { launchAt = null; launched = true; }
   };
@@ -240,7 +258,7 @@ export function createRocket(): Piece {
       const rim = new THREE.RectAreaLight(0xffdcb8, 2.0, 0.8, 0.6);
       rim.position.set(0.6, 0.9, -0.9);
       rim.lookAt(c);
-      s.add(key, key.target, rim, model.poolLight, model.beaconLight, new THREE.HemisphereLight(0x3a2a1e, 0x0c0a09, 0.08));
+      s.add(key, key.target, rim, model.poolLight, model.beaconLight, model.inletLight, new THREE.HemisphereLight(0x3a2a1e, 0x0c0a09, 0.08));
       for (const f of model.floods) s.add(f, f.target);
       stage.lamp.target.position.copy(c);
       stage.resize();
@@ -263,6 +281,7 @@ export function createRocket(): Piece {
     setProgress(p) {
       progress = p;
       if (pending && p > 0.02) { pending = false; entranceAt = time(); }
+      if (waterAt === null && p > 0.04 && !still()) waterAt = time();
       assemblyLive = clamp01((p - 0.02) / 0.6);
       // The launch: at the end of the page, once per visit, when the rocket stands ready.
       const doc = document.documentElement;
@@ -285,6 +304,21 @@ export function createRocket(): Piece {
     },
   };
   Object.assign(piece, {
+    anchor(edge = 0) {
+      if (!stage || !model) return null;
+      const cam = new THREE.PerspectiveCamera().copy(stage.camera);
+      place(cam, REST, null);
+      cam.updateProjectionMatrix();
+      const f = (v: THREE.Vector3) => { const p = v.clone().multiplyScalar(RKT.SCALE).project(cam); return { x: (p.x + 1) / 2, y: (1 - p.y) / 2 }; };
+      const { lip, far } = model.flume;
+      const at = (k: number) => f(lip.clone().lerp(far, k));
+      const inside = (p: { x: number; y: number }) => p.x >= edge && p.x <= 1 - edge && p.y >= 0 && p.y <= 1;
+      if (!inside(at(0)) || inside(at(1))) return null;
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (inside(at(m))) lo = m; else hi = m; }
+      const e = at(lo);
+      return { x: Math.min(1, Math.max(0, e.x)), y: Math.min(1, Math.max(0, e.y)) };
+    },
     opening(t: number | null) { entranceOverride = t; frame(); },
     assembly(p: number | null) { assemblyOverride = p; frame(true); },
     launch(t: number | null) { launchOverride = t; frame(true); },

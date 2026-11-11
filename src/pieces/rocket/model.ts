@@ -3,6 +3,7 @@ import { Builder, at, cyl, lathe, rbox, seeded, xf } from '../../world/build';
 import { circle, rounded, screw, slab, type P2, type V } from '../../world/shape';
 import { dielectric, glassLayer, metal, shade } from '../../world/surface';
 import { site } from '../../content/site';
+import { crownMesh, dropsAt, dropsMaterial, fallStrip, riders, waterMaterial, waterStrip, type WaterRow } from '../../world/lightwater';
 
 const RW = site.pieces.rocket;
 
@@ -12,6 +13,9 @@ const RW = site.pieces.rocket;
 
 export const RKT = { SCALE: 0.001, POOL: -104, POOL_R: 340, GANTRY_X: 172, TOP: 640 } as const;
 const TOWER_FEET: [number, number][] = [[144, -28], [200, -28], [200, 28], [144, 28]];
+// The flume that brings the page's stream to the pool: its direction from the centre (radians in x, z), its length
+// over the apron, the water's speed along it (mm/s) and gravity for the pour (mm/s2, the scale the other pieces use).
+export const FLUME = { A: 2.3, LEN: 1500, W: 22, VRUN: 240, G: 2600 } as const;
 const D2R = Math.PI / 180;
 
 export interface Swing { group: THREE.Group; rest: number; out: number }
@@ -41,6 +45,11 @@ export interface RocketModel {
   floodLens: THREE.MeshBasicMaterial;
   engineLight: THREE.PointLight;
   poolLight: THREE.RectAreaLight;
+  water: THREE.ShaderMaterial[];
+  drops: THREE.ShaderMaterial;
+  ride: THREE.ShaderMaterial;
+  flume: { far: THREE.Vector3; lip: THREE.Vector3; sLand: number; sEnd: number };
+  inletLight: THREE.PointLight;
   centre: THREE.Vector3;
 }
 
@@ -53,10 +62,11 @@ function poolMaterial(): THREE.MeshPhysicalMaterial {
   const R = RKT.POOL_R;
   const m = new THREE.MeshPhysicalMaterial({ color: 0x0b0806, roughness: 0.15, metalness: 0, specularIntensity: 1, ior: 1.33 });
   m.name = 'rocketPool';
-  m.userData.uniforms = { uTime: { value: 0 }, uSurge: { value: 0 }, uGain: { value: 1 }, uFill: { value: 1 }, uCam: { value: new THREE.Vector3(0, 2000, 800) } };
+  m.userData.uniforms = { uTime: { value: 0 }, uSurge: { value: 0 }, uGain: { value: 1 }, uFill: { value: 1 }, uCam: { value: new THREE.Vector3(0, 2000, 800) }, uInlet: { value: new THREE.Vector3(0, 0, 0) } };
   shade(m, 'rocket-pool', {
     head: /* glsl */ `
 uniform float uTime, uSurge, uGain, uFill;
+uniform vec3 uInlet; // where the flume pours in (x, y in the pool's plane) and how far the water has come (z, 0 to 1)
 uniform vec3 uCam; // the camera in the pool's own plane (x, y) and its height above the water (z), millimetres
 float ph(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float pn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(ph(i), ph(i + vec2(1,0)), f.x), mix(ph(i + vec2(0,1)), ph(i + vec2(1,1)), f.x), f.y); }
@@ -125,7 +135,9 @@ float mirrored(vec2 p){
     float rim = smoothstep(${R - 25}.0, ${R - 1}.0, r) * (1.0 - smoothstep(${R - 1}.0, ${R + 2}.0, r));
     float under = exp(-r * 0.0045);
     float body = (0.05 + 0.035 * pn(vP * 0.0135 + t * 0.03)) * (0.55 + 0.9 * under);
-    float k = body + (fine * 0.26 + broad * 0.12) * (0.6 + 0.4 * under) + glint * 0.4 + pr * 0.3 + rings * 0.45 + rim * 0.3;
+    float di = length(vP - uInlet.xy);
+    float inlet = uInlet.z * (pow(0.5 + 0.5 * sin(di * 0.2 - t * 3.0), 6.0) * exp(-di * 0.012) + exp(-di * 0.05) * 0.8);
+    float k = body + (fine * 0.26 + broad * 0.12) * (0.6 + 0.4 * under) + glint * 0.4 + pr * 0.3 + rings * 0.45 + rim * 0.3 + inlet * 0.5;
     float front = uFill * ${R + 30}.0;
     k *= mix(0.16, 1.0, smoothstep(front, front - 60.0, r)) + exp(-pow((r - front + 20.0) / 18.0, 2.0)) * 0.9 * step(uFill, 0.999);
     k *= (1.0 + 2.2 * uSurge) * uGain;
@@ -479,6 +491,73 @@ export function buildRocket(): RocketModel {
     root.add(mesh);
   }
 
+  // ---- the flume: a stone trough on piers across the apron, a brass spout over the coping, the water along it -----
+  const R0 = RKT.POOL_R;
+  const fu = new THREE.Vector3(Math.cos(FLUME.A), 0, Math.sin(FLUME.A));
+  const fv = new THREE.Vector3(-Math.sin(FLUME.A), 0, Math.cos(FLUME.A));
+  const rLip = R0 - 8, rFar = R0 + 60 + FLUME.LEN;
+  const floorY = RKT.POOL + 12, waterY = RKT.POOL + 21;
+  {
+    const b = new Builder();
+    const len = rFar - rLip, mid = (rFar + rLip) / 2;
+    const along = (r: number, y: number, side = 0) => [fu.x * r + fv.x * side, y, fu.z * r + fv.z * side] as [number, number, number];
+    b.add(rbox(len, 4, FLUME.W + 4, 1), coping, xf({ p: along(mid, floorY - 2), r: [0, -FLUME.A, 0] }));
+    for (const sd of [-1, 1]) b.add(rbox(len, 14, 5, 1.4), coping, xf({ p: along(mid, floorY + 5, sd * (FLUME.W / 2 + 4.5)), r: [0, -FLUME.A, 0] }));
+    // Joints across the trough every block, brass ties over the top every third.
+    for (let r = R0 + 60; r < rFar; r += 60) for (const sd of [-1, 1]) b.add(rbox(1.4, 14.6, 1, 0.2), ink, xf({ p: along(r, floorY + 5, sd * (FLUME.W / 2 + 7.1)), r: [0, -FLUME.A, 0] }));
+    // Piers down to the apron.
+    for (let r = R0 + 110; r < rFar; r += 140) b.add(rbox(16, floorY - 4 - (RKT.POOL - 14), 26, 1.5), coping, xf({ p: along(r, (floorY - 4 + RKT.POOL - 14) / 2), r: [0, -FLUME.A, 0] }));
+    // The spout: a brass lip with cheeks reaching out over the water.
+    b.add(rbox(16, 2, FLUME.W + 6, 0.6), brass, xf({ p: along(rLip + 4, floorY - 0.2), r: [0, -FLUME.A, 0] }));
+    for (const sd of [-1, 1]) b.add(rbox(16, 10, 2, 0.5), brass, xf({ p: along(rLip + 4, floorY + 4, sd * (FLUME.W / 2 + 2)), r: [0, -FLUME.A, 0] }));
+    for (const mm of b.build(root, 'flume')) mm.userData.wireK = 0.5;
+  }
+  const flumeRun = waterMaterial(0.95);
+  const flumeFall = waterMaterial(0.7, true);
+  let fs0 = 0, ff0 = 0;
+  {
+    const rows: WaterRow[] = [];
+    for (let r = rFar; r >= rLip; r -= 8) {
+      const d = rFar - r;
+      rows.push({ c: new THREE.Vector3(fu.x * r, waterY, fu.z * r), side: fv.clone(), w: FLUME.W - 2, s: d, f: d / FLUME.VRUN, seed: 3 + d * 0.001 });
+    }
+    fs0 = rFar - rLip; ff0 = fs0 / FLUME.VRUN;
+    const m = new THREE.Mesh(waterStrip(rows, 8), flumeRun);
+    m.frustumCulled = false; m.userData.noWire = true; m.userData.noAO = true;
+    root.add(m);
+  }
+  const lip = new THREE.Vector3(fu.x * rLip, waterY, fu.z * rLip);
+  const vx = FLUME.VRUN * 0.7, tOut = Math.sqrt((2 * (waterY - RKT.POOL)) / FLUME.G);
+  const landR = rLip - vx * tOut;
+  {
+    const rows: WaterRow[] = [];
+    for (let j = 0; j <= 24; j++) {
+      const t = (j / 24) * tOut, d = 0.5 * FLUME.G * t * t;
+      rows.push({ c: new THREE.Vector3(fu.x * (rLip - vx * t), waterY - d, fu.z * (rLip - vx * t)), side: fv.clone(), w: (FLUME.W - 4) * Math.max(0.7, Math.sqrt(FLUME.VRUN / (FLUME.VRUN + FLUME.G * t))), s: fs0 + vx * t + d, f: ff0 + t, d, seed: 6 });
+    }
+    const m = new THREE.Mesh(fallStrip(rows), flumeFall);
+    m.frustumCulled = false; m.userData.noWire = true; m.userData.noAO = true;
+    root.add(m);
+  }
+  const sLand = fs0 + vx * tOut + (waterY - RKT.POOL);
+  const land = new THREE.Vector3(fu.x * landR, RKT.POOL + 0.5, fu.z * landR);
+  const crown = crownMesh(20, 7, 11, 9, sLand);
+  (crown.material as THREE.ShaderMaterial).userData.gain = 0.42;
+  crown.position.copy(land);
+  crown.userData.noWire = true;
+  root.add(crown);
+  const drops = dropsMaterial(FLUME.G * 0.35);
+  const dp = dropsAt([land.clone().add(new THREE.Vector3(0, 1, 0))], 90, 16, [1.2, 2.6], rnd);
+  dp.material = drops;
+  dp.userData.noWire = true;
+  root.add(dp);
+  const ride = riders(new THREE.Vector3(fu.x * (rFar - 20), waterY + 0.3, fu.z * (rFar - 20)), new THREE.Vector3(fu.x * (rLip + 10), waterY + 0.3, fu.z * (rLip + 10)), fv.clone(), FLUME.W - 6, 20, FLUME.VRUN, 60, rnd);
+  ride.userData.noWire = true;
+  root.add(ride);
+  const inletLight = new THREE.PointLight(0xff9a40, 0, 0.16, 2);
+  inletLight.position.set(fu.x * (rLip + 30) * RKT.SCALE, (waterY + 8) * RKT.SCALE, fu.z * (rLip + 30) * RKT.SCALE);
+  pool.userData.uniforms.uInlet.value.set(land.x, -land.z, 0);
+
   // ---- the pad: an octagonal stone deck on eight pillars, brass trim, grating, the flame hole, the clamps --------
   const pad = new Builder();
   {
@@ -777,5 +856,5 @@ export function buildRocket(): RocketModel {
   poolLight.lookAt(0, 1, 0);
 
   const centre = new THREE.Vector3(0, 260, 0);
-  return { root, rocket, stages, gantry, tied, beaconLight, sling, cable, arms, clamps, plume, plumeMat, flash, smoke, smokeMat, pool, beacons, portholes, floods, floodLens, engineLight, poolLight, centre };
+  return { water: [flumeRun, flumeFall, crown.material as THREE.ShaderMaterial], drops, ride: ride.material as THREE.ShaderMaterial, flume: { far: new THREE.Vector3(fu.x * rFar, waterY, fu.z * rFar), lip, sLand, sEnd: sLand + 40 }, inletLight, root, rocket, stages, gantry, tied, beaconLight, sling, cable, arms, clamps, plume, plumeMat, flash, smoke, smokeMat, pool, beacons, portholes, floods, floodLens, engineLight, poolLight, centre };
 }

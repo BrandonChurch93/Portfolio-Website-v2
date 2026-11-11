@@ -114,3 +114,25 @@ for (const [name, make] of [['desktop', desktop], ['phone', phone]] as const) {
     });
   });
 }
+
+describe('route builder · handed to a piece', () => {
+  for (const [name, make, at] of [['desktop', desktop, { x: 160, y: 5420 }], ['phone', phone, { x: 20, y: 3760 }]] as const) {
+    const { text, anchors, o } = make();
+    const handed = anchors.map((a) => (a.kind === 'pool' ? { ...a, rect: { ...a.rect, left: at.x }, at } : a));
+    const route = buildRoute(handed, o);
+    const end = route.branches[route.branches.length - 1].samples.at(-1)!;
+
+    it(`${name}: ends level at the piece's edge and draws no pool of its own`, () => {
+      expect(route.pools.length).toBe(0);
+      expect(Math.abs(end.y - at.y)).toBeLessThan(2);
+      expect(end.x).toBeGreaterThan(at.x);
+      expect(end.x).toBeLessThan(at.x + 10);
+      expect(route.touch.map((t) => t.anchor)).toContain('pad');
+    });
+
+    it(`${name}: still crosses no text and has no kink`, () => {
+      expect(crossings(route, text)).toEqual([]);
+      expect(maxKink(route)).toBeLessThan(0.45);
+    });
+  }
+});

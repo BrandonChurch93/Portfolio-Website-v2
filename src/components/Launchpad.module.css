@@ -1,0 +1,56 @@
+.contact {
+  position: relative;
+}
+
+.words {
+  position: relative;
+  z-index: 2;
+  margin-bottom: var(--space-6);
+}
+
+.pad {
+  position: relative;
+  height: max(30rem, calc(100svh - var(--nav-h)));
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+/* The stage fades into the page on every side, so it has no edge; where the flume leaves the frame on the left, the
+   page's stream shows through the fade and the two cross over. The switch stays as it is. */
+.stage canvas {
+  mask-image: linear-gradient(to right, transparent 0, var(--bg) 7%, var(--bg) 93%, transparent 100%), linear-gradient(to bottom, transparent 0, var(--bg) 6%, var(--bg) 74%, transparent 96%);
+  mask-composite: intersect;
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Wide screens: the stage runs the full width and the words sit in its dark sky at the top left of the page column,
+   the rocket framed to their right. */
+@media (min-width: 1100px) {
+  .words {
+    position: absolute;
+    top: calc(var(--space-7) + var(--space-5));
+    left: 0;
+    width: min(36rem, 40%);
+    margin-bottom: 0;
+    pointer-events: none;
+  }
+
+  .words a,
+  .words button {
+    pointer-events: auto;
+  }
+
+  .pad {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: max(40rem, calc(100vh - var(--nav-h)));
+  }
+}

@@ -6,7 +6,7 @@
 .host :global(.piece-stats) {
   position: absolute;
   left: var(--edge);
-  bottom: var(--space-5);
+  bottom: calc(var(--space-5) + var(--host-foot, 0px));
   z-index: 2;
   font-family: var(--font-mono);
   font-size: var(--step--2);
@@ -24,7 +24,7 @@
 .making {
   position: absolute;
   right: var(--edge);
-  bottom: var(--space-5);
+  bottom: calc(var(--space-5) + var(--host-foot, 0px));
   z-index: 2;
   display: inline-flex;
   align-items: center;

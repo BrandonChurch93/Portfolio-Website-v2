@@ -27,6 +27,8 @@ export interface Anchor {
   fall?: number;
   // weave: run down this page x instead of a gutter (a gap between two columns of things).
   x?: number;
+  // pool: where the stream enters a 3D piece that carries it on into its own pool, page px. The page draws no pool.
+  at?: { x: number; y: number };
 }
 
 export interface RouteOptions {
@@ -141,6 +143,22 @@ class Pen {
       px = bx; py = by; d += ds;
       this.push(bx, by, kind, this.eased(WATER.width[kind], from, d), 0, ds / WATER.speed[kind]);
     }
+  }
+
+  // From heading down to heading level, on a circular arc of radius r, arriving at (x, y) moving sideways.
+  bendTo(x: number, y: number, r: number): void {
+    this.begin('run');
+    const dir = Math.sign(x - this.x) || 1;
+    const startY = y - r;
+    if (this.y < startY - 1) this.lineTo(this.x, startY, 'run');
+    const ox = this.x + dir * r, oy = startY;
+    const n = Math.max(4, Math.ceil((Math.PI / 2) * r / WATER.step));
+    for (let k = 1; k <= n; k++) {
+      const a = (k / n) * (Math.PI / 2);
+      const nx = ox - dir * Math.cos(a) * r, ny = oy + Math.sin(a) * r;
+      this.push(nx, ny, 'run', WATER.width.run, 0, Math.hypot(nx - this.x, ny - this.y) / WATER.speed.run);
+    }
+    if (Math.abs(x - this.x) > 1) this.lineTo(x, y, 'run');
   }
 
   lineTo(x: number, y: number, kind: Exclude<StrandKind, 'fall'>): void {
@@ -329,6 +347,16 @@ export function buildRoute(anchors: readonly Anchor[], o: RouteOptions): Route {
       const f = Math.max(...ends.map((p) => p.f));
       pen = new Pen(cx, joinY, s, f, wScale);
       touch.push({ anchor: `${a.id}:join`, x: cx, y: joinY, s });
+    } else if (a.kind === 'pool' && a.at) {
+      // Handed to a piece: it comes level into the piece's edge, which carries it on.
+      const inward = a.at.x <= (r.left + r.right) / 2 ? 1 : -1;
+      const room = inward > 0 ? a.at.x - 8 : o.width - 8 - a.at.x;
+      const bend = Math.max(6, Math.min(34, (room - 8) / 1.6));
+      travel(pen, a.at.x - inward * Math.min(bend + 30, room), a.at.y - bend - 40);
+      pen.bendTo(a.at.x + inward * 6, a.at.y, bend);
+      touch.push({ anchor: a.id, x: a.at.x, y: a.at.y, s: pen.s });
+      ended = true;
+      break;
     } else if (a.kind === 'pool') {
       const cx = (r.left + r.right) / 2;
       const py = r.top + (r.bottom - r.top) * 0.62;

@@ -98,6 +98,11 @@ export const ROOM = {
   frame: { tall: { shift: -0.11, scale: 0.86, x: 0 }, upright: { shift: -0.1, scale: 1.0, x: 0 }, wide: { shift: -0.07, scale: 1.32, x: 0.17 } },
 } as const;
 
+// The rocket's stage in Contact, framed per screen shape like the rooms (tall below an aspect of 0.65, wide from 1.15).
+export const CONTACT = {
+  frame: { tall: { shift: -0.02, scale: 1.0, x: 0 }, upright: { shift: -0.02, scale: 1.0, x: 0 }, wide: { shift: -0.03, scale: 1.0, x: 0.06 } },
+} as const;
+
 export const HERO = {
   // Tall screens (phone, tablet upright) stack the words over the city; wide ones set them either side of the spire.
   frame: { tall: { shift: 0.15, scale: 1.12 }, upright: { shift: 0.165, scale: 1.12 }, wide: { shift: 0.12, scale: 1.0 } },

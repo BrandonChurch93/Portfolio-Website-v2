@@ -95,10 +95,6 @@
 }
 
 
-.pad {
-  height: clamp(16rem, 40vh, 30rem);
-}
-
 @media (max-width: 820px) {
   .featuredRow,
   .featuredRow[data-side='right'] {

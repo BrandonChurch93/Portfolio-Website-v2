@@ -180,7 +180,9 @@ for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['fr
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });
 for (const v of VPS) SHOTS['home/rooms-' + v] = section('rooms')(v);
 for (const v of VPS) SHOTS['home/about-' + v] = section('about')(v);
-for (const v of VPS) SHOTS['home/contact-' + v] = section('contact')(v);
+// Contact: on wide layouts the words sit in the stage, so the shot is the end of the page (where the launch fires) with
+// the water at its end; narrow layouts stack the words above it, so the shot starts at the section.
+for (const v of VPS) SHOTS['home/contact-' + v] = ['phone', 'tablet'].includes(v) ? section('contact')(v) : { route: '/', vp: v, steps: [['freeze', 30], ['scrollTo', 1e7], ['lamp', 0.6, 0.35], ['water.head', 1]] };
 for (const v of VPS) { SHOTS['home/work-' + v] = section('work')(v); SHOTS['home/clients-' + v] = section('clients')(v); SHOTS['home/skills-' + v] = section('skills-desk')(v); }
 // ---- page: one route per screen, from its top -------------------------------------------------------
 const pageShot = (route) => (v) => ({ route, vp: v, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] });
