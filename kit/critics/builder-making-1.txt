@@ -1,0 +1,4 @@
+shots/city/making.jpg | sha: a9bb686f82c3 | PASS | - | Warm wire over the built city, surface dimmed beneath, readout in mono; unchanged but for the whole-millisecond frame time.
+shots/bench/making.jpg | sha: d4ea49f45739 | PASS | - | Wire over the desk and tools, screens and wood through it, readout in mono; unchanged but for the whole-millisecond frame time.
+shots/handheld/making.jpg | sha: 71dea985d1c5 | PASS | - | Edges over the dimmed lit console, readout in mono.
+shots/camera/making.jpg | sha: a219cbc446a2 | PASS | - | Edges over the dimmed lit camera, iris and rings in wire, readout in mono.

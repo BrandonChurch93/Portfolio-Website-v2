@@ -1,0 +1,14 @@
+shots/camera/entrance.jpg | sha: 0881b18fe847 | PASS | - | Dark, lights up as it turns in on the paper sweep, the shutter fires with light through the glass, the lever winds on.
+shots/tier/room-mid.jpg | sha: 3898794b2a58 | PASS | - | Same room at this tier, framing and light held.
+shots/tier/room-low.jpg | sha: 4d9d064c7163 | PASS | - | Same room at this tier, framing and light held.
+shots/tier/room-static.jpg | sha: ebbc25908c2c | PASS | - | Same room at this tier, framing and light held.
+shots/page/games-phone.jpg | sha: 3bdbcf07d3ef | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/games-tablet.jpg | sha: 7d56b5b210ad | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/games-desktop.jpg | sha: 9983c947c1b0 | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/games-wide.jpg | sha: 5f65a03065fe | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/games-4k.jpg | sha: e214c309fe2c | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/photography-phone.jpg | sha: e9b459e33107 | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/photography-tablet.jpg | sha: 25e962ce9059 | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/photography-desktop.jpg | sha: eefdcc7ddafb | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/photography-wide.jpg | sha: d9cd12f5adde | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.
+shots/page/photography-4k.jpg | sha: 80f2071a33f8 | PASS | - | The room opens with its piece above the heading, words clear, the stage fading into the page below; the switch crisp.

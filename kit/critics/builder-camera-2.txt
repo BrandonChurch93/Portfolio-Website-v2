@@ -1,0 +1,12 @@
+shots/camera/form.jpg | sha: bc9f1a9b19de | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/close-1.jpg | sha: 501ab4622f64 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/close-2.jpg | sha: c605763d256d | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/close-3.jpg | sha: 22d2bdd506d0 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/close-4.jpg | sha: fb7b304402d8 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/close-5.jpg | sha: 1e846eebe974 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/close-6.jpg | sha: a508a5a869ba | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/light.jpg | sha: 1b2243373629 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/light-2.jpg | sha: 55c15776f47d | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/making.jpg | sha: 90c637bc0a74 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/rest-desktop.jpg | sha: 530f09d0c4e9 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.
+shots/camera/rest-phone.jpg | sha: 71306e78dcc3 | PASS | - | The camera on its paper sweep: worn black enamel, deep coated lens with its iris, chrome and brass reading apart, contact and a lamp shadow on the paper.

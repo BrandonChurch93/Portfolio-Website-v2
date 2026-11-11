@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 7 · the camera, phase 1 plan
+IN PROGRESS · Phase 7 · the sculpture, phase 1 plan
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -9,8 +9,8 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 ## Where things stand
 
 - Phase: 7 The rooms
-- Step: the camera, phase 1 research and plan
-- Next action: plan the camera piece in PROGRESS, build src/pieces/camera, shots, critic rounds, then /photography
+- Step: the sculpture, phase 1 research and plan
+- Next action: plan and build src/pieces/sculpture, shots and critic rounds, then /3d-art, then the More rooms doors
 - Background tasks running (id, what): none
 - Files changed since the last commit: see git status (commit "Piece words in the content file" made at Phase 7 start)
 
@@ -178,6 +178,9 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - Screen glass is drawn by its own small shader (a soft studio reflection by Fresnel, the lamp as a crisp reflection with a capped peak) instead of a standard material, because a standard glass layer turned the nearby lamp into a blown blob over the game. Rule 1 (the lamp never makes text harder to read).
 - The handheld's game is named Lantern, words in site.pieces.handheld: an original small game made for the site, as kit 04 asks when there is no footage.
 - Piece canvases render at a pixel budget per tier (TIER_PIXEL_BUDGET_AREA): the tier ratio for a 1440 by 900 canvas sets a pixel count, and a smaller canvas may use the screen density up to that count. Found when the phone room page rendered soft at 2x on a 3x screen. A shared change: the city and bench phone shots will render sharper and are retaken in Phase 12. Rule 1 (the phone is never the lesser version).
+- The making view's frame time is shown to the whole millisecond while the test clock is frozen, so a still of it is the same image on every run (the live figure varied by a tenth and churned every making shot's verdict). Rule 4.
+- The camera's room is a seamless paper sweep instead of a floor with a horizon. A critic named the horizon a smear; a sweep is how a camera is photographed. Rule 2.
+- Room stages fade into the page over their bottom quarter (mask on the canvas only). Rule 1 (no hard edge where the piece's room meets the page).
 - Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
 - Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
 - Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
@@ -254,6 +257,15 @@ Parts:
 The details that sell it: rooms with depth and different moods per window (lights on and off, warm and cool), mullions and slabs catching the lamp, lit seams, water that lights the terraces it crosses, moving traffic in several directions, trees with layered canopies, tiny people with shadows.
 Risks: draw calls and triangles (merge static geometry per material, instance trees, people and vehicles); interior mapping cost (cheap per fragment, one texture atlas); the opening must stay above 50 fps; determinism (every motion from the one clock; seeded randomness); shadows from a moving point light at 2048 must not flicker (fixed bias, PCF soft).
 Opening (kit 02): dark screen, light draws the plan on the ground (footprint outlines traced by a moving front), the disc lifts, buildings rise floor by floor, water fills canals and pours off the rim, the camera flies down from high to the settled low view and the headline arrives above. Plays once per visit, any input skips, never replays on back navigation. Settle: at least 60 percent of the city above the fold on desktop.
+
+### The camera (all seven phases, done)
+Plan (phase 1): an invented black enamel camera, worn to brass where hands and straps rub, with a fast prime lens as the hero, on a tabletop tripod. Kit 04: glass that looks deep (coated elements, an iris, reflections that move), the lamp shining through the lens, the shutter firing as the page opens. Research: real rangefinder anatomy (top plate with speed dial, release in a threaded collar, advance lever, rewind knob over a film speed reminder, accessory shoe, finder window, strap lugs, lens release, self timer, flash port, leatherette, a bayonet mount) and lens anatomy (filter thread, name ring, focus ring with distance scale, depth of field scale, aperture ring, baffles, stacked elements, nine-bladed iris); none of it shaped like a known body.
+- Built: src/world/shape.ts (rounded outlines, bevelled slabs with flat faces kept flat, screws; moved out of the handheld), coatedGlass in src/world/surface.ts (each lens surface adds a coating-tinted room reflection by Fresnel and a crisp lamp highlight), src/pieces/camera (model, index), the camera words in site.pieces.camera.
+- The lens: five coated surfaces at their own curvatures and depths, matte baffles stepping in, a chrome retaining ring, nine blades at three depths with machined inner edges, light behind the iris. The iris works as a meter: it closes as the lamp lines up with the lens, and the lamp's light shows through.
+- The room is a seamless paper sweep (floor curving up into the wall, no horizon), lit like a product shot: a soft box in front, an overhead key without its own shadow (the visitor's lamp throws the moving shadow), two rims, a studio environment.
+- Entrance: dark, the studio lights come up as the camera turns in on its head, the shutter fires (blades shut and open, light floods the glass, the body nods), the lever winds on.
+- Critic rounds 041 and 042, 043 and 044, 045 and 046 (close-2 and close-6 critic PASS in round three); my PASS gates the rest (builder-camera-1, -2). Faults fixed between rounds: everything too dark (studio environment up, front soft box, exposure), anisotropy faceting lathed chrome (chrome made isotropic), no iris visible (iris rests partly closed, light behind it, blade edges), a flat white lever (enamel), wear as a stripe and then as blocky texels (smooth fields, on bevels and on the corners only near top and bottom), grain in the lens (lens interior out of the occlusion pass), a grid in the leatherette (rotated, warped, ridged noise), a flat finder (a framed window with depth and a view behind it), bare top plate and barrel (film speed reminder, centre screw, chrome seams, turned grooves), a lamp that changed nothing (the lamp throws the shadow, stronger), the shutter beat invisible (slower blades, light through the glass, a nod).
+- page/photography: critic 047 (both FAIL: a blotchy horizon, a clipped tripod foot on the phone) fixed with the paper sweep and phone framing; my PASS gates. Room stages fade into the page at their bottom (mask on the canvas only, so the switch stays crisp).
 
 ### The handheld (phases 2 to 6, done; fit in progress)
 - Built: src/pieces/handheld (model, screen, index), src/world/surface.ts (shared shader chunks moved out of the workbench, metal and dielectric factories with brushing, tarnish and a cast face, anisotropic highlights, a screen glass shader), src/world/env.ts (a studio environment for metal: dark room, soft key, strip, rim, warm bounce), Stage options env and wireEdges (the making view draws true edges for pieces with large flat faces).
@@ -341,6 +353,7 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- Camera critic points not acted on after three rounds (041 to 046): "speckled halo on clay edges" in the form shot is the occlusion pass at silhouettes against the bright clay floor (the same pass every piece shares; not seen at rest); the lab label and switch overlap some close shots (lab chrome); entrance strips cannot show rest motion, because the clock is frozen for them (the drift, the following lens and the meter run live).
 - Handheld critic points not acted on after three rounds (034 to 039): the lab's own label and switch overlap the edges of some close shots (lab chrome, not the piece); the phone view in the tall lab frame leaves dark space above and below the stand (the room page sets words in that space); at rest the smallest engravings (SELECT, START, A, B, the cartridge label) are small but legible at desktop size and small on the phone; in the making view the drilled grilles make a dense knot of edge loops; a glancing close of the face reads smooth, because brushing fades into the sheen at a glancing angle.
 - Workbench critic points not acted on after three rounds (027 to 032): the arriving fall is the page's stream continued and keeps its width (W01 at desk scale); the landing has a crown, rings and thrown drops but at shot size the critic read it as a spark; the run along the edge is a sheet of light-water, which the critic read as a band; the lamp shade has a seam, vents, switch and brushed grain but reads plain at close range; the mouse remains a smooth shell (a mouse is a smooth shell); legs show regular grain because a leg is cut along the board.
 - The page water itself was judged in Phase 3; critic 033 called its glints "blocky" at some sizes. Taken up in Phase 10 with the whole route.
@@ -390,6 +403,8 @@ Newest last. Date and time, what was done, what is next.
 - 2026-11-11, Phase 5 done: lit featured plates in a stepped two column layout on wide screens, lit client placards, the water weaving through both and splitting on the bar, route lines and width easing, stronger water light on metal. Next: Phase 6.
 
 - 2026-11-11, Phase 6 done: the workbench (walnut, leather, live screens, legends, invented camera, brass lamp, the water on the desk with crown, drops and riders), the skills section and page with the stream handed over at the canvas edges, lazy piece mounting, route that goes round text and rejoins splits above the next text. Next: Phase 7.
+
+- 2026-11-11, Phase 7 so far: the handheld (Lantern on its screen) in /games and the camera in /photography done and gated (39 of 39 for handheld, camera, page/games, page/photography, tier/room). City and bench shots retaken for the shared stage change and re-verdicted (my PASS, three rounds each). Home hero and tier/hero shots wait for the Phase 12 retake. Next: the sculpture and /3d-art, then the More rooms doors.
 
 ## Handoff
 

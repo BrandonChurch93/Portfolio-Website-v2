@@ -144,3 +144,33 @@ void main(){
   m.name = name;
   return m;
 }
+
+// One coated surface of a lens element, drawn as the light it adds: the coating reflects a faint tint of the room by
+// Fresnel (green, violet or amber, by the coating), and the lamp as a crisp highlight held below white. Several of these
+// stacked at different curvatures give a lens its stack of moving reflections.
+export function coatedGlass(name: string, tint: [number, number, number], strength = 1): THREE.ShaderMaterial {
+  const m = new THREE.ShaderMaterial({
+    uniforms: { uLamp: { value: new THREE.Vector3() }, uLampK: { value: 1 }, uTint: { value: new THREE.Vector3(...tint) }, uK: { value: strength } },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide,
+    vertexShader: 'varying vec3 vW; varying vec3 vN; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }',
+    fragmentShader: /* glsl */ `
+uniform vec3 uLamp, uTint; uniform float uLampK, uK;
+varying vec3 vW; varying vec3 vN;
+void main(){
+  vec3 N = normalize(vN), V = normalize(cameraPosition - vW);
+  if (dot(N, V) < 0.0) N = -N;
+  vec3 R = reflect(-V, N);
+  float nv = max(dot(N, V), 0.0);
+  float fr = 0.03 + 0.97 * pow(1.0 - nv, 5.0);
+  float room = smoothstep(0.1, 0.9, R.y) * 0.6 + exp(-pow((R.x + 0.7) * 3.0, 2.0)) * 0.25;
+  vec3 coat = mix(uTint, vec3(1.0, 0.9, 0.75), pow(1.0 - nv, 2.0));
+  vec3 L = normalize(uLamp - vW);
+  float a = max(dot(R, L), 0.0);
+  float spec = (pow(a, 700.0) * 0.9 + pow(a, 120.0) * 0.1) * uLampK;
+  vec3 col = coat * room * (0.08 + fr) * 0.5 * uK + mix(vec3(1.0, 0.85, 0.65), uTint, 0.35) * spec * uK;
+  gl_FragColor = vec4(col, 1.0);
+}`,
+  });
+  m.name = name;
+  return m;
+}

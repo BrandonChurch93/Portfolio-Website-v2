@@ -12,6 +12,7 @@ import type { Tier } from '../config/site';
 import { site } from '../content/site';
 import { pixelRatioFor } from './tier-choice';
 import { seeded } from './build';
+import { clock } from './clock';
 import { studioScene } from './env';
 
 // What every piece shares: renderer, Neutral tone mapping, soft shadows, a studio environment, the post chain, the
@@ -271,7 +272,9 @@ export class Stage {
     if (this.making) {
       const i = this.renderer.info.render;
       const w = site.ui.stats;
-      this.stats.textContent = `${Math.round(i.triangles).toLocaleString('en-US')} ${w.triangles} · ${i.calls} ${w.calls} · ${this.frameMs.toFixed(1)} ${w.frame}`;
+      // Under the frozen test clock the frame time is shown to the whole millisecond, so a still is the same image every time.
+      const ms = clock.isFrozen() ? String(Math.max(1, Math.round(this.frameMs))) : this.frameMs.toFixed(1);
+      this.stats.textContent = `${Math.round(i.triangles).toLocaleString('en-US')} ${w.triangles} · ${i.calls} ${w.calls} · ${ms} ${w.frame}`;
     }
   }
 

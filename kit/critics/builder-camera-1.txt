@@ -1,0 +1,13 @@
+shots/camera/form.jpg | sha: 4d4045359dc2 | PASS | - | Clay reads from across the room: body, lens, dials, ball head and splayed tripod with contact shadows.
+shots/camera/close-1.jpg | sha: 66b69010dc6d | PASS | - | Overlapping iris blades deep in coated glass, baffles stepping in, engraved front ring, pebbled leatherette.
+shots/camera/close-2.jpg | sha: b060f3eb5fa6 | PASS | - | Engraved figures, focus grip ribs, chrome seams and turned grooves, coated glass with depth.
+shots/camera/close-3.jpg | sha: ddc9dde54b14 | PASS | - | Speed dial with figures and centre screw, release, lever over the dial, shoe; wear on the plate edge.
+shots/camera/close-4.jpg | sha: 009e9eb68b23 | PASS | - | Framed finder window with depth and reflection, port glass, film speed reminder, worn edges.
+shots/camera/close-5.jpg | sha: 95ab166b6686 | PASS | - | Lens release, leatherette and brass worn through on the edges where hands hold.
+shots/camera/close-6.jpg | sha: 6c16cbe153ff | PASS | - | Ball head, knurled brass knob, screws and bands on the head, ribbed grips, brass collars, feet in contact.
+shots/camera/light.jpg | sha: e9014ea19001 | PASS | - | Lamp up left: highlights on the left and the lamp throws its own tripod shadow.
+shots/camera/light-2.jpg | sha: 07ef9bd598c3 | PASS | - | Lamp low right: highlights move right and the tripod shadow swings.
+shots/camera/making.jpg | sha: 211964eba21b | PASS | - | Edges over the dimmed lit surface, iris and rings in wire, mono readout.
+shots/camera/rest-desktop.jpg | sha: 6a6fd0bb2c0f | PASS | - | Camera on its tripod, worn black enamel, deep coated lens with its iris, lit studio floor.
+shots/camera/rest-phone.jpg | sha: dcd370136afc | PASS | - | Centred and full density; the whole tripod in frame.
+shots/camera/entrance.jpg | sha: e350add2eca5 | PASS | - | Dark, the lights come up as it turns in, the shutter fires with light through the glass, the lever winds on.

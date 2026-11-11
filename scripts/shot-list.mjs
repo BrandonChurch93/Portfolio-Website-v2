@@ -119,6 +119,24 @@ SHOTS['handheld/rest-desktop'] = hand([]);
 SHOTS['handheld/rest-phone'] = hand([], { vp: 'phone' });
 SHOTS['handheld/entrance'] = hand([['opening', 0]], { strip: { times: steps12(0, 4.2), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
 
+// ---- camera: /lab/piece/camera, the piece alone at rest --------------------------------------------
+// aim takes millimetres of the room (the body centre at 0, the floor at y -152); view takes degrees and metres.
+const cam = (steps, extra = {}) => ({ route: '/lab/piece/camera/', vp: 'desktop', steps: [['freeze', 10], ['lamp', 0.55, 0.3], ...steps], ...extra });
+const cclose = (aim, view, lamp = [0.5, 0.45]) => cam([['lamp', ...lamp], ['piece:camera.aim', ...aim], ['piece:camera.view', ...view]]);
+SHOTS['camera/form'] = cam([['piece:camera.clay', true], ['piece:camera.view', 40, 16, 0.74]]);
+SHOTS['camera/close-1'] = cclose([-18, -4, 73], [-22, 4, 0.15], [0.42, 0.4]);
+SHOTS['camera/close-2'] = cclose([-5, -4, 47], [32, 12, 0.15]);
+SHOTS['camera/close-3'] = cclose([36, 46, 17], [12, 38, 0.17]);
+SHOTS['camera/close-4'] = cclose([-31, 40, -4], [-12, 24, 0.16]);
+SHOTS['camera/close-5'] = cclose([35, -14, 38], [42, 8, 0.14]);
+SHOTS['camera/close-6'] = cclose([0, -78, 0], [30, 14, 0.22]);
+SHOTS['camera/light'] = cam([['lamp', 0.25, 0.3]]);
+SHOTS['camera/light-2'] = cam([['lamp', 0.8, 0.6]]);
+SHOTS['camera/making'] = cam([['piece:camera.setMaking', true]]);
+SHOTS['camera/rest-desktop'] = cam([]);
+SHOTS['camera/rest-phone'] = cam([], { vp: 'phone' });
+SHOTS['camera/entrance'] = cam([['opening', 0]], { strip: { times: steps12(0, 2.6), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
+
 // ---- home: the page itself ------------------------------------------------------------------------
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });
@@ -130,6 +148,7 @@ for (const v of VPS) SHOTS['page/skills-' + v] = { route: '/skills/', vp: v, ste
 // ---- tier: the hero and a room at the lower tiers ----------------------------------------------------
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/room-' + tr] = { route: '/games/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] };
 for (const v of VPS) SHOTS['page/games-' + v] = pageShot('/games/')(v);
+for (const v of VPS) SHOTS['page/photography-' + v] = pageShot('/photography/')(v);
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 
 export { SHOTS };

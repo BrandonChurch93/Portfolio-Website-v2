@@ -16,6 +16,11 @@
   inset: 0;
 }
 
+/* The room fades into the page below it, so the stage has no bottom edge; the switch stays as it is. */
+.fill canvas {
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+
 .words {
   position: relative;
   pointer-events: none;
