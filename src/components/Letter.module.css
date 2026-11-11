@@ -6,13 +6,16 @@
 }
 
 .portrait {
-  border-radius: var(--radius-3);
-  overflow: hidden;
-  aspect-ratio: var(--window-portrait);
-  border: 1px solid var(--line);
-  max-width: 30rem;
+  max-width: 32rem;
   width: 100%;
   justify-self: end;
+  margin: 0;
+}
+
+/* The frame: a 4:5 window with its margins and a nameplate band (src/metal/mask.ts, kind frame). */
+.frame {
+  width: 100%;
+  aspect-ratio: 640 / 815;
 }
 
 .photo {

@@ -164,6 +164,7 @@ uniform vec2 uView;          // viewport size, CSS px
 uniform float uRad, uInset;
 uniform vec3 uLamp;          // CSS px, x right, y down, z toward the viewer
 uniform float uLampI;
+uniform float uGlare;         // how strongly the glass over a photo glares, 0 to 1
 uniform vec3 uWater;         // CSS px
 uniform float uWaterI;
 uniform vec2 uTilt;          // radians: about x, about y
@@ -314,7 +315,7 @@ void main(){
       vec3 G = vec3(0.0, 0.0, 1.0);
       float fr = 0.04 + 0.96 * pow(1.0 - max(dot(G, V), 0.0), 5.0);
       float smudge = fbm(p / uS * 0.03 + 4.0) * 0.08;
-      vec3 glass = studio(reflect(-V, G), 0.08 + smudge) * fr * 0.4 + spec(G, V, L, vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), 0.12 + smudge, 0.0, vec3(0.04)) * fall * 0.55 * vec3(1.0, 0.84, 0.62);
+      vec3 glass = studio(reflect(-V, G), 0.08 + smudge) * fr * 0.4 + spec(G, V, L, vec3(1.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0), 0.12 + smudge, 0.0, vec3(0.04)) * fall * 0.55 * uGlare * vec3(1.0, 0.84, 0.62);
       col = mix(col, under + glass, inside);
     }
   }

@@ -159,6 +159,8 @@ SHOTS['sculpture/entrance'] = sc([['opening', 0]], { strip: { times: steps12(0, 
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });
 for (const v of VPS) SHOTS['home/rooms-' + v] = section('rooms')(v);
+for (const v of VPS) SHOTS['home/about-' + v] = section('about')(v);
+for (const v of VPS) SHOTS['home/contact-' + v] = section('contact')(v);
 for (const v of VPS) { SHOTS['home/work-' + v] = section('work')(v); SHOTS['home/clients-' + v] = section('clients')(v); SHOTS['home/skills-' + v] = section('skills-desk')(v); }
 // ---- page: one route per screen, from its top -------------------------------------------------------
 const pageShot = (route) => (v) => ({ route, vp: v, steps: [['freeze', 30], ['lamp', 0.6, 0.35]] });
@@ -169,6 +171,7 @@ for (const tr of ['mid', 'low', 'static']) SHOTS['tier/room-' + tr] = { route: '
 for (const v of VPS) SHOTS['page/games-' + v] = pageShot('/games/')(v);
 for (const v of VPS) SHOTS['page/photography-' + v] = pageShot('/photography/')(v);
 for (const v of VPS) SHOTS['page/3d-art-' + v] = pageShot('/3d-art/')(v);
+for (const v of VPS) SHOTS['page/about-' + v] = pageShot('/about/')(v);
 for (const tr of ['mid', 'low', 'static']) SHOTS['tier/hero-' + tr] = { route: '/', vp: 'desktop', tier: tr, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 
 export { SHOTS };

@@ -135,6 +135,7 @@ class PlateRenderer {
       return true;
     } catch {
       this.broken = true;
+      this.gl = null;
       return false;
     }
   }
@@ -373,6 +374,8 @@ class PlateRenderer {
     gl.uniform2f(l.u('uView'), innerWidth, innerHeight);
     gl.uniform3f(l.u('uLamp'), L.px, L.py, LAMP.depth * Math.max(innerWidth, innerHeight * 0.8));
     gl.uniform1f(l.u('uLampI'), 1.15 + 0.3 * L.led);
+    // A portrait's glass glares softly: the lamp's spot should not sit on a face.
+    gl.uniform1f(l.u('uGlare'), p.spec.kind === 'frame' ? 0.15 : 1);
     gl.uniform3f(l.u('uWater'), p.water.x, p.water.y, p.water.z);
     gl.uniform1f(l.u('uWaterI'), p.water.k * 8.0);
     gl.uniform2f(l.u('uTilt'), p.tilt.x, p.tilt.y);

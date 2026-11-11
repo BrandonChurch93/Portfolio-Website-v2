@@ -1,6 +1,6 @@
 import type { Finish } from '../content/site';
 
-export type PlateKind = 'plate' | 'bar' | 'placard' | 'control';
+export type PlateKind = 'plate' | 'bar' | 'placard' | 'control' | 'frame';
 
 export interface PlateSpec {
   finish: Finish;
@@ -142,6 +142,19 @@ export function paintMask(spec: PlateSpec, cssW: number, cssH: number, dpr: numb
     } else {
       border(5, 7, 1);
     }
+  } else if (spec.kind === 'frame') {
+    // A picture frame: the window fills the plate, with an engraved nameplate band below it.
+    const D = DESIGN.plate;
+    S = (cssW / D.width) * dpr;
+    radius = D.radius * S;
+    const m = 46 * S, band = 84 * S;
+    win = [w / 2, (m + h - band) / 2, w / 2 - m, (h - band - m) / 2];
+    border(15, 9, 3); border(21, 5, 1);
+    const lab = 15 * S;
+    g.font = `500 ${lab}px ${SORA}`;
+    spaced(g, spec.label ?? '', w / 2, h - band / 2 + lab * 0.36, 0.3 * lab, 'center');
+    const r = 24 * S, rr = 5.2 * S;
+    screws = [[r, r, rr, -9], [w - r, r, rr, -9], [r, h - r, rr, -9], [w - r, h - r, rr, -9]];
   } else {
     const D = DESIGN[spec.kind];
     const small = spec.kind === 'placard';
