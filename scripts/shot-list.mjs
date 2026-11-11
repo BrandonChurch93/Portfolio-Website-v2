@@ -101,6 +101,24 @@ SHOTS['bench/rest-phone'] = bench([], { vp: 'phone' });
 SHOTS['bench/entrance'] = bench([['opening', 0]], { strip: { times: steps12(0, 4.6), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
 SHOTS['bench/water'] = bench([['piece:workbench.aim', 0, 140, 200], ['piece:workbench.view', 4, 22, 2.25], ['piece:workbench.water', 0]], { strip: { times: steps8(700, 3100).map(Math.round), frame: [['piece:workbench.water', '$t']], cols: 4, caption: (t) => `water at ${t} mm` } });
 
+// ---- handheld: /lab/piece/handheld, the piece alone at rest ----------------------------------------
+// aim takes millimetres of the room (plinth top y 0, the console leans back over z 0); view takes degrees and metres.
+const hand = (steps, extra = {}) => ({ route: '/lab/piece/handheld/', vp: 'desktop', steps: [['freeze', 10], ['lamp', 0.55, 0.3], ...steps], ...extra });
+const hclose = (aim, view, lamp = [0.5, 0.5]) => hand([['lamp', ...lamp], ['piece:handheld.aim', ...aim], ['piece:handheld.view', ...view]]);
+SHOTS['handheld/form'] = hand([['piece:handheld.clay', true], ['piece:handheld.view', -32, 18, 0.62]]);
+SHOTS['handheld/close-1'] = hclose([-77, 63, 3.7], [-10, 18, 0.13]);
+SHOTS['handheld/close-2'] = hclose([74, 56, 3.7], [16, 14, 0.13], [0.62, 0.45]);
+SHOTS['handheld/close-3'] = hclose([0, 60.9, 2.5], [6, 16, 0.14]);
+SHOTS['handheld/close-4'] = hclose([-13, 25.9, 11.2], [-6, 20, 0.12]);
+SHOTS['handheld/close-5'] = hclose([-40, 95.3, -20.5], [-25, 35, 0.17]);
+SHOTS['handheld/close-6'] = hclose([95, 44.3, -5.8], [62, 12, 0.15], [0.8, 0.4]);
+SHOTS['handheld/light'] = hand([['lamp', 0.25, 0.3]]);
+SHOTS['handheld/light-2'] = hand([['lamp', 0.8, 0.65]]);
+SHOTS['handheld/making'] = hand([['piece:handheld.setMaking', true]]);
+SHOTS['handheld/rest-desktop'] = hand([]);
+SHOTS['handheld/rest-phone'] = hand([], { vp: 'phone' });
+SHOTS['handheld/entrance'] = hand([['opening', 0]], { strip: { times: steps12(0, 4.2), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
+
 // ---- home: the page itself ------------------------------------------------------------------------
 for (const v of VPS) SHOTS['home/hero-' + v] = { route: '/', vp: v, steps: [['freeze', 30], ['lamp', 0.62, 0.3]] };
 const section = (id) => (v) => ({ route: '/', vp: v, steps: [['scrollTo', id], ['freeze', 30], ['lamp', 0.6, 0.35]] });

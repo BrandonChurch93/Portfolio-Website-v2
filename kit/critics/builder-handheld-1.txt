@@ -1,0 +1,11 @@
+shots/handheld/close-1.jpg | sha: f3e30bc162c8 | PASS | - | D-pad on its rubber gasket, graduated ring crisp, brushed face smooth with no faceting.
+shots/handheld/close-2.jpg | sha: 17462bfda8f9 | PASS | - | Ivory domes with booted bases, A and B crisp, ring engraving and knurled wheel hold at zoom.
+shots/handheld/close-3.jpg | sha: c533b49040b8 | PASS | - | Pixels under glass with grid and depth, HUD legible, the lamp a small crisp reflection on the glass.
+shots/handheld/close-4.jpg | sha: e7b2d2570b26 | PASS | - | POWER, LANTERN inlay, SELECT and START crisp, screw slot, pill bevels smooth.
+shots/handheld/close-6.jpg | sha: 2003992dc438 | PASS | - | Side wheel, jack, grilles and well depth; three materials read apart.
+shots/handheld/light.jpg | sha: d4a1b8fdbdfb | PASS | - | Lamp up left: streaked anisotropic highlight on the left plate, labels readable, no blowout.
+shots/handheld/light-2.jpg | sha: 0a9ce889240c | PASS | - | Lamp low right: highlight moves to the lower deck and LANTERN brightens; shadows agree.
+shots/handheld/making.jpg | sha: 6958711c1fc7 | PASS | - | Edges over the dimmed lit surface with a mono readout; considered, not a debug view.
+shots/handheld/rest-desktop.jpg | sha: 37a088abdecb | PASS | - | Console on its stone and bronze plinth, game playing, plaque and labels read; lit, not painted.
+shots/handheld/rest-phone.jpg | sha: baf0becd7877 | PASS | - | Whole stand in frame, console centred and lit; the tall lab frame leaves space the room page fills.
+shots/handheld/entrance.jpg | sha: 1ed1cb45e53d | PASS | - | Empty stand, the console eases in from above, stands, tips back onto its rest, then the screen opens and boots.

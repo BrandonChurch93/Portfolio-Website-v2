@@ -4,4 +4,5 @@ import type { PieceFactory } from '../world/piece';
 export const pieceLoaders: Record<string, () => Promise<PieceFactory>> = {
   city: () => import('./city/index').then((m) => m.createCity),
   workbench: () => import('./workbench/index').then((m) => m.createWorkbench),
+  handheld: () => import('./handheld/index').then((m) => m.createHandheld),
 };

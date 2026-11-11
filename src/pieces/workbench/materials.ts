@@ -1,30 +1,7 @@
 import * as THREE from 'three';
+import { withObj } from '../../world/surface';
 
 // Surfaces worked out in the shader from the model's own millimetre coordinates, so nothing repeats or stretches.
-
-const NOISE = /* glsl */ `
-float wHash(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
-float wNoise(vec3 x){ vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
-  return mix(mix(mix(wHash(i), wHash(i + vec3(1,0,0)), f.x), mix(wHash(i + vec3(0,1,0)), wHash(i + vec3(1,1,0)), f.x), f.y),
-             mix(mix(wHash(i + vec3(0,0,1)), wHash(i + vec3(1,0,1)), f.x), mix(wHash(i + vec3(0,1,1)), wHash(i + vec3(1,1,1)), f.x), f.y), f.z); }
-float wFbm(vec3 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++){ s += a * wNoise(p); p = p * 2.03 + 11.7; a *= 0.5; } return s; }
-`;
-
-function withObj<M extends THREE.MeshStandardMaterial>(m: M, key: string, head: string, color: string, rough = '', normal = ''): M {
-  m.onBeforeCompile = (sh) => {
-    Object.assign(sh.uniforms, m.userData.uniforms ?? {});
-    sh.vertexShader = sh.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vObj;\nvarying vec3 vObjN;')
-      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvObj = position;\nvObjN = normal;');
-    sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', `#include <common>\nvarying vec3 vObj;\nvarying vec3 vObjN;\n${NOISE}\n${head}`)
-      .replace('#include <color_fragment>', `#include <color_fragment>\n${color}`);
-    if (rough) sh.fragmentShader = sh.fragmentShader.replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>\n${rough}`);
-    if (normal) sh.fragmentShader = sh.fragmentShader.replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>\n${normal}`);
-  };
-  m.customProgramCacheKey = () => key;
-  return m;
-}
 
 // Walnut. The top is three boards glued along their length; each board is cut from its own log, so the growth rings
 // are arcs of a log's cross section met at an angle, warped by the tree's wobble, with pores along the grain, the odd

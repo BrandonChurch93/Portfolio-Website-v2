@@ -534,6 +534,16 @@ export const site = {
         mods: { back: 'Back', home: 'Home', tab: 'Tab', pgup: 'PgUp', caps: 'Caps', enter: 'Enter', pgdn: 'PgDn', shift: 'Shift', end: 'End', ctrl: 'Ctrl', alt: 'Alt', fn: 'Fn', up: '↑', left: '←', down: '↓', right: '→' },
       },
     },
+    handheld: {
+      title: 'Lantern',
+      boot: 'made in code',
+      power: 'power',
+      select: 'select',
+      start: 'start',
+      a: 'A',
+      b: 'B',
+      unit: 'm',
+    },
   },
 
   lab: {

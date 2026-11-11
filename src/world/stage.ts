@@ -12,6 +12,7 @@ import type { Tier } from '../config/site';
 import { site } from '../content/site';
 import { pixelRatioFor } from './tier-choice';
 import { seeded } from './build';
+import { studioScene } from './env';
 
 // What every piece shares: renderer, Neutral tone mapping, soft shadows, a studio environment, the post chain, the
 // lamp as a real light, and the "how this is made" view. One stage per piece, one WebGL context each.
@@ -28,6 +29,8 @@ export interface StageOptions {
   lampTarget?: [number, number, number];
   lampAngle?: number;
   exposure?: number;
+  // The environment metal reflects: the neutral room, or a studio of soft lights for pieces made mostly of metal.
+  env?: 'room' | 'studio';
 }
 
 const TIER_POST: Record<Tier, { ao: boolean; aoScale: number; shadow: number; smaa: boolean }> = {
@@ -80,7 +83,10 @@ export class Stage {
   private exposureBefore = 1;
   // Triangles per square unit of a part's bounding sphere above which its wire is left out of the making view.
   wireDensity = Infinity;
-  private wire: THREE.Mesh[] = [];
+  // When set, the making view draws edges sharper than this many degrees instead of every triangle, so flat faces
+  // show their outline and not their triangulation.
+  wireEdges = 0;
+  private wire: THREE.Object3D[] = [];
   private stats: HTMLDivElement;
   tier: Tier;
   width = 1;
@@ -99,7 +105,9 @@ export class Stage {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setClearColor(0x0c0a09, 0);
     const pmrem = new THREE.PMREMGenerator(this.renderer);
-    this.envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    const envScene = o.env === 'studio' ? studioScene() : new RoomEnvironment();
+    this.envRT = pmrem.fromScene(envScene, 0.04);
+    envScene.traverse((x) => { if (x instanceof THREE.Mesh) { x.geometry.dispose(); (x.material as THREE.Material).dispose(); } });
     pmrem.dispose();
     this.scene.environment = this.envRT.texture;
     this.scene.environmentIntensity = o.envIntensity ?? 0.2;
@@ -234,8 +242,11 @@ export class Stage {
       root.traverse((o) => { if (o instanceof THREE.Mesh && !(o instanceof THREE.InstancedMesh) && !o.userData.noWire && o.visible && !dense(o)) list.push(o); });
       this.exposureBefore = this.renderer.toneMappingExposure;
       this.renderer.toneMappingExposure = this.exposureBefore * 0.3;
+      const lineMat = new THREE.LineBasicMaterial({ color: new THREE.Color(0xe8bd8a).multiplyScalar(2.6), transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false });
+      // Edges lie on the surface they outline; draw them a hair nearer so the surface never hides them.
+      lineMat.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\ngl_Position.z -= 0.0004 * gl_Position.w;'); };
       for (const o of list) {
-        const w = new THREE.Mesh(o.geometry, mat);
+        const w = this.wireEdges > 0 ? new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, this.wireEdges), lineMat) : new THREE.Mesh(o.geometry, mat);
         w.matrixAutoUpdate = false;
         w.matrix.copy(o.matrix);
         w.renderOrder = 10;
@@ -244,7 +255,7 @@ export class Stage {
         this.wire.push(w);
       }
     } else {
-      for (const w of this.wire) w.parent?.remove(w);
+      for (const w of this.wire) { w.parent?.remove(w); if (w instanceof THREE.LineSegments) w.geometry.dispose(); }
       this.wire = [];
       this.renderer.toneMappingExposure = this.exposureBefore;
     }
