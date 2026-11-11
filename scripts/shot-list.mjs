@@ -60,6 +60,26 @@ SHOTS['water/frame'] = waterMove('frame', 0, 3.2);
 SHOTS['water/pool'] = waterMove('pool', 0, 2.8, { target: '#move-pool [data-water]', pad: 120 });
 SHOTS['water/light-plate'] = { route: '/lab/water/', vp: 'desktop', steps: [['scrollTo', 'move-light'], ['freeze', 3], ['water.head', 1], ['lamp', 0.08, 0.95]] };
 
-void VPS;
+// ---- city: /lab/piece/city, the piece alone at rest -------------------------------------------------
+// aim takes millimetres of the city (park level y 0; plaza 31, middle terrace 19); view takes degrees and metres.
+const city = (steps, extra = {}) => ({ route: '/lab/piece/city/', vp: 'desktop', steps: [['freeze', 10], ['lamp', 0.6, 0.3], ...steps], ...extra });
+const close = (aim, view, lamp = [0.55, 0.35]) => city([['lamp', ...lamp], ['piece:city.aim', ...aim], ['piece:city.view', ...view]]);
+SHOTS['city/form'] = city([['piece:city.clay', true], ['piece:city.view', -25, 22, 2.3]]);
+SHOTS['city/close-1'] = close([0, 625, 0], [15, 6, 0.58]);
+SHOTS['city/close-2'] = close([131, 199, 156], [44, 4, 0.24]);
+SHOTS['city/close-3'] = close([0, 12, 250], [20, 30, 0.3]);
+SHOTS['city/close-4'] = close([200, 0, 275], [30, 28, 0.28]);
+SHOTS['city/close-5'] = close([40, -110, 480], [28, 6, 0.62], [0.5, 0.6]);
+SHOTS['city/close-6'] = close([-40, 40, 100], [-15, 18, 0.3]);
+SHOTS['city/materials'] = close([0, 120, 0], [40, 20, 1.0]);
+SHOTS['city/light'] = city([['lamp', 0.3, 0.35]]);
+SHOTS['city/light-2'] = city([['lamp', 0.75, 0.62]]);
+SHOTS['city/making'] = city([['piece:city.setMaking', true]]);
+for (const v of VPS) SHOTS[`city/rest-${v}`] = city([], { vp: v });
+const steps12 = (a, b) => Array.from({ length: 12 }, (_, i) => Math.round((a + ((b - a) * i) / 11) * 100) / 100);
+const opening = (vp, a, b) => city([['opening', a]], { vp, strip: { times: vp === 'desktop' && b - a < 4 ? steps8(a, b) : steps12(a, b), frame: [['opening', '$t']], cols: 4, caption: (t) => `${t.toFixed(2)} s` } });
+SHOTS['city/opening-desktop'] = opening('desktop', 0, 7.4);
+SHOTS['city/opening-phone'] = opening('phone', 0, 7.4);
+SHOTS['city/settle'] = opening('desktop', 5.0, 7.6);
 
 export { SHOTS };

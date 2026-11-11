@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 4 · start
+IN PROGRESS · Phase 4 · city materials and light (piece phases 4 and 5)
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -9,10 +9,10 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 ## Where things stand
 
 - Phase: 4 The city
-- Step: start (read 04 all, 02 hero staging, 07, kit/reference/hero-city/ including source/nova.ts in full)
-- Next action: piece phase 1, research and plan the city, write the plan in Piece plans
+- Step: city piece phases 4 Materials and 5 Light (phases 1 to 3 done, form and close shots pass)
+- Next action: tune materials and light (contact occlusion, lamp balance, bloom), take city/materials, light, light-2, critic round; then Life (making view, opening strips, settle), then Fit (rest at five viewports, home hero)
 - Background tasks running (id, what): none
-- Files changed since the last commit: none
+- Files changed since the last commit: src/world/{piece,build,interior,stage}.ts, src/pieces/{load.ts,city/*}, src/components/PieceView.*, src/components/lab/PieceLab.module.css, src/app/lab/piece/[name]/page.lab.tsx, scripts/shots.mjs, scripts/shot-list.mjs, kit/critics/010 to 012 and builder-city-1 to 4
 
 ## Phases
 
@@ -147,6 +147,10 @@ What must be better: it is a rough draft. Wood grain reads as stripes, keys are 
 
 One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` that decided it.
 
+- Constants that only one piece uses (its model sizes, camera views, opening timings) live once in that piece's own module, not in src/config/site.ts, so a piece can be swapped whole in review. Shared ones stay in config. Rule 4.
+- Form shots are plain clay: a test hook clay(true) puts one clay material on everything through the render pass, hides light-water and glows, turns bloom off. Rule 1 (kit 04 Form: plain clay).
+- Pieces mount through PieceView with a loader map in src/pieces/load.ts (each piece its own chunk); steps that talk to a piece in the harness settle first, because a piece mounts asynchronously. Rule 4.
+
 - Build id freshness: how does the harness know out/ matches the sources? `npm run build` runs `scripts/stamp-build.mjs`, which hashes the sources first, runs `next build`, then writes `out/.source-id`. `distIsStale()` compares that stamp with a fresh hash. Rule 4 (swappable, and exactly what 07 asks: a hash of the sources).
 - Strips: a shot with a `strip` field in `scripts/shot-list.mjs` is taken by `scripts/strips.mjs`, tiled 4 per row with the time under each frame, and goes through the same manifest and ledger. `npm run shots` skips strips. Rule 4.
 - ref shots: the reference pages animate on their own clock, so each retake differs; they are taken once in Phase 0 and their images are kept. Recorded in the manifest with build `reference`; the gate exempts them from the build check.
@@ -204,6 +208,31 @@ What you looked up, where, and what you took from it.
 
 One heading per piece, written in phase 1 of that piece: parts list, the details that will sell it, the risks.
 
+### The city (phase 1, research and plan)
+Research: the prototype (kit/reference/hero-city/source/nova.ts, nova-main.ts) builds facades as an emissive "rooms" texture on an inset loft under an additive glass shell, with floor belts, mullions and fins as geometry. At three times zoom that is a flat picture of rooms (P02), which is what Brandon called fake. Interior mapping (van Dongen, "Interior Mapping: A new technique for rendering realistic buildings", CGI 2008; used by Spider-Man's and Marvel's city windows) ray traces each fragment of the glass into a virtual room box behind it (back wall, floor, ceiling, side walls) per window cell, so every window shows a real room in perspective that shifts with the view. That is the facade technique.
+Parts:
+- Disc: radius 456 mm, four terraces stepping to the spire (plaza, terrace ring, boulevard ring, lawn ring, promenade), ivory retaining walls with brass caps, a bronze underside lathe with a lit seam and brass ribs, rails with posts. No road around the edge (kit 04).
+- Spire: ribbed curtain wall with interior mapped rooms, five swept ivory blades with brass edges, a glass rotunda at the foot, a lens lantern with a ring deck, needle with brass rings and a beacon.
+- Six large structures that differ in shape: a twisted tower (each floor plate turned), a stepped setback tower with sky gardens, a lens tower (ellipsoid section), a stack of offset drums, twin gate towers joined by two sky bridges, a domed forum with a colonnade and a ring building on a stalk. Plus low blocks with terraces between. None a plain box: every one has floor slabs, mullion grids, fins, crowns.
+- Parks: groves of instanced trees in several species (round, columnar, layered), beds, lamps, benches, people standing and walking.
+- Traffic in at least three kinds and directions: a transit ring train on an elevated track (clockwise), pods on guideways radially (in and out), craft in the air on loops at two heights (both directions), walkers on the promenade.
+- Water: moat round the spire, five canals across the terraces with cascades at each step, falls off the rim as curtains of light (the front center one is the start of the page's stream), pools where they land on the slab.
+- Slab under the city: dark, with a fine grid that belongs to it (allowed by kit 01) and pools of amber where the falls land.
+- Lighting: the lamp as a shadow casting point light in front of the city at the cursor; a warm key, two rim area lights, an amber under light, a studio environment; Neutral tone mapping; GTAO, restrained bloom, SMAA.
+The details that sell it: rooms with depth and different moods per window (lights on and off, warm and cool), mullions and slabs catching the lamp, lit seams, water that lights the terraces it crosses, moving traffic in several directions, trees with layered canopies, tiny people with shadows.
+Risks: draw calls and triangles (merge static geometry per material, instance trees, people and vehicles); interior mapping cost (cheap per fragment, one texture atlas); the opening must stay above 50 fps; determinism (every motion from the one clock; seeded randomness); shadows from a moving point light at 2048 must not flicker (fixed bias, PCF soft).
+Opening (kit 02): dark screen, light draws the plan on the ground (footprint outlines traced by a moving front), the disc lifts, buildings rise floor by floor, water fills canals and pours off the rim, the camera flies down from high to the settled low view and the headline arrives above. Plays once per visit, any input skips, never replays on back navigation. Settle: at least 60 percent of the city above the fold on desktop.
+
+### The city, phase 3 detail (done)
+- Critic rounds 013, 014, 015 on close-1 to close-6, all FAIL; fixed between rounds: rooms (four kinds: lamp lit homes, offices under panel rows, dim rooms, lobbies; five wall finishes; figures mid room), light from canals, moat and street lamps onto walls, beds, paving, lawn and trees worked out analytically in a shared shader chunk (src/pieces/city/glow.ts: distance to each canal and height above its water; each lamp as a cosine weighted inverse square pool), leaf clumping and lawn variation and paving wear (organic chunk), panel joints on ivory, stone, bronze and rim panels (src/world/panels.ts), trees rebuilt (lobed crowns welded smooth, branches, three kinds, nine variants, per tree tint), hedges, benches, shrubs, footpaths, people with legs, arms and two tones, needle ribs, collars, dishes, fins, canopy soffit glow, rotunda ribs and skylight, fin bands and slit windows, fluted saucer stalk with lift shaft, drum cores, skylit round roofs, craft with canopy, nacelles and lights, keel ribs and lights, rim joints; falls as camera facing ribbons that narrow and tear, drops riding them, crowns, spray, mist, pool rings; cascades with white water and spray; canal shader in long gold streaks. Bugs found: the slab (transparent) drew over far falls, now drawn first; sprites went black in the occlusion pass, now excluded; hedges were laid radially.
+- Decision: the water moves at the city's scale (scene gravity 900 mm/s2, canal 50 mm/s, a fall of 200 mm takes 0.67 s) because real gravity at model scale made the falls read like a tap. Rule 2 (more alive, more weight).
+- My PASS gates the closes after three rounds; unfixed points are under For review.
+
+### The city, phase 2 form (done)
+- Built: src/world/build.ts (merge per material, loft with room cells, slab, fin, lathe, ring, wall), interior.ts (interior mapped rooms), stage.ts (renderer, Neutral, PCF soft shadows, studio env, GTAO with seeded noise and light kept out of the normal pass, bloom, SMAA, making view with instanced wire), src/pieces/city (model, textures, index with lamp plane, opening timeline, clay, aim and view hooks), PieceView (mounts, lamp, tier, registry, making switch), lab page.
+- Found and fixed: twist in the loft outline only re-parametrized the shape (nothing twisted); GTAO cleared scene.overrideMaterial, so clay now goes through RenderPass.overrideMaterial; light-water drawn into the AO normal pass came out black; the under light sat above the plaza; towers were half the reference's proportion (spire now about the disc's width tall).
+- Critic rounds 010, 011, 012 on city/form, all FAIL; fixed between rounds: shared needle crowns (now each tower has its own crown), bunched towers (spread to r 196 to 204), plain box blocks (now curved terrace houses with rounded ends of rooms, stepping toward the spire), empty mid rings (mid-rise balcony towers, stations under the train track, landmarks on the outer ring: landing pad tower, garden pyramid, crescent, amphitheatre, conservatory), plain puck (paneled rim, deep bevel, stepped keel with lit rings), gate as scaffolding (sky hall under one roof), blade struts (deeper buttress fins), haze (bloom off in clay). My PASS gates form after three rounds.
+
 ## Measurements
 
 Frame times and sizes, with the tier, the viewport and the renderer string each was measured on.
@@ -215,6 +244,9 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 ## For review
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
+
+- City close critic 015 points not acted on: "trees read as noise blobs" and "people are placeholder shapes": at 20 mm and 8 mm on a 0.9 m model they are stylized model making, lobed and leafy at three times zoom; "little contact occlusion" belongs to the Light phase and is taken up there; "the slab is an editor grid": kit 01 allows a grid that belongs to the slab, now dimmed to a faint line at rest.
+- City form critic 012 points not acted on: "the spire, gate, stepped tower and drums merge into one mass left of center" and "the gate has plain faces" are true of the three-quarter clay angle only; from the rest view the towers sit either side of the spire. The canals are walled channels on the terraces, not cut below them.
 
 - Metal critic points not acted on after three rounds (kit 07 allows my PASS to gate): (a) "the lamp highlight is a round blob, not stretched along the grain" on polished brass and the lamp strip: polished brass is meant to give a round highlight; the brushed finishes (aged, panel frame) do stretch it. (b) "engraved letters and rivets look the same at every lamp position": the cut walls are 1 to 2 device pixels and enamel filled, so their shading change is real but small at shot size; at 3x zoom it is visible. (c) "the panel's small labels look hollow": at 4x zoom they are solid flat tops with a rim (checked); at sheet size the rim reads as an outline. (d) "large plain bronze field": the bronze is meant to be quiet; it has a cast face and grain. Brandon may want a busier bronze.
 - The lab photo window uses the Meridian render, zoomed 1.45x around the movement; real site windows will use Brandon's new pictures, which can set focus and zoom per picture.

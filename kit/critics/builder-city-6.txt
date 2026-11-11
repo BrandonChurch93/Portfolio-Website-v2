@@ -1,0 +1,6 @@
+city/close-1 | PASS | - | Needle whole in frame with its beacon, collars and brass fins at its foot, lit slits, a lantern of varied lit rooms under a paneled canopy with a glowing soffit, ribs under the lower rim, the ring deck walkway with rails and people.
+city/close-2 | PASS | - | Rooms of four kinds (lamp lit homes, offices under panels, dim rooms, bright lobbies) with different wall finishes behind every tower; slit windows up the spire fins; craft with canopy, nacelles and running lights; smooth round floor bands.
+city/close-3 | PASS | - | Canal light runs in long gold streaks and breaks white at the foot of each cascade with spray; the walls, beds, paving and nearby trees take its light; leaves clump and lawn varies.
+city/close-4 | PASS | - | Promenade lamps throw pools onto paving and lawn; groves of clumped trees; two tone people; terrace houses with rounded ends and planted roofs; darker real stone paving.
+city/close-5 | PASS | - | Falls tear into strands as they drop and land in pools with running rings, low crowns of drops and spray; every fall reaches its pool; paneled bronze rim and keel with lit rings.
+city/close-6 | PASS | - | Rougher brass dome with ivory ribs, rotunda roof ribbed with a skylight ring, slit windows on the fins, varied lit rooms on the left tower, canal light on the walls.

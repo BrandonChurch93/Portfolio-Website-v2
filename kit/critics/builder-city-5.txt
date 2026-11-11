@@ -1,0 +1,6 @@
+city/close-1 | PASS | - | The spire's lantern is a lens of interior mapped rooms between paneled ivory rims, over a ring deck with a walkway, two brass rails on posts and people walking it, and a needle with brass collars; nothing is a plain primitive.
+city/close-2 | PASS | - | The twisted tower's floors turn, its rooms show depth with furniture and figures, warm runs of lit windows against dark ones; the drums, gates with their sky hall, rippled balcony towers and saucer all differ.
+city/close-3 | PASS | - | The main canal steps down the terraces in lit cascades beside stairs, under a bridge and the train's guideway, between groves of three tree species, stations and the forum.
+city/close-4 | PASS | - | Lawn ring with dense groves of lobed, columnar and layered trees, a ring footpath, terrace houses with rounded ends of rooms and planted roofs, the landing pad tower, lamps and people on the promenade.
+city/close-5 | PASS | - | The front fall drops in a parabola, streaked and widening, into a pool with running rings, a bright core and spray; the paneled rim, its lit seam and the stepped keel with lit rings show the disc is made.
+city/close-6 | PASS | - | Forum dome with ivory ribs on a colonnade, the moat of light round the rotunda with people on the plaza, paneled ivory buttress fins, canal with cascade and stairs, trees with shadows.

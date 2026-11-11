@@ -206,7 +206,12 @@ async function openSite(browser, preview, shot, errors, label) {
   // The tier is pinned (high unless the shot names one), so a shot never depends on how busy the GPU was when the
   // page measured it.
   const steps = [['tier', shot.tier || 'high'], ...(shot.steps || [])];
-  for (const [method, ...args] of steps) await hook(page, method, args);
+  // A piece mounts asynchronously, so steps that talk to a piece wait for the page to settle first.
+  let settled = false;
+  for (const [method, ...args] of steps) {
+    if (!settled && /^(piece:|opening)/.test(method)) { await page.evaluate(() => window.__site.settle()); settled = true; }
+    await hook(page, method, args);
+  }
   await page.evaluate(() => window.__site.settle());
   return page;
 }
