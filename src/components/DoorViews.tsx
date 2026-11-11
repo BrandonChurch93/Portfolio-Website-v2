@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { ROOM } from '../config/site';
+import { PIECE_MOUNT, ROOM } from '../config/site';
 import { registry } from '../hooks/registry';
 import { lamp } from '../lamp/lamp';
 import { smallLoaders } from '../pieces/load';
 import { clock } from '../world/clock';
 import type { SmallView } from '../world/small';
 import { pixelRatioFor } from '../world/tier-choice';
+import { budget, distanceOf } from '../world/budget';
 import { tiers } from '../world/tier';
 
 type Room = keyof typeof ROOM.pieces;
@@ -41,23 +42,60 @@ export function DoorViews({ rooms }: { rooms: readonly Room[] }) {
       views.push({ room, piece: ROOM.pieces[room], host, canvas, ctx: canvas.getContext('2d')!, view: null, drawn: false });
     }
 
+    // The renderer exists only while the doors are near and hold a place in the budget of contexts. Taken down, each
+    // door's canvas keeps its last frame, so the doors show a still and never an empty box.
+    let gen = 0;
+    const teardown = () => {
+      gen++;
+      for (const v of views) { v.view?.dispose(); v.view = null; v.drawn = false; }
+      renderer?.dispose();
+      renderer?.forceContextLoss();
+      renderer = null;
+      root.dataset.live = '0';
+    };
     const setup = async () => {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true });
-      renderer.toneMapping = THREE.NeutralToneMapping;
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      renderer.setScissorTest(true);
+      const my = ++gen;
+      const r = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+      renderer = r;
+      root.dataset.live = '1';
+      r.toneMapping = THREE.NeutralToneMapping;
+      r.outputColorSpace = THREE.SRGBColorSpace;
+      r.shadowMap.enabled = true;
+      r.shadowMap.type = THREE.PCFShadowMap;
+      r.setScissorTest(true);
       await Promise.all(['500 20px "Sora Variable"', '600 20px "Sora Variable"', '600 20px "JetBrains Mono Variable"'].map((f) => document.fonts.load(f).catch(() => null)));
       for (const v of views) {
         const load = smallLoaders[v.piece];
-        if (!load || !alive || !renderer) continue;
+        if (!load || !alive || gen !== my) return;
         const make = await load();
-        v.view = await make(renderer);
+        if (gen !== my) return;
+        const view = await make(r);
+        if (gen !== my) { view.dispose(); return; }
+        v.view = view;
+        await r.compileAsync(view.scene, view.camera);
       }
-      draw(true);
+      if (gen === my) draw(true);
     };
-    registry.track(setup());
+    let evicted = false;
+    const id = 'doors';
+    const check = () => {
+      const d = distanceOf(root), vh = innerHeight;
+      if (d < vh * PIECE_MOUNT.near) {
+        if (!renderer && !evicted) {
+          if (budget.claim(id, { distance: () => distanceOf(root), keepsStill: true, release: () => { evicted = true; teardown(); } })) registry.track(setup());
+          else evicted = true;
+        }
+      } else if (d > vh * PIECE_MOUNT.far) {
+        evicted = false;
+        if (renderer) teardown();
+        budget.drop(id);
+      }
+    };
+    addEventListener('scroll', check, { passive: true });
+    addEventListener('resize', check);
+    offs.push(() => { removeEventListener('scroll', check); removeEventListener('resize', check); });
+    offs.push(budget.onFree(() => { if (alive && evicted) { evicted = false; check(); } }));
+    check();
 
     const draw = (force = false) => {
       if (!renderer || !alive || (!visible && !force)) return;
@@ -104,9 +142,9 @@ export function DoorViews({ rooms }: { rooms: readonly Room[] }) {
     return () => {
       alive = false;
       for (const o of offs) o();
-      for (const v of views) { v.view?.dispose(); v.canvas.remove(); }
-      renderer?.dispose();
-      renderer?.forceContextLoss();
+      teardown();
+      budget.drop(id);
+      for (const v of views) v.canvas.remove();
     };
   }, [rooms]);
 

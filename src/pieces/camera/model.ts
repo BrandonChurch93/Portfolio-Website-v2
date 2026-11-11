@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
-import { Builder, at, cyl, lathe, rbox, xf } from '../../world/build';
+import { Builder, pause, at, cyl, lathe, rbox, xf } from '../../world/build';
 import { circle, rounded, rrect, screw, slab, type P2 } from '../../world/shape';
 import { coatedGlass, dielectric, metal, shade } from '../../world/surface';
 import { site } from '../../content/site';
@@ -149,13 +149,14 @@ const tube = (r0: number, r1: number, z0: number, z1: number, seg = 96) => {
   return toCreasedNormals(g, (40 * Math.PI) / 180);
 };
 
-export function buildCamera(): CameraModel {
+export async function buildCamera(): Promise<CameraModel> {
   const root = new THREE.Group();
   root.scale.setScalar(CAM.SCALE);
   const body = new THREE.Group();
   body.rotation.y = CAM.YAW * D2R;
   root.add(body);
 
+  await pause();
   // ---- materials ------------------------------------------------------------------------------------
   const paint = enamel();
   const leather = leatherette();
@@ -173,8 +174,10 @@ export function buildCamera(): CameraModel {
   const floor = dielectric('camFloor', 0x1b140e, 0.9, { vary: 0.035, scale: 0.002 });
   const steel = metal({ name: 'camSteel', color: 0x9a958e, rough: 0.3, brush: 'radial-z' });
 
+  await pause();
   // ---- the body -----------------------------------------------------------------------------------------
   const b = new Builder();
+  await pause();
   {
     // Lower body and top plate: rounded in plan, extruded up; rotateX maps the plan's y to -z.
     const plan = (w: number, d: number, r: number) => rounded(rrect(0, 0, w, d, r));
@@ -231,8 +234,10 @@ export function buildCamera(): CameraModel {
     b.build(body, 'body');
   }
 
+  await pause();
   // ---- top controls: the shutter speed dial, the release, the advance lever, the rewind knob -------------------
   const speedDial = new THREE.Group(); speedDial.position.set(34, 41.5, -2); body.add(speedDial);
+  await pause();
   {
     const d = new Builder();
     d.add(cyl(11, 5.4, 96), chrome, at(0, 2.7, 0));
@@ -247,6 +252,7 @@ export function buildCamera(): CameraModel {
     cb.build(speedDial, 'speedScrew');
   }
   const release = new THREE.Group(); release.position.set(54, 41.5, 4); body.add(release);
+  await pause();
   {
     const r = new Builder();
     r.add(cyl(4.4, 2.6, 64), chrome, at(0, 1.3, 0));
@@ -257,6 +263,7 @@ export function buildCamera(): CameraModel {
     r.build(release, 'release');
   }
   const lever = new THREE.Group(); lever.position.set(54, 41.5, 4); body.add(lever);
+  await pause();
   {
     const l = new Builder();
     const arm = new THREE.Shape(); arm.moveTo(-3, -3); arm.quadraticCurveTo(10, -6, 24, -2); arm.lineTo(25, 2.4); arm.quadraticCurveTo(10, 0, -3, 3); arm.closePath();
@@ -268,6 +275,7 @@ export function buildCamera(): CameraModel {
     l.add(cyl(1.4, 0.6, 24), ink, at(0, 7.9, 0));
     l.build(lever, 'lever');
   }
+  await pause();
   {
     const k = new Builder();
     k.add(cyl(9, 6, 96), chrome, at(-46, 44.5, -2));
@@ -281,6 +289,7 @@ export function buildCamera(): CameraModel {
     body.add(iso);
   }
 
+  await pause();
   // ---- the lens ------------------------------------------------------------------------------------------
   const lens = new THREE.Group();
   lens.position.set(...CAM.LENS);
@@ -293,6 +302,7 @@ export function buildCamera(): CameraModel {
   glow.name = 'camGlow';
   const flash = new THREE.MeshBasicMaterial({ color: 0x000000, map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
   flash.name = 'camFlash';
+  await pause();
   {
     const L = new Builder();
     const [a0, a1] = LENS.aperture, [d0, d1] = LENS.dof, [f0, f1] = LENS.focus, [n0, n1] = LENS.front;
@@ -398,6 +408,7 @@ export function buildCamera(): CameraModel {
     lens.add(back);
   }
 
+  await pause();
   // ---- the tripod: a ball head, a hub, three legs with locks and feet, on the floor ---------------------------
   {
     const t = new Builder();

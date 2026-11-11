@@ -11,7 +11,10 @@ export interface PieceHandle {
 export interface WaterHandle {
   head(v: number | string): void;
   move(name: string, t: number): void;
+  path(): WaterPath;
 }
+
+export type WaterPath = { x: number; y: number; hw: number }[][];
 
 const pieces = new Map<string, PieceHandle>();
 let water: WaterHandle | null = null;

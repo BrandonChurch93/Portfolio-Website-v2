@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Builder, at, lathe, rbox, xf } from '../../world/build';
+import { Builder, pause, at, lathe, rbox, xf } from '../../world/build';
 import { circle, inset, rounded, rrect, screw, slab, type P2, type V } from '../../world/shape';
 import { dielectric, metal, screenGlass } from '../../world/surface';
 import { site } from '../../content/site';
@@ -205,7 +205,7 @@ function plaqueText(): THREE.MeshPhysicalMaterial {
   return m;
 }
 
-export function buildHandheld(): HandheldModel {
+export async function buildHandheld(): Promise<HandheldModel> {
   const root = new THREE.Group();
   root.scale.setScalar(HH.SCALE);
   const pivot = new THREE.Group();
@@ -216,6 +216,7 @@ export function buildHandheld(): HandheldModel {
   con.position.set(0, 48, 25);
   pivot.add(con);
 
+  await pause();
   // ---- materials ------------------------------------------------------------------------------------
   const eng = engraving();
   const brassFace = engraved(eng, -0.05, 'cut');
@@ -248,8 +249,10 @@ export function buildHandheld(): HandheldModel {
     return g;
   };
 
+  await pause();
   // ---- the body: front and back shells meeting at a seam, the deck pocket, wells and openings -------------
   const body = new Builder();
+  await pause();
   {
     const out = rounded(OUTLINE);
     const pocket = rounded(rrect(DECK.cx, DECK.cy, POCKET.w, POCKET.h, POCKET.r));
@@ -327,9 +330,11 @@ export function buildHandheld(): HandheldModel {
     con.add(lm);
   }
 
+  await pause();
   // ---- the deck, the glass and the LCD ------------------------------------------------------------------
   const screen = new HandheldScreen();
   const lcd = lcdMaterial(screen.texture);
+  await pause();
   {
     const b = new Builder();
     b.add(slab(rounded(rrect(DECK.cx, DECK.cy, DECK.w, DECK.h, DECK.r)), [rounded(rrect(WIN.cx, WIN.cy, WIN.w, WIN.h, WIN.r))], -3.2, -0.5, 0.45, 3), deck);
@@ -345,6 +350,7 @@ export function buildHandheld(): HandheldModel {
     con.add(gl);
   }
 
+  await pause();
   // ---- controls ---------------------------------------------------------------------------------------
   {
     // The D-pad: a bevelled cross with raised arrows and a turned ring at its pivot.
@@ -421,6 +427,7 @@ export function buildHandheld(): HandheldModel {
   }
 
   const toWorld = (v: THREE.Vector3) => { pivot.updateMatrix(); con.updateMatrix(); return v.applyMatrix4(con.matrix).applyMatrix4(pivot.matrix); };
+  await pause();
   // ---- the stand: a stone plinth, brass rails either side of the console's foot, a bent rest behind ---------
   {
     const b = new Builder();

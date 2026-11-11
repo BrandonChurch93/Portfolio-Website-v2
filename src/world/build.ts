@@ -7,6 +7,10 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 
 export type Vec3 = [number, number, number];
 
+// Hands the main thread back to the browser between the sections of a model build, so a frame can be drawn and input
+// handled: a detailed piece takes a few hundred milliseconds to build, too long to hold a scrolling page still.
+export const pause = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
+
 export function xf(o: { p?: Vec3; r?: Vec3; s?: number | Vec3 } = {}): THREE.Matrix4 {
   const m = new THREE.Matrix4();
   const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(...(o.r ?? [0, 0, 0])));
@@ -17,7 +21,7 @@ export function xf(o: { p?: Vec3; r?: Vec3; s?: number | Vec3 } = {}): THREE.Mat
 export const at = (x: number, y: number, z: number, r?: Vec3) => xf({ p: [x, y, z], r });
 
 // Normalise a geometry to position, normal, uv (and the optional room cell attribute) so every part can be merged.
-function clean(g: THREE.BufferGeometry): THREE.BufferGeometry {
+function clean(g: THREE.BufferGeometry, owned = false): THREE.BufferGeometry {
   let out = g.index ? g.toNonIndexed() : g;
   if (!out.getAttribute('normal')) out.computeVertexNormals();
   const n = out.getAttribute('position').count;
@@ -25,7 +29,7 @@ function clean(g: THREE.BufferGeometry): THREE.BufferGeometry {
   if (!out.getAttribute('cell')) out.setAttribute('cell', new THREE.Float32BufferAttribute(new Float32Array(n * 4), 4));
   for (const name of Object.keys(out.attributes)) if (!['position', 'normal', 'uv', 'cell'].includes(name)) out.deleteAttribute(name);
   out.morphAttributes = {};
-  if (out === g) out = g.clone();
+  if (out === g && !owned) out = g.clone();
   return out;
 }
 
@@ -51,7 +55,7 @@ export class Builder {
     if (m) g.applyMatrix4(m);
     if (!g.getAttribute('normal')) g.computeVertexNormals();
     if ((opts.uv ?? 'keep') === 'box') boxUV(g, opts.tile ?? 1);
-    g = clean(g);
+    g = clean(g, true);
     if (opts.shadow === false) this.shadowless.add(mat);
     if (!this.parts.has(mat)) this.parts.set(mat, []);
     this.parts.get(mat)!.push(g);
@@ -79,7 +83,16 @@ export class Builder {
   }
 }
 
-export const rbox = (w: number, h: number, d: number, r = 0.6, seg = 2) => new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2, h / 2, d / 2));
+// A piece adds the same small rounded box hundreds of times (grip ribs, knurls, keys): each shape is made once and
+// handed out as a copy, which is far cheaper than rounding a new box.
+const boxes = new Map<string, THREE.BufferGeometry>();
+export const rbox = (w: number, h: number, d: number, r = 0.6, seg = 2) => {
+  const rr = Math.min(r, w / 2, h / 2, d / 2);
+  const key = `${w}|${h}|${d}|${rr}|${seg}`;
+  let g = boxes.get(key);
+  if (!g) { g = new RoundedBoxGeometry(w, h, d, seg, rr); boxes.set(key, g); }
+  return g.clone();
+};
 export const cyl = (r: number, h: number, seg = 32, rTop = r, open = false) => new THREE.CylinderGeometry(rTop, r, h, seg, 1, open);
 
 export function lathe(pts: [number, number][], seg = 64): THREE.BufferGeometry {

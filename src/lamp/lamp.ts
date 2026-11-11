@@ -84,8 +84,8 @@ class Lamp {
       this.pos = { x: approach(this.pos.x, p.x, rate, dt), y: approach(this.pos.y, p.y, rate, dt) };
     }
     this.led = clock.isFrozen() ? (led ? 1 : 0) : approach(this.led, led ? 1 : 0, 3, dt);
-    const w = typeof window === 'undefined' ? 1 : innerWidth;
-    const h = typeof window === 'undefined' ? 1 : innerHeight;
+    const w = clock.view.w;
+    const h = clock.view.h;
     this.state = { x: this.pos.x, y: this.pos.y, px: this.pos.x * w, py: this.pos.y * h, led: this.led };
     for (const fn of this.listeners) fn(this.state);
   }

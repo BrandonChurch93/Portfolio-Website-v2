@@ -5,7 +5,8 @@ import { PIECE_MOUNT, READING_LINE } from '../config/site';
 import { site } from '../content/site';
 import { registry, type PieceHandle } from '../hooks/registry';
 import { lamp } from '../lamp/lamp';
-import { pieceLoaders } from '../pieces/load';
+import { loaderFor } from '../pieces/load';
+import { budget, distanceOf } from '../world/budget';
 import { tiers } from '../world/tier';
 import type { Piece } from '../world/piece';
 import styles from './PieceView.module.css';
@@ -37,7 +38,7 @@ export function PieceView({ name, entrance = false, once, making = true, classNa
 
   useEffect(() => {
     const h = host.current;
-    const load = pieceLoaders[name];
+    const load = loaderFor(name);
     if (!h || !load) return;
     let alive = true;
     let offs: (() => void)[] = [];
@@ -55,21 +56,27 @@ export function PieceView({ name, entrance = false, once, making = true, classNa
       const play = entrance && !reduced && !seen && !played;
       played = true;
       await p.mount(h, { tier: tiers.get(), entrance: play, onReady, frame, entranceFrom: play ? entranceFrom : 0 });
-      if (!alive || !near) { p.dispose(); loading = null; return; }
+      if (!alive || !near || evicted) { p.dispose(); loading = null; budget.drop(id); return; }
       mounted = p;
       piece.current = p;
       onPiece?.(p);
       if (once && play) sessionStorage.setItem(`played:${once}`, '1');
       registry.piece(name, p as unknown as PieceHandle);
       if (p.opening) registry.opening((t) => p.opening?.(t));
+      // The host's place is read on scroll and resize, not each time the lamp moves (every frame), when reading it
+      // would force the page to lay out again after the frame's writes.
+      let r = h.getBoundingClientRect();
+      const place = () => { r = h.getBoundingClientRect(); };
+      const hostObs = new ResizeObserver(place);
+      hostObs.observe(h);
+      offs.push(() => hostObs.disconnect());
       offs.push(lamp.subscribe((s) => {
-        const r = h.getBoundingClientRect();
         p.setLamp((s.px - r.left) / Math.max(1, r.width), (s.py - r.top) / Math.max(1, r.height));
       }));
       offs.push(tiers.subscribe((t) => p.setTier(t)));
       // Progress: how far the page's reading line (two thirds down the viewport, where the water's head is) has
       // passed through the host, as a fraction of its height. 0 is its top, 1 its bottom.
-      const prog = () => { const r = h.getBoundingClientRect(); p.setProgress((innerHeight * READING_LINE - r.top) / Math.max(1, r.height)); };
+      const prog = () => { place(); p.setProgress((innerHeight * READING_LINE - r.top) / Math.max(1, r.height)); };
       addEventListener('scroll', prog, { passive: true });
       addEventListener('resize', prog);
       offs.push(() => { removeEventListener('scroll', prog); removeEventListener('resize', prog); });
@@ -93,26 +100,35 @@ export function PieceView({ name, entrance = false, once, making = true, classNa
         mounted = null;
         piece.current = null;
       }
+      budget.drop(id);
     };
     // Mount when the host comes within a screen of the viewport; dispose when it is three screens away, so only the
     // pieces near the visitor hold a WebGL context.
+    // Within the budget of contexts (src/world/budget.ts): a piece that gives way waits for a place to come free.
     let near = false;
+    let evicted = false;
+    const id = `piece:${name}`;
     const check = () => {
-      const r = h.getBoundingClientRect(), vh = innerHeight;
-      const dist = r.bottom < 0 ? -r.bottom : r.top > vh ? r.top - vh : 0;
+      const dist = distanceOf(h), vh = innerHeight;
       if (dist < vh * PIECE_MOUNT.near) {
         near = true;
-        if (!mounted && !loading) loading = registry.track(start());
+        if (!mounted && !loading && !evicted) {
+          if (budget.claim(id, { distance: () => distanceOf(h), keepsStill: false, release: () => { evicted = true; stop(); } })) loading = registry.track(start());
+          else evicted = true;
+        }
       } else if (dist > vh * PIECE_MOUNT.far) {
         near = false;
-        if (mounted) stop();
+        evicted = false;
+        stop();
       }
     };
+    const offFree = budget.onFree(() => { if (alive && evicted) { evicted = false; check(); } });
     addEventListener('scroll', check, { passive: true });
     addEventListener('resize', check);
     check();
     return () => {
       alive = false;
+      offFree();
       removeEventListener('scroll', check);
       removeEventListener('resize', check);
       stop();

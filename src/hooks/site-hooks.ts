@@ -2,7 +2,7 @@ import { HOOK_PARAM, SETTLE, TIERS, type Tier } from '../config/site';
 import { lamp } from '../lamp/lamp';
 import { clock } from '../world/clock';
 import { tiers } from '../world/tier';
-import { registry, stats, type PieceHandle } from './registry';
+import { registry, stats, type PieceHandle, type WaterPath } from './registry';
 
 export interface SiteHooks {
   settle(): Promise<true>;
@@ -12,7 +12,7 @@ export interface SiteHooks {
   scrollFrac(k: number): Promise<true>;
   tier(name: Tier | null): void;
   opening(t: number): void;
-  water: { head(v: number | string): void; move(name: string, t: number): void };
+  water: { head(v: number | string): void; move(name: string, t: number): void; path(): WaterPath };
   piece(name: string): PieceHandle;
   info(): { tier: Tier; frozen: boolean; time: number; scrollY: number; probeMs: number | null; lamp: { x: number; y: number }; stats: Record<string, number> };
 }
@@ -111,6 +111,11 @@ export function installHooks(): void {
         const w = registry.getWater();
         if (!w) throw new Error('water.move: no water on this page');
         w.move(name, t);
+      },
+      path() {
+        const w = registry.getWater();
+        if (!w) throw new Error('water.path: no water on this page');
+        return w.path();
       },
     },
     piece(name) {

@@ -47,8 +47,9 @@ export type PieceName = (typeof PIECES)[number];
 export const BREAKPOINT_ONE_COLUMN = 820;
 // The page's reading line, as a fraction of the viewport height: the water's head sits here as the page scrolls.
 export const READING_LINE = 0.66;
-// A piece mounts within this many viewport heights of the screen and disposes beyond the second number.
-export const PIECE_MOUNT = { near: 1, far: 2.5 } as const;
+// A piece mounts within this many viewport heights of the screen and disposes beyond the second number. At most max
+// pieces hold a WebGL context at once (the doors' small views count as one).
+export const PIECE_MOUNT = { near: 1, far: 2.5, max: 2 } as const;
 // At and above this width the featured work steps down in two columns (src/app/home.module.css matches it).
 export const BREAKPOINT_WORK_COLUMNS = 1100;
 
@@ -123,6 +124,8 @@ export const HERO = {
 // ---- test hooks ---------------------------------------------------------------------------------
 
 export const HOOK_PARAM = 'hook';
+// With ?hook=1&stub=<piece>, that piece is swapped for the contract stub (src/world/stub.ts).
+export const STUB_PARAM = 'stub';
 export const SETTLE = { frames: 3, timeoutMs: 60000, pictureMs: 15000 } as const;
 
 // ---- media --------------------------------------------------------------------------------------

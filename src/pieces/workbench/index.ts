@@ -174,7 +174,7 @@ export function createWorkbench(): Piece {
       h.appendChild(canvas);
       if (!areaLib) { RectAreaLightUniformsLib.init(); areaLib = true; }
       stage = new Stage(h, canvas, { tier: opts.tier, fov: 30, near: 0.05, far: 12, bloom: { strength: 0.18, threshold: 2.2, radius: 0.25 }, ao: 0.012, aoIntensity: 1, envIntensity: 0.05, lampTarget: [0, 0.05, 0.05], lampAngle: 1.1 });
-      model = buildBench();
+      model = await buildBench();
       stage.wireDensity = 0.08;
       const s = stage.scene;
       s.background = new THREE.Color(COLORS.bg);
@@ -204,7 +204,7 @@ export function createWorkbench(): Piece {
       const hidden: THREE.Object3D[] = [];
       s.traverse((ob) => { if (!ob.visible) { hidden.push(ob); ob.visible = true; } });
       apply();
-      await stage.renderer.compileAsync(s, stage.camera);
+      await stage.warm();
       stage.render();
       for (const ob of hidden) ob.visible = false;
       ro = new ResizeObserver(() => { stage?.resize(); frame(); });

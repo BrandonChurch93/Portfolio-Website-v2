@@ -138,7 +138,7 @@ export function createSculpture(): Piece {
       if (!areaLib) { RectAreaLightUniformsLib.init(); areaLib = true; }
       await Promise.all(['500 20px "Sora Variable"', '600 20px "JetBrains Mono Variable"'].map((f) => document.fonts.load(f).catch(() => null)));
       stage = new Stage(h, canvas, { tier: opts.tier, fov: 28, near: 0.05, far: 8, env: 'studio', envIntensity: 0.75, exposure: 1.1, bloom: { strength: 0.08, threshold: 2.4, radius: 0.25 }, ao: 0.01, aoIntensity: 1, lampTarget: [0, 0.15, 0], lampAngle: 0.8 });
-      model = buildSculpture();
+      model = await buildSculpture();
       stage.wireDensity = 0.5;
       stage.wireEdges = 12;
       const s = stage.scene;
@@ -171,7 +171,7 @@ export function createSculpture(): Piece {
       pending = opts.entrance && !clock.isFrozen();
       frameOpt = { shift: opts.frame?.shift ?? 0, scale: opts.frame?.scale ?? 1, x: opts.frame?.x ?? 0 };
       apply();
-      await stage.renderer.compileAsync(s, stage.camera);
+      await stage.warm();
       stage.render();
       ro = new ResizeObserver(() => { stage?.resize(); frame(true); });
       ro.observe(h);

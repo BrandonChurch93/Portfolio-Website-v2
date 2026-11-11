@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { SiteLink } from './SiteLink';
 import { ROOM, ROUTES, SHOW_3D_ART } from '../config/site';
 import { DoorViews } from './DoorViews';
 import type { Door } from '../content/site';
@@ -12,13 +12,13 @@ export function Doors({ doors }: { doors: readonly Door[] }) {
     <ul className={styles.doors} data-count={open.length} data-water-avoid="">
       {open.map((d) => (
         <li key={d.route} className={styles.door}>
-          <Link href={ROUTES[d.route]} className={styles.link} data-door={d.route}>
+          <SiteLink href={ROUTES[d.route]} className={styles.link} data-door={d.route}>
             <span className={styles.view} aria-hidden="true" data-room={d.route} />
             <span className={styles.words}>
               <span className={styles.name}>{d.name}</span>
               <span className={styles.line}>{d.line}</span>
             </span>
-          </Link>
+          </SiteLink>
         </li>
       ))}
     </ul>

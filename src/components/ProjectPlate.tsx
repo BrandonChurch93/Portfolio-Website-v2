@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { SiteLink } from './SiteLink';
 import { ROUTES } from '../config/site';
 import { MEDIA } from '../content/media.generated';
 import type { Finish, Project } from '../content/site';
@@ -23,7 +23,7 @@ export function ProjectPlate({ project, index, finish = 'aged', headingLevel = 3
       {...(water && waterLine ? { 'data-water-line': waterLine } : {})}
       {...(water && waterBelow ? { 'data-water-below': String(waterBelow) } : {})}
     >
-      <Link href={ROUTES.project(project.slug)} className={styles.link}>
+      <SiteLink href={ROUTES.project(project.slug)} className={styles.link}>
         <Plate finish={finish} label={label} big={project.why} facts={facts} photo={media ? { src: largest(media.id), focus: media.focus ? [media.focus[0], media.focus[1]] : undefined, zoom: media.zoom } : undefined} className={styles.metal}>
           <span className={styles.index}>{String(index + 1).padStart(2, '0')} · </span>
           <H>{project.name}</H>
@@ -31,7 +31,7 @@ export function ProjectPlate({ project, index, finish = 'aged', headingLevel = 3
           <ul>{project.facts.map((f) => <li key={f}>{f}</li>)}</ul>
           {media ? <span>{media.alt}</span> : null}
         </Plate>
-      </Link>
+      </SiteLink>
     </article>
   );
 }

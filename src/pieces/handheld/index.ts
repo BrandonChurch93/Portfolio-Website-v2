@@ -214,7 +214,7 @@ export function createHandheld(): Piece {
       if (!areaLib) { RectAreaLightUniformsLib.init(); areaLib = true; }
       await Promise.all(['500 20px "Sora Variable"', '600 20px "Sora Variable"', '500 20px "JetBrains Mono Variable"'].map((f) => document.fonts.load(f).catch(() => null)));
       stage = new Stage(h, canvas, { tier: opts.tier, fov: 26, near: 0.02, far: 6, env: 'studio', envIntensity: 0.6, bloom: { strength: 0.1, threshold: 1.6, radius: 0.25 }, ao: 0.006, aoIntensity: 1, lampTarget: [0, 0.05, -0.008], lampAngle: 0.9 });
-      model = buildHandheld();
+      model = await buildHandheld();
       stage.wireDensity = 0.5;
       stage.wireEdges = 12;
       const s = stage.scene;
@@ -243,7 +243,7 @@ export function createHandheld(): Piece {
       gameT0 = -GAME_AHEAD;
       frameOpt = { shift: opts.frame?.shift ?? 0, scale: opts.frame?.scale ?? 1, x: opts.frame?.x ?? 0 };
       apply();
-      await stage.renderer.compileAsync(s, stage.camera);
+      await stage.warm();
       stage.render();
       ro = new ResizeObserver(() => { stage?.resize(); frame(true); });
       ro.observe(h);

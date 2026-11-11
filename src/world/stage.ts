@@ -11,7 +11,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import type { Tier } from '../config/site';
 import { site } from '../content/site';
 import { pixelRatioFor } from './tier-choice';
-import { seeded } from './build';
+import { pause, seeded } from './build';
 import { clock } from './clock';
 import { studioScene } from './env';
 
@@ -103,7 +103,7 @@ export class Stage {
     this.renderer.toneMappingExposure = o.exposure ?? 1;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.setClearColor(0x0c0a09, 0);
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     const envScene = o.env === 'studio' ? studioScene() : new RoomEnvironment();
@@ -179,6 +179,31 @@ export class Stage {
     this.lamp.shadow.mapSize.set(t.shadow, t.shadow);
     this.lamp.shadow.map?.dispose();
     this.lamp.shadow.map = null as unknown as THREE.WebGLRenderTarget;
+  }
+
+  // Compiles every material in the variant the first frame will use. The post chain draws the scene into its own
+  // target, where three picks programs without tone mapping; compiled for the screen, the real programs would still
+  // link on the first frame and stall it.
+  // Parts hidden until a moment of the piece's life (smoke, a flame, a sling) are shown for the compile, so they do not
+  // stall the frame they first appear in.
+  async warm(): Promise<void> {
+    // Lights keep their state: three compiles for the number of lights in view, and that must match the first frame.
+    const seen = (o: THREE.Object3D) => { for (let x: THREE.Object3D | null = o; x; x = x.parent) if (!x.visible) return false; return true; };
+    const dark = new Set<THREE.Object3D>();
+    this.scene.traverse((o) => { if (o instanceof THREE.Light && o.visible && !seen(o)) dark.add(o); });
+    const hidden: THREE.Object3D[] = [];
+    this.scene.traverse((o) => { if (!o.visible && !(o instanceof THREE.Light)) { hidden.push(o); o.visible = true; } });
+    for (const l of dark) l.visible = false;
+    const prev = this.renderer.getRenderTarget();
+    this.renderer.setRenderTarget(this.composer.readBuffer);
+    await this.renderer.compileAsync(this.scene, this.camera);
+    this.renderer.setRenderTarget(prev);
+    // The GPU driver builds a program's pipeline at its first draw, so one frame is drawn with everything shown. The
+    // piece draws its real first frame straight after; this one is never seen.
+    this.composer.render();
+    for (const o of hidden) o.visible = false;
+    for (const l of dark) l.visible = true;
+    await pause();
   }
 
   setResolutionScale(k: number): void {

@@ -1,8 +1,10 @@
 // Measures frame time on a page while the lamp moves every frame, so everything lit must redraw.
 //
-//   node scripts/measure.mjs <route> <viewport> [--steps file.json] [--seconds 4] [--tier high] [--headed] [--opening] [--cpu 4]
+//   node scripts/measure.mjs <route> <viewport> [--steps file.json] [--seconds 4] [--tier high] [--headed] [--opening] [--scroll] [--cpu 4]
 //
 // --cpu slows the CPU by that factor (Chromium devtools throttling), for the low tier budget in kit 06.
+//
+// --scroll scrolls the page from top to foot at an even speed over the measured seconds (the whole home page in one go).
 //
 // --opening drives the hero opening through window.__site.opening(t) at real time, from 0, while measuring.
 //
@@ -28,7 +30,7 @@ try {
   const page = await openSite(browser, preview, { route, vp, steps }, errors, '');
   const cpu = Number(flag('--cpu', 1));
   if (cpu > 1) { const cdp = await page.context().newCDPSession(page); await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu }); }
-  const result = await page.evaluate(async ([secs, drive]) => {
+  const result = await page.evaluate(async ([secs, drive, scroll]) => {
     const intervals = [];
     const metal = [];
     let last = performance.now();
@@ -36,6 +38,7 @@ try {
     await new Promise((resolve) => {
       const tick = (now) => {
         if (drive) window.__site.opening((now - start) / 1000);
+        if (scroll) window.scrollTo(0, Math.min(1, (now - start) / (secs * 1000)) * (document.documentElement.scrollHeight - innerHeight));
         intervals.push(now - last);
         last = now;
         const k = (now % 4000) / 4000;
@@ -53,7 +56,7 @@ try {
       metalMedian: q(metal, 0.5), metalP95: q(metal, 0.95),
       info: window.__site.info(),
     };
-  }, [seconds, args.includes('--opening')]);
+  }, [seconds, args.includes('--opening'), args.includes('--scroll')]);
   const r = (n) => n.toFixed(2);
   console.log(`measure: cpu slowed ${Number(flag('--cpu', 1))}x`);
   console.log(`measure: ${route} at ${vp} · renderer ${renderer} (${hardware ? 'hardware' : 'software'}) · tier ${result.info.tier} · plates ${result.info.stats.plates ?? 0}`);

@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { SiteLink } from './SiteLink';
 import { site, type Finish } from '../content/site';
 import { Plate } from './Plate';
 import styles from './MetalLink.module.css';
@@ -15,5 +15,5 @@ export function MetalLink({ href, label, finish = 'polished', download, classNam
   if (download || /^mailto:/.test(href)) {
     return <a href={href} className={`${styles.link} ${className ?? ''}`} download={download || undefined}>{inner}</a>;
   }
-  return <Link href={href} className={`${styles.link} ${className ?? ''}`}>{inner}</Link>;
+  return <SiteLink href={href} className={`${styles.link} ${className ?? ''}`}>{inner}</SiteLink>;
 }

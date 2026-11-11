@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Builder, at, cyl, rbox, xf } from '../../world/build';
+import { Builder, pause, at, cyl, rbox, xf } from '../../world/build';
 import { circle, screw, slab } from '../../world/shape';
 import { dielectric, metal, shade } from '../../world/surface';
 import { site } from '../../content/site';
@@ -162,7 +162,7 @@ function dialTex(): THREE.CanvasTexture {
   return t;
 }
 
-export function buildSculpture(): SculptureModel {
+export async function buildSculpture(): Promise<SculptureModel> {
   const root = new THREE.Group();
   root.scale.setScalar(SCULPT.SCALE);
   const uniforms = { uPlaneP: { value: new THREE.Vector3(0, SCULPT.CENTRE * SCULPT.SCALE, 0) }, uPlaneN: { value: new THREE.Vector3(1, 0, 0) }, uDraw: { value: 1.01 }, uFill: { value: 1 }, uGlow: { value: 1 }, uAll: { value: 0 }, uSolid: { value: 0 }, uFrom: { value: 0 } };
@@ -175,8 +175,10 @@ export function buildSculpture(): SculptureModel {
   const felt = dielectric('sculptFelt', 0x120e0b, 0.95, { vary: 0.15, scale: 0.9, sheen: 0.5 });
   const floor = dielectric('sculptFloor', 0x14100d, 0.7, { vary: 0.02, scale: 0.002, coat: 0.1 });
 
+  await pause();
   // ---- the pedestal: a stone drum on a plinth, a shadow gap, a patinated top ring, a brass plaque ---------------
   const ped = new Builder();
+  await pause();
   {
     const H = SCULPT.PEDESTAL - SCULPT.FLOOR;
     ped.add(cyl(150, 46, 128), stone, at(0, SCULPT.FLOOR + 23, 0));
@@ -214,6 +216,7 @@ export function buildSculpture(): SculptureModel {
   dial.position.y = SCULPT.PEDESTAL + 10.05;
   dial.name = 'dial';
 
+  await pause();
   // ---- the turning part: the turntable's dial, the rod, the form ------------------------------------------------
   const turn = new THREE.Group();
   root.add(turn);

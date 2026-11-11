@@ -1,3 +1,4 @@
+import { HOOK_PARAM, STUB_PARAM } from '../config/site';
 import type { PieceFactory } from '../world/piece';
 import type { SmallFactory } from '../world/small';
 
@@ -10,6 +11,12 @@ export const pieceLoaders: Record<string, () => Promise<PieceFactory>> = {
   sculpture: () => import('./sculpture/index').then((m) => m.createSculpture),
   rocket: () => import('./rocket/index').then((m) => m.createRocket),
 };
+
+export function loaderFor(name: string): (() => Promise<PieceFactory>) | undefined {
+  const q = new URLSearchParams(location.search);
+  if (q.get(HOOK_PARAM) === '1' && q.get(STUB_PARAM) === name) return () => import('../world/stub').then((m) => m.createStub);
+  return pieceLoaders[name];
+}
 
 // The small views for the doors on the home page, each from its own piece.
 export const smallLoaders: Record<string, () => Promise<SmallFactory>> = {

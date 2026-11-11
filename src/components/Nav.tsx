@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { SiteLink } from './SiteLink';
 import { usePathname } from 'next/navigation';
 import { useEffect, useId, useState } from 'react';
 import { ROUTES, SHOW_3D_ART, SITE_NAME } from '../config/site';
@@ -38,9 +38,9 @@ export function Nav() {
     <header className={styles.bar}>
       <a className={styles.skip} href="#main">{site.ui.skip}</a>
       <div className={styles.inner}>
-        <Link href={ROUTES.home} className={styles.name} aria-label={`${SITE_NAME}, ${site.ui.home}`}>
+        <SiteLink href={ROUTES.home} className={styles.name} aria-label={`${SITE_NAME}, ${site.ui.home}`}>
           {SITE_NAME}
-        </Link>
+        </SiteLink>
         <button
           type="button"
           className={styles.toggle}
@@ -55,9 +55,9 @@ export function Nav() {
           <ul className={styles.list}>
             {ITEMS.map((it) => (
               <li key={it.href}>
-                <Link href={it.href} className={styles.link} aria-current={current(it.href) ? 'page' : undefined}>
+                <SiteLink href={it.href} className={styles.link} aria-current={current(it.href) ? 'page' : undefined}>
                   {it.label}
-                </Link>
+                </SiteLink>
               </li>
             ))}
           </ul>

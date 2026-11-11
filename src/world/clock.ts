@@ -12,6 +12,17 @@ class Clock {
   private raf = 0;
   private started = false;
   private listeners = new Set<FrameListener>();
+  // Where the page is scrolled and how big the window is, read once at the start of a frame, before anything writes:
+  // read after a write, these make the browser recalculate styles there and then.
+  readonly view = { x: 0, y: 0, w: 1, h: 1 };
+
+  readView(): void {
+    if (typeof window === 'undefined') return;
+    this.view.x = scrollX;
+    this.view.y = scrollY;
+    this.view.w = innerWidth;
+    this.view.h = innerHeight;
+  }
 
   now(): number {
     return this.frozen ?? this.t;
@@ -60,6 +71,7 @@ class Clock {
 
   // Runs every listener once now, for a frozen frame that must be drawn before the next animation frame.
   emit(dt: number): void {
+    this.readView();
     const t = this.now();
     gsap.updateRoot(t);
     for (const fn of this.listeners) fn(t, dt);

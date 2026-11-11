@@ -329,6 +329,9 @@ class PlateRenderer {
     const t0 = performance.now();
     const frozen = clock.isFrozen();
     const k = frozen ? 1 : 0.14;
+    // Every plate's place is read before anything is written, so the page lays out once a frame, not once a plate.
+    const rects = new Map<Plate, DOMRect>();
+    for (const p of this.plates) if (p.visible && p.mask) rects.set(p, p.host.getBoundingClientRect());
     for (const p of this.plates) {
       const dx = p.tilt.gx - p.tilt.x;
       const dy = p.tilt.gy - p.tilt.y;
@@ -337,20 +340,20 @@ class PlateRenderer {
         p.tilt.y += dy * k;
         p.canvas.style.transform = `rotateX(${(p.tilt.x * 57.2958).toFixed(3)}deg) rotateY(${(p.tilt.y * 57.2958).toFixed(3)}deg)`;
       }
-      if (p.visible && p.mask) this.draw(p, false);
     }
+    for (const [p, r] of rects) this.draw(p, false, r);
     this.frameMs = performance.now() - t0;
     stats.metalMs = this.frameMs;
     stats.plates = this.plates.size;
   }
 
-  private draw(p: Plate, force: boolean): void {
+  private draw(p: Plate, force: boolean, rect?: DOMRect): void {
     const gl = this.gl!;
     const mask = p.mask!;
-    const r = p.host.getBoundingClientRect();
+    const r = rect ?? p.host.getBoundingClientRect();
     const L = lamp.get();
     const video = p.videoEl && p.videoEl.readyState >= 2;
-    const sig = [Math.round(L.px), Math.round(L.py), Math.round(r.left), Math.round(r.top), innerWidth, innerHeight,
+    const sig = [Math.round(L.px), Math.round(L.py), Math.round(r.left), Math.round(r.top), clock.view.w, clock.view.h,
       p.tilt.x.toFixed(3), p.tilt.y.toFixed(3), p.water.k.toFixed(3), Math.round(p.water.x), Math.round(p.water.y), !!p.photoTex,
       video ? p.videoEl!.currentTime.toFixed(3) : ''].join();
     if (!force && sig === p.sig) return;
@@ -371,8 +374,8 @@ class PlateRenderer {
     this.common(l, p, mask);
     gl.uniform1f(l.u('uDpr'), p.dpr);
     gl.uniform2f(l.u('uOrigin'), r.left, r.top);
-    gl.uniform2f(l.u('uView'), innerWidth, innerHeight);
-    gl.uniform3f(l.u('uLamp'), L.px, L.py, LAMP.depth * Math.max(innerWidth, innerHeight * 0.8));
+    gl.uniform2f(l.u('uView'), clock.view.w, clock.view.h);
+    gl.uniform3f(l.u('uLamp'), L.px, L.py, LAMP.depth * Math.max(clock.view.w, clock.view.h * 0.8));
     gl.uniform1f(l.u('uLampI'), 1.15 + 0.3 * L.led);
     // A portrait's glass glares softly: the lamp's spot should not sit on a face.
     gl.uniform1f(l.u('uGlare'), p.spec.kind === 'frame' ? 0.06 : 1);
@@ -394,8 +397,8 @@ class PlateRenderer {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     p.ctx.clearRect(0, 0, mask.w, mask.h);
     p.ctx.drawImage(this.glCanvas!, 0, this.glCanvas!.height - mask.h, mask.w, mask.h, 0, 0, mask.w, mask.h);
-    p.host.style.setProperty('--lamp-dx', ((r.left + r.width / 2 - L.px) / innerWidth).toFixed(3));
-    p.host.style.setProperty('--lamp-dy', ((r.top + r.height / 2 - L.py) / innerHeight).toFixed(3));
+    p.host.style.setProperty('--lamp-dx', ((r.left + r.width / 2 - L.px) / clock.view.w).toFixed(3));
+    p.host.style.setProperty('--lamp-dy', ((r.top + r.height / 2 - L.py) / clock.view.h).toFixed(3));
   }
 
   private uploadVideo(p: Plate): void {

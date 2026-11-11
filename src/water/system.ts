@@ -55,6 +55,9 @@ export class WaterSystem {
   private quad: WebGLVertexArrayObject;
   private emptyVao: WebGLVertexArrayObject;
   route: Route | null = null;
+  // The page's height, kept from the last layout: read every frame it would force a layout after the frame's writes.
+  private pageH = 0;
+  private reduced = false;
   private table: { ys: Float64Array; ss: Float64Array } | null = null;
   private head = 0;
   private headSpeed = 0;
@@ -89,7 +92,12 @@ export class WaterSystem {
     gl.bindVertexArray(null);
 
     const relayout = () => { clearTimeout(this.layoutTimer); this.layoutTimer = window.setTimeout(() => this.layout(), 80); };
-    const ro = new ResizeObserver(relayout);
+    const mq = matchMedia('(prefers-reduced-motion: reduce)');
+    this.reduced = mq.matches;
+    const onMotion = () => { this.reduced = mq.matches; };
+    mq.addEventListener('change', onMotion);
+    this.unsub.push(() => mq.removeEventListener('change', onMotion));
+    const ro = new ResizeObserver(() => { this.pageH = document.documentElement.scrollHeight; relayout(); });
     ro.observe(document.body);
     addEventListener('resize', relayout);
     document.fonts?.ready.then(() => this.layout());
@@ -99,6 +107,7 @@ export class WaterSystem {
     registry.water({
       head: (v) => this.setHead(v),
       move: (name, t) => this.setMove(name, t),
+      path: () => (this.route?.branches ?? []).map((b) => b.samples.map((p) => ({ x: p.x, y: p.y, hw: p.hw }))),
     });
     this.layout();
   }
@@ -127,6 +136,7 @@ export class WaterSystem {
       this.forced = t.s + 1;
     }
     this.head = this.forced;
+    clock.readView();
     this.draw(clock.now());
   }
 
@@ -147,6 +157,7 @@ export class WaterSystem {
     this.move = { fEntry: this.fAt(s) - lead, t };
     this.forced = null;
     clock.freeze(t);
+    clock.readView();
     this.draw(t);
   }
 
@@ -156,6 +167,7 @@ export class WaterSystem {
     const { anchors, options } = readAnchors(document, BREAKPOINT_ONE_COLUMN);
     if (this.opts.entering) options.start = { x: options.start.x, y: 0 };
     this.startY = options.start.y;
+    this.pageH = document.documentElement.scrollHeight;
     const route = buildRoute(anchors, options);
     this.route = route;
     this.table = headTable(route);
@@ -163,6 +175,7 @@ export class WaterSystem {
     this.measureLights(route);
     this.resize();
     if (this.forced !== null) this.forced = Math.min(this.forced, route.total);
+    clock.readView();
     this.draw(clock.now());
   }
 
@@ -278,11 +291,11 @@ export class WaterSystem {
     if (this.forced !== null) return this.forced;
     // While the page's source is still filling (the city's opening), the stream has not started.
     if (document.querySelector('[data-water-start][data-water-hold="1"]')) return 0;
-    if (tiers.get() === 'static' || matchMedia('(prefers-reduced-motion: reduce)').matches) return r.total;
+    if (tiers.get() === 'static' || this.reduced) return r.total;
     // At the end of the page (or on a page too short to scroll) the stream runs all the way to its end.
-    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) return r.total;
+    if (clock.view.y + clock.view.h >= this.pageH - 2) return r.total;
     // Where the page has a source, the stream already runs on a little past it at the top of the page.
-    return headAt(this.table!, Math.max(scrollY + innerHeight * READING_LINE, this.startY + innerHeight * 0.32));
+    return headAt(this.table!, Math.max(clock.view.y + clock.view.h * READING_LINE, this.startY + clock.view.h * 0.32));
   }
 
   // When the water reached a landing. Live, it is the moment the front crossed it; for frozen or forced states it is
@@ -306,15 +319,15 @@ export class WaterSystem {
     const budget = BUDGET[tier];
     const still = tier === 'static';
     const time = still ? 6 : t;
-    const narrow = innerWidth < BREAKPOINT_ONE_COLUMN;
+    const narrow = clock.view.w < BREAKPOINT_ONE_COLUMN;
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE);
     const view = (p: Prog) => {
-      gl.uniform2f(p.u('uView'), innerWidth, innerHeight);
-      gl.uniform1f(p.u('uScroll'), scrollY);
+      gl.uniform2f(p.u('uView'), clock.view.w, clock.view.h);
+      gl.uniform1f(p.u('uScroll'), clock.view.y);
     };
 
     // Halo, then the body.
@@ -381,8 +394,8 @@ export class WaterSystem {
         gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, budget.sparks);
       }
       route.landings.forEach((L, i) => {
-        const y = L.y - scrollY;
-        if (y < -300 || y > innerHeight + 300) return;
+        const y = L.y - clock.view.y;
+        if (y < -300 || y > clock.view.h + 300) return;
         const imp = this.impactTime(i, t);
         if (!Number.isFinite(imp)) return;
         gl.uniform4f(this.part.u('uLand'), L.x, L.y, imp, L.dir);
@@ -429,7 +442,7 @@ export class WaterSystem {
       for (const p of near) if (p.s <= this.head && p.score < L.score) L = p;
       const k = Number.isFinite(L.d) ? Math.exp(-L.d / 140) * (0.88 + 0.12 * Math.sin(t * 2.3 + L.s * 0.01)) : 0;
       stats.waterLightMax = Math.max(stats.waterLightMax, k);
-      plates.setWater(host, L.x - scrollX, L.y - scrollY, k);
+      plates.setWater(host, L.x - clock.view.x, L.y - clock.view.y, k);
     }
   }
 

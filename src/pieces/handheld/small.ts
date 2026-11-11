@@ -7,7 +7,7 @@ import { HH, buildHandheld } from './model';
 // The handheld at rest for a door on the home page: the game playing, the power lamp lit, the visitor's lamp moving.
 export const createSmall: SmallFactory = async (renderer) => {
   RectAreaLightUniformsLib.init();
-  const m = buildHandheld();
+  const m = await buildHandheld();
   const scene = new THREE.Scene();
   const env = smallEnvironment(renderer);
   scene.environment = env.texture;

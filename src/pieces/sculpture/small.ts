@@ -9,7 +9,7 @@ const TURN = 0.11;
 
 export const createSmall: SmallFactory = async (renderer) => {
   RectAreaLightUniformsLib.init();
-  const m = buildSculpture();
+  const m = await buildSculpture();
   const scene = new THREE.Scene();
   const env = smallEnvironment(renderer);
   scene.environment = env.texture;

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Builder, at, cyl, lathe, rbox, seeded, xf } from '../../world/build';
+import { Builder, pause, at, cyl, lathe, rbox, seeded, xf } from '../../world/build';
 import { circle, rounded, screw, slab, type P2, type V } from '../../world/shape';
 import { dielectric, glassLayer, metal, shade } from '../../world/surface';
 import { site } from '../../content/site';
@@ -384,7 +384,7 @@ const wireHull = (meshes: THREE.Mesh[], hull: THREE.Material, geo: THREE.BufferG
   for (const mm of meshes) { if (mm.material === hull) mm.userData.wireGeo = geo; else mm.userData.wireK = 0.5; }
 };
 
-export function buildRocket(): RocketModel {
+export async function buildRocket(): Promise<RocketModel> {
   const rnd = seeded(5150);
   const root = new THREE.Group();
   root.scale.setScalar(RKT.SCALE);
@@ -437,6 +437,7 @@ export function buildRocket(): RocketModel {
   const floodLens = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, 0.86, 0.66).multiplyScalar(2.2) });
   floodLens.name = 'rktFloodLens';
 
+  await pause();
   // ---- the pool, its basin and the ground around it ---------------------------------------------------------
   {
     const b = new Builder();
@@ -479,6 +480,7 @@ export function buildRocket(): RocketModel {
     for (const mm of b.build(root, 'basin')) { if (mm.material === apron || mm.material === coping || mm.material === steel || mm.material === ink) mm.userData.noWire = true; else mm.userData.wireK = 0.45; }
   }
   const pool = poolMaterial();
+  await pause();
   {
     // The shader reads the pool's own plane coordinates (position.xy); the mesh lies it flat.
     const mesh = new THREE.Mesh(new THREE.CircleGeometry(RKT.POOL_R + 4, 192), pool);
@@ -491,12 +493,14 @@ export function buildRocket(): RocketModel {
     root.add(mesh);
   }
 
+  await pause();
   // ---- the flume: a stone trough on piers across the apron, a brass spout over the coping, the water along it -----
   const R0 = RKT.POOL_R;
   const fu = new THREE.Vector3(Math.cos(FLUME.A), 0, Math.sin(FLUME.A));
   const fv = new THREE.Vector3(-Math.sin(FLUME.A), 0, Math.cos(FLUME.A));
   const rLip = R0 - 8, rFar = R0 + 60 + FLUME.LEN;
   const floorY = RKT.POOL + 12, waterY = RKT.POOL + 21;
+  await pause();
   {
     const b = new Builder();
     const len = rFar - rLip, mid = (rFar + rLip) / 2;
@@ -515,6 +519,7 @@ export function buildRocket(): RocketModel {
   const flumeRun = waterMaterial(0.95);
   const flumeFall = waterMaterial(0.7, true);
   let fs0 = 0, ff0 = 0;
+  await pause();
   {
     const rows: WaterRow[] = [];
     for (let r = rFar; r >= rLip; r -= 8) {
@@ -529,6 +534,7 @@ export function buildRocket(): RocketModel {
   const lip = new THREE.Vector3(fu.x * rLip, waterY, fu.z * rLip);
   const vx = FLUME.VRUN * 0.7, tOut = Math.sqrt((2 * (waterY - RKT.POOL)) / FLUME.G);
   const landR = rLip - vx * tOut;
+  await pause();
   {
     const rows: WaterRow[] = [];
     for (let j = 0; j <= 24; j++) {
@@ -558,8 +564,10 @@ export function buildRocket(): RocketModel {
   inletLight.position.set(fu.x * (rLip + 30) * RKT.SCALE, (waterY + 8) * RKT.SCALE, fu.z * (rLip + 30) * RKT.SCALE);
   pool.userData.uniforms.uInlet.value.set(land.x, -land.z, 0);
 
+  await pause();
   // ---- the pad: an octagonal stone deck on eight pillars, brass trim, grating, the flame hole, the clamps --------
   const pad = new Builder();
+  await pause();
   {
     const oct: V[] = Array.from({ length: 8 }, (_, k) => { const a = (k / 8) * Math.PI * 2 + Math.PI / 8; return [Math.cos(a) * 160, Math.sin(a) * 160, 6] as V; });
     const deck = slab(rounded(oct), [circle(0, 0, 40, 96)], -26, 0, 2, 3); deck.rotateX(-Math.PI / 2);
@@ -623,6 +631,7 @@ export function buildRocket(): RocketModel {
     clamps.push({ group: g, angle: a });
   }
 
+  await pause();
   // ---- the gantry: a lattice tower built in sections, platforms, swing arms, a crane, beacons, floodlights --------
   const gantry: THREE.Group[] = [];
   const GX = RKT.GANTRY_X, HALF = 28, BAY = 40, SECTIONS = 16;
@@ -658,6 +667,7 @@ export function buildRocket(): RocketModel {
   }
   // Platforms with rails at three levels, a crane on top.
   const LEVELS = [180, 352, 480];
+  await pause();
   {
     const tie = (b: Builder, name: string, top: number) => { const g = new THREE.Group(); for (const mm of b.build(g, name)) mm.userData.wireK = 0.4; root.add(g); tieAt(g, top); };
     for (const y of LEVELS) {
@@ -699,6 +709,7 @@ export function buildRocket(): RocketModel {
   }
   // Floodlights on the platforms, aimed at the rocket: real lights with lit lenses.
   const floods: THREE.SpotLight[] = [];
+  await pause();
   {
     for (const [y, z] of [[184, 44], [356, -44]]) {
       const b = new Builder();
@@ -716,11 +727,13 @@ export function buildRocket(): RocketModel {
     }
   }
 
+  await pause();
   // ---- the rocket, in three stages that are stacked during assembly -----------------------------------------
   const rocket = new THREE.Group();
   root.add(rocket);
   const stages: THREE.Group[] = [new THREE.Group(), new THREE.Group(), new THREE.Group()];
   for (const s of stages) rocket.add(s);
+  await pause();
   {
     // Stage one: boattail, engine bells, the long body, fins, bands, hatches, rivets.
     const b = new Builder();
@@ -762,6 +775,7 @@ export function buildRocket(): RocketModel {
     }
     wireHull(b.build(stages[0], 'stage1'), ivory, hullWire([[34, 60], [34, 330]], [60, 72, 136, 200, 264, 328], 16));
   }
+  await pause();
   {
     // Stage two: the interstage with vents, a slimmer body, a band.
     const b = new Builder();
@@ -790,6 +804,7 @@ export function buildRocket(): RocketModel {
   sling.visible = false;
   root.add(sling);
   const portholes = glass;
+  await pause();
   {
     // The nose: an ogive with three portholes, a brass collar and a tip.
     const b = new Builder();
@@ -812,6 +827,7 @@ export function buildRocket(): RocketModel {
     wireHull(b.build(stages[2], 'nose'), ivory, hullWire(prof, [480, 520, 560, 584, 598], 16));
   }
 
+  await pause();
   // ---- launch: the plume, the flash on the pad, the smoke, the lights ---------------------------------------
   const plumeMat = plumeMaterial();
   const pg = new THREE.CylinderGeometry(16, 46, 1, 48, 1, true);

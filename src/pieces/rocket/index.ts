@@ -242,7 +242,7 @@ export function createRocket(): Piece {
       h.appendChild(canvas);
       if (!areaLib) { RectAreaLightUniformsLib.init(); areaLib = true; }
       stage = new Stage(h, canvas, { tier: opts.tier, fov: 30, near: 0.05, far: 12, env: 'studio', envIntensity: 0.42, exposure: 1.1, bloom: { strength: 0.12, threshold: 1.3, radius: 0.35 }, ao: 0.012, aoIntensity: 1, lampTarget: [0.03, 0.25, 0], lampAngle: 0.9 });
-      model = buildRocket();
+      model = await buildRocket();
       stage.wireDensity = 0.5;
       stage.wireEdges = 12;
       const s = stage.scene;
@@ -267,7 +267,7 @@ export function createRocket(): Piece {
       launched = typeof sessionStorage !== 'undefined' && sessionStorage.getItem(LAUNCH_FLAG) === '1';
       frameOpt = { shift: opts.frame?.shift ?? 0, scale: opts.frame?.scale ?? 1, x: opts.frame?.x ?? 0 };
       apply();
-      await stage.renderer.compileAsync(s, stage.camera);
+      await stage.warm();
       stage.render();
       ro = new ResizeObserver(() => { stage?.resize(); frame(true); });
       ro.observe(h);

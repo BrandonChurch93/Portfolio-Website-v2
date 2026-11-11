@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { Builder, at, cyl, lathe, rbox, seeded, xf } from '../../world/build';
+import { Builder, pause, at, cyl, lathe, rbox, seeded, xf } from '../../world/build';
 import { crownMesh, dropsAt, dropsMaterial, fallStrip, riders, waterMaterial, waterStrip, type WaterRow } from '../../world/lightwater';
 import { site } from '../../content/site';
 import { anodised, leather, plaster, walnut } from './materials';
@@ -83,7 +83,7 @@ function merged(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
   return out;
 }
 
-export function buildBench(): BenchModel {
+export async function buildBench(): Promise<BenchModel> {
   const r = seeded(6060);
   const root = new THREE.Group();
   root.scale.setScalar(BENCH.SCALE);
@@ -100,6 +100,7 @@ export function buildBench(): BenchModel {
   };
   const P = (o: THREE.MeshPhysicalMaterialParameters, name: string) => { const m = new THREE.MeshPhysicalMaterial(o); m.name = name; return m; };
 
+  await pause();
   // ---- materials ------------------------------------------------------------------------------------
   const wood = walnut(D / 3, FRONT);
   const brass = P({ color: 0xc89a55, metalness: 1, roughness: 0.32 }, 'brass');
@@ -118,7 +119,7 @@ export function buildBench(): BenchModel {
   const wall = plaster();
   const glassBlk = P({ color: 0x050505, roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.03 }, 'glassBlk');
   // Coated glass you can see into: thin, glossy, a faint green and violet bloom from the coating.
-  const lensGlass = P({ color: 0x1a2420, roughness: 0.03, clearcoat: 1, clearcoatRoughness: 0.02, iridescence: 0.7, iridescenceIOR: 1.6, iridescenceThicknessRange: [220, 420], transparent: true, opacity: 0.42, depthWrite: false }, 'lensGlass');
+  const lensGlass = P({ color: 0x1a2420, roughness: 0.03, clearcoat: 1, clearcoatRoughness: 0.02, iridescence: 0.7, iridescenceIOR: 1.6, iridescenceThicknessMinimum: 220, iridescenceThicknessMaximum: 420, transparent: true, opacity: 0.42, depthWrite: false }, 'lensGlass');
   const thread = P({ color: 0xc89a5a, roughness: 0.6 }, 'thread');
   const cord = P({ color: 0x1d1a17, roughness: 0.7 }, 'cord');
   const glowAmber = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xff9a38).multiplyScalar(2.2) });
@@ -126,6 +127,7 @@ export function buildBench(): BenchModel {
   const lampBulb = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffd2a0).multiplyScalar(2.4) });
   lampBulb.name = 'lampBulb';
 
+  await pause();
   // ---- the room: a plaster wall with a wainscot rail, and a floor that fades into the page --------------
   {
     const b = new Builder();
@@ -137,6 +139,7 @@ export function buildBench(): BenchModel {
     for (const mesh of b.build(root, 'room')) mesh.userData.noWire = true;
   }
 
+  await pause();
   // ---- the desk: three walnut boards, a bevelled edge, a brass inlay, an apron and legs --------------------
   {
     const b = new Builder();
@@ -153,6 +156,7 @@ export function buildBench(): BenchModel {
     b.build(root, 'desk');
   }
 
+  await pause();
   // ---- the leather mat, with a stitched border ----------------------------------------------------------
   {
     const b = new Builder();
@@ -171,11 +175,13 @@ export function buildBench(): BenchModel {
     b.build(root, 'mat');
   }
 
+  await pause();
   // ---- the monitor --------------------------------------------------------------------------------------
   const monitor = new MonitorScreen();
   // Glossy black glass over the picture: it reflects the lamps.
   const monMat = new THREE.MeshStandardMaterial({ color: 0x050505, emissive: 0xffffff, emissiveMap: monitor.texture, emissiveIntensity: 1, roughness: 0.34 });
   monMat.name = 'monitorScreen';
+  await pause();
   {
     const g = tool('monitor', 40, 0, -215);
     const b = new Builder();
@@ -197,6 +203,7 @@ export function buildBench(): BenchModel {
     for (const mesh of b.build(g, 'monitor')) if (mesh.material === monMat) { mesh.receiveShadow = false; mesh.userData.noWire = true; }
   }
 
+  await pause();
   // ---- the keyboard: a 75 percent layout with legends, an aluminium case and a brass knob -------------
   {
     const g = tool('keyboard', 20, 3, 190);
@@ -278,6 +285,7 @@ export function buildBench(): BenchModel {
     cb.build(g, 'cable');
   }
 
+  await pause();
   // ---- the mouse --------------------------------------------------------------------------------------
   {
     const g = tool('mouse', 318, 3, 135, 9);
@@ -303,10 +311,12 @@ export function buildBench(): BenchModel {
     b.build(g, 'mouse');
   }
 
+  await pause();
   // ---- the tablet on its fold stand, and the stylus ---------------------------------------------------
   const tablet = new TabletScreen();
   const tabMat = new THREE.MeshStandardMaterial({ color: 0x050505, emissive: 0xffffff, emissiveMap: tablet.texture, emissiveIntensity: 0.9, roughness: 0.75 });
   tabMat.name = 'tabletScreen';
+  await pause();
   {
     const g = tool('tablet', -425, 0, 100, 22);
     const b = new Builder();
@@ -331,6 +341,7 @@ export function buildBench(): BenchModel {
     pen.build(g, 'stylus');
   }
 
+  await pause();
   // ---- the camera: an invented body with a brass top plate, a lens, a spare lens and a cap -------------
   const lens = (b: Builder, M: THREE.Matrix4) => {
     b.add(lathe([[30, 0], [31.5, 2], [31.5, 14], [34, 16], [34, 44], [35.5, 46], [35.5, 58], [33.5, 60], [33.5, 78], [36, 80], [38, 92], [38, 99], [36.2, 100], [35.6, 96.5], [32, 96], [31, 91], [27.6, 89]], 96), caseDark, M);
@@ -349,6 +360,7 @@ export function buildBench(): BenchModel {
     b.add(new THREE.SphereGeometry(30, 40, 12, 0, Math.PI * 2, 0, th2), lensGlass, xf({ p: [0, 72 - 30 * Math.cos(th2), 0] }).premultiply(M));
     for (let i = 0; i < 9; i++) { const a = (i / 9) * Math.PI * 2; b.add(rbox(9, 0.4, 5, 0.2), caseDark, xf({ p: [Math.sin(a) * 9, 66, Math.cos(a) * 9], r: [0.2, a, 0] }).premultiply(M), { shadow: false }); }
   };
+  await pause();
   {
     const g = tool('camera', 492, 3, 96, -36);
     const b = new Builder();
@@ -378,10 +390,12 @@ export function buildBench(): BenchModel {
     lens(b, xf({ p: [6, 33, 23], r: [Math.PI / 2, 0, 0] }));
     for (const x of [-64, 64]) b.add(new THREE.TorusGeometry(4, 1, 8, 24), steel, xf({ p: [x, 62, 0], r: [0, Math.PI / 2, 0] }));
     b.build(g, 'camera');
+    await pause();
     const spare = tool('lens', 612, 0, -116);
     const sb = new Builder();
     lens(sb, new THREE.Matrix4());
     sb.build(spare, 'lens');
+    await pause();
     const cap = tool('cap', 404, 3, 236);
     const cb = new Builder();
     cb.add(cyl(39, 5.5, 72), caseDark, at(0, 2.75, 0));
@@ -390,6 +404,7 @@ export function buildBench(): BenchModel {
     cb.build(cap, 'cap');
   }
 
+  await pause();
   // ---- the brass lamp: weighted base, two arm sections with knuckles, a cone shade with a rolled rim ------
   {
     const g = tool('lamp', -612, 0, -212);
@@ -426,6 +441,7 @@ export function buildBench(): BenchModel {
     cb.build(g, 'cord');
   }
 
+  await pause();
   // ---- the water on the desk: it falls in from above, lands on the front left corner, runs the front edge as a
   // sheet over the brass inlay, and pours off the front right corner ------------------------------------------
   const G = 2600, VRUN = 240, LIFTIN = 2400;
@@ -436,6 +452,7 @@ export function buildBench(): BenchModel {
   const waterFall = waterMaterial(0.52, true);
   const water = [waterRun, waterFall];
   let s = 0, f = 0;
+  await pause();
   {
     // The arriving fall: straight down onto the corner.
     const rows: WaterRow[] = [];
@@ -447,6 +464,7 @@ export function buildBench(): BenchModel {
     root.add(fm);
   }
   const sLand = s;
+  await pause();
   {
     // The sheet along the front edge: widest just after the landing, settling to a steady run.
     const rows: WaterRow[] = [];
@@ -461,6 +479,7 @@ export function buildBench(): BenchModel {
     root.add(rm);
   }
   const sPour = s;
+  await pause();
   {
     // Over the corner and down: it leaves along the edge, then falls free past the leg and out of frame.
     const rows: WaterRow[] = [];

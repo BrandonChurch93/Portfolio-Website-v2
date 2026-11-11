@@ -82,6 +82,7 @@ export const site = {
   // What a shared link shows beside the site's image.
   share: { alt: 'A floating city of brass and ivory towers at night, golden water pouring off the rim of its disc.' },
 
+  // Source: kit/05-CONTENT.md drafts; page lines from the rooms and the not found draft.
   meta: {
     home: { title: 'Designer and engineer', description: 'Brandon Church builds things he wants to exist. A floating city, brass plates and golden water, all made in code.' },
     work: { title: 'Work', description: 'Every project, each with the reason it was built.' },
@@ -96,6 +97,7 @@ export const site = {
     lab: { title: 'Lab', description: 'A test bench for one part of the site.' },
   } satisfies Record<string, PageMeta>,
 
+  // Source: written for the site (interface words), in the kit 01 voice.
   ui: {
     skip: 'Skip to content',
     navLabel: 'Main',
@@ -120,6 +122,7 @@ export const site = {
     externalHint: 'opens in a new tab',
   },
 
+  // Source: kit/05-CONTENT.md hero draft; the city description is the piece itself.
   hero: {
     headline: 'I build things I\u00a0want to exist.',
     sub: "I'm Brandon. Equal parts designer and engineer. I like making things that help people, and I usually start because something looks fun to try.",
@@ -127,6 +130,7 @@ export const site = {
     cityAlt: 'A floating round city of the future, with a central spire, towers, parks and canals of golden water pouring off its rim.',
   },
 
+  // Source: headings from the kit 05 draft; each project notes its own source below.
   work: {
     heading: 'Things I built',
     sub: "A few I'm proud of. Each one started with a reason.",
@@ -137,6 +141,7 @@ export const site = {
     link: 'Everything else',
     projects: [
       {
+        // Source: kit 05 draft only (not on the old site, so no image or link; the stack is the draft's facts).
         slug: 'pc-builder',
         name: 'PC Builder',
         why: 'I wanted to build a gaming PC without buying one.',
@@ -147,6 +152,7 @@ export const site = {
         links: [],
       },
       {
+        // Source: why and facts from the kit 05 draft; body, stack and link from the old site, app/data/projects.js.
         slug: 'design-system-extractor',
         name: 'Design System Extractor',
         why: 'I kept copying design systems out of websites by hand. So I made something that does it.',
@@ -163,6 +169,7 @@ export const site = {
         links: [{ label: 'Code', href: `${GITHUB}/design-system-extractor` }],
       },
       {
+        // Source: kit 05 draft only (not on the old site, so no image or link; the stack is the draft's facts).
         slug: 'red-team-arena',
         name: 'Red Team Arena',
         why: 'Two AI models, one attacks and one defends. I wanted to watch.',
@@ -173,6 +180,7 @@ export const site = {
         links: [],
       },
       {
+        // Source: why and facts from the kit 05 draft; body, numbers, stack and links from the old site, app/data/projects.js and the résumé PDF.
         slug: 'ask-the-claude-docs',
         name: 'Ask the Claude Docs',
         why: 'A chatbot that shows its sources and its test scores. I wanted to know how good one could get if you measure it.',
@@ -192,6 +200,7 @@ export const site = {
         ],
       },
       {
+        // Source: the old site, app/data/projects.js.
         slug: 'proactive-ui-for-ai-glasses',
         name: 'Proactive UI for AI Glasses',
         why: 'An assistant on a screen waits to be asked. Glasses have to decide when to speak at all. This is a study of that decision.',
@@ -210,6 +219,7 @@ export const site = {
         ],
       },
       {
+        // Source: the old site, app/data/projects.js.
         slug: 'generative-ui-github',
         name: 'Generative UI · GitHub',
         why: 'Most generative interface demos let a model write the page. In this one the model picks the pieces and the code decides how they look.',
@@ -229,6 +239,7 @@ export const site = {
         ],
       },
       {
+        // Source: the old site, app/data/projects.js.
         slug: 'meridian',
         name: 'Meridian · Calibre 01',
         why: 'A working watch movement, built entirely in code. Every gear turns on real tooth counts.',
@@ -244,6 +255,7 @@ export const site = {
         links: [{ label: 'Live', href: 'https://meridian-calibre.vercel.app/' }],
       },
       {
+        // Source: the old site, app/data/projects.js.
         slug: 'hero-animation-builder',
         name: 'Hero Animation Builder',
         why: 'Design a hero animation, then watch it ship itself on a site.',
@@ -261,6 +273,7 @@ export const site = {
         ],
       },
       {
+        // Source: the old site, app/data/projects.js and the résumé PDF.
         slug: 'modern-softworks',
         name: 'Modern Softworks',
         why: 'The site for my studio. I built its design system from scratch, with no framework under it.',
@@ -275,6 +288,7 @@ export const site = {
         links: [{ label: 'Live', href: 'https://www.modernsoftworks.com' }],
       },
       {
+        // Source: the old site, app/data/projects.js.
         slug: 'micro-interactions-library',
         name: 'Micro-Interactions Library',
         why: 'Fifteen small interactions to copy and paste, with no animation library behind them.',
@@ -293,6 +307,7 @@ export const site = {
     ] satisfies Project[],
   },
 
+  // Source: the old site's résumé PDF (old-site/public/downloads), its experience section; bar and sub from the kit 05 draft.
   clients: {
     bar: 'CLIENT WORK',
     sub: 'Work I did for other people.',
@@ -308,6 +323,7 @@ export const site = {
     ] satisfies Client[],
   },
 
+  // Source: areas and notes from the kit 05 draft; tools from the résumé PDF SKILLS block and app/data/competencies.js; games tools from the competency tidbit.
   skills: {
     heading: 'What I work with',
     sub: 'And what I use it for.',
@@ -352,6 +368,7 @@ export const site = {
     ] satisfies SkillArea[],
   },
 
+  // Source: kit 05 draft.
   rooms: {
     heading: 'More rooms',
     doors: [
@@ -361,6 +378,7 @@ export const site = {
     ] satisfies Door[],
   },
 
+  // Source: kit 05 draft; the note describes the piece on the page. No games on the old site.
   games: {
     heading: 'Games',
     sub: 'Small games and game art, made for fun.',
@@ -369,6 +387,7 @@ export const site = {
     items: [] as { name: string; line: string }[],
   },
 
+  // Source: kit 05 draft. No photographs on the old site.
   photography: {
     heading: 'Photography',
     sub: 'Portraits, mostly.',
@@ -377,6 +396,7 @@ export const site = {
     sets: [] as { name: string; photos: MediaRef[] }[],
   },
 
+  // Source: kit 05 draft; the note describes the pieces on the site.
   art3d: {
     heading: '3D art',
     sub: 'Models and scenes.',
@@ -385,6 +405,7 @@ export const site = {
     items: [] as { name: string; line: string }[],
   },
 
+  // Source: kit 05 letter draft; portrait from the old site, images/headshot2.jpg, chosen by Brandon.
   about: {
     heading: 'About',
     letter: [
@@ -397,6 +418,7 @@ export const site = {
     portrait: { id: 'portrait', alt: 'Brandon Church in warm amber light, looking off to the side' } satisfies MediaRef,
   },
 
+  // Source: kit 05 draft; links from the old site's Footer.jsx and ContactSection.jsx.
   contact: {
     heading: 'Find me',
     line: 'If you want to talk, these are the places.',
@@ -410,6 +432,7 @@ export const site = {
     rocketAlt: 'A rocket on a launch pad with a gantry, over a shallow pool of golden water.',
   },
 
+  // Source: the old site's résumé PDF, read in full, set as text; the file is that PDF.
   resume: {
     heading: 'Resume',
     file: '/media/brandon-church-resume.pdf',
@@ -498,16 +521,19 @@ export const site = {
     education: 'Associate of Science, Computer Programming · Augusta Technical College · Augusta, GA',
   },
 
+  // Source: kit 05 draft.
   notFound: {
     line: 'This page is not here. The water still runs.',
     back: 'Back home',
   },
 
+  // Source: kit 05 footer draft.
   footer: {
     line: 'Everything on this site is code, including the city and the water.',
   },
 
   // Words drawn onto the 3D pieces: on screens, keys and engraved parts.
+  // Source: written for the pieces; no real names, brands or facts.
   pieces: {
     workbench: {
       tabs: ['city.ts', 'water.ts', 'stage.ts'],
@@ -571,6 +597,7 @@ export const site = {
     },
   },
 
+  // Source: written for the lab benches.
   lab: {
     moves: { body: 'The body', run: 'Run', fall: 'Fall', land: 'Land', cling: 'Cling', pour: 'Pour', split: 'Split', frame: 'Frame', light: 'Light on metal', pool: 'Pool' },
     metal: 'Metal',

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { SiteLink } from '../../../components/SiteLink';
 import { notFound } from 'next/navigation';
 import { OG_IMAGE, ROUTES, SITE_NAME } from '../../../config/site';
 import { projectBySlug, projects, site } from '../../../content/site';
@@ -38,7 +38,7 @@ export default async function ProjectPage({ params }: Props) {
       <article className={page.wrap} data-water-column="">
         <header className={styles.head} data-water-avoid="">
           <p className={page.eyebrow}>
-            <Link href={ROUTES.work} className={styles.back}>{site.ui.allWork}</Link>
+            <SiteLink href={ROUTES.work} className={styles.back}>{site.ui.allWork}</SiteLink>
           </p>
           <h1 className={page.title}>{p.name}</h1>
           <ul className={styles.facts}>
@@ -82,8 +82,8 @@ export default async function ProjectPage({ params }: Props) {
           </aside>
         </div>
         <nav className={styles.pager} aria-label={site.ui.allWork}>
-          {prev ? <Link href={ROUTES.project(prev.slug)} className={styles.pagerLink} data-dir="prev"><span>{site.ui.prevProject}</span>{prev.name}</Link> : <span />}
-          {next ? <Link href={ROUTES.project(next.slug)} className={styles.pagerLink} data-dir="next"><span>{site.ui.nextProject}</span>{next.name}</Link> : <span />}
+          {prev ? <SiteLink href={ROUTES.project(prev.slug)} className={styles.pagerLink} data-dir="prev"><span>{site.ui.prevProject}</span>{prev.name}</SiteLink> : <span />}
+          {next ? <SiteLink href={ROUTES.project(next.slug)} className={styles.pagerLink} data-dir="next"><span>{site.ui.nextProject}</span>{next.name}</SiteLink> : <span />}
         </nav>
       </article>
     </main>

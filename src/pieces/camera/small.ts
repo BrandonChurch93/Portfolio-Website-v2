@@ -7,7 +7,7 @@ import { CAM, IRIS, buildCamera, setIris } from './model';
 // The camera at rest for a door on the home page: on its tripod on the paper sweep, the iris set, the lamp moving.
 export const createSmall: SmallFactory = async (renderer) => {
   RectAreaLightUniformsLib.init();
-  const m = buildCamera();
+  const m = await buildCamera();
   const scene = new THREE.Scene();
   const env = smallEnvironment(renderer);
   scene.environment = env.texture;

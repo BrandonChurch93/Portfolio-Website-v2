@@ -186,7 +186,7 @@ export function createCity(): Piece {
       h.appendChild(canvas);
       if (!areaLib) { RectAreaLightUniformsLib.init(); areaLib = true; }
       stage = new Stage(h, canvas, { tier: opts.tier, fov: 32, near: 0.05, far: 12, bloom: { strength: 0.24, threshold: 1.8, radius: 0.22 }, ao: 0.016, aoIntensity: 1.0, envIntensity: 0.06, lampTarget: [0, 0.12, 0], lampAngle: 1.2 });
-      model = buildCity();
+      model = await buildCity();
       const s = stage.scene;
       // The page's own dark behind the city, and fog to the same dark far off, so the ground has no horizon line.
       s.background = new THREE.Color(COLORS.bg);
@@ -207,7 +207,7 @@ export function createCity(): Piece {
       // Compile every program now, with everything shown, so nothing compiles mid-opening.
       const hidden: THREE.Object3D[] = [];
       s.traverse((ob) => { if (!ob.visible) { hidden.push(ob); ob.visible = true; } });
-      await stage.renderer.compileAsync(s, stage.camera);
+      await stage.warm();
       stage.render();
       for (const ob of hidden) ob.visible = false;
       apply();

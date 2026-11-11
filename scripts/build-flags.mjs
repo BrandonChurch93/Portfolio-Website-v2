@@ -17,8 +17,9 @@ for (const a of args) {
   if (!m || !SWITCHES.includes(m[1])) { console.error(`build-flags: ${a} is not one of ${SWITCHES.map((s) => `${s}=true|false`).join(', ')}`); process.exit(1); }
   env[`SITE_${m[1]}`] = m[2];
 }
-fs.rmSync('out-flags', { recursive: true, force: true });
+fs.rmSync('out-flags', { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 const run = spawnSync(process.execPath, ['node_modules/next/dist/bin/next', 'build'], { stdio: 'inherit', env });
 if (run.status !== 0) process.exit(run.status ?? 1);
 if (!fs.existsSync('out-flags/index.html')) { console.error('build-flags: out-flags/index.html is missing'); process.exit(1); }
+fs.writeFileSync('out-flags/flags.json', JSON.stringify(Object.fromEntries(args.map((x) => x.split('=')).map(([k, v]) => [k, v === 'true']))));
 console.log(`build-flags: out-flags/ built with ${args.join(' ')}`);

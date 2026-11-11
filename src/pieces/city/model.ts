@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Builder, at, cyl, fin, interp, lathe, loft, rbox, ring, seeded, slab, wall, xf, type Section } from '../../world/build';
+import { Builder, pause, at, cyl, fin, interp, lathe, loft, rbox, ring, seeded, slab, wall, xf, type Section } from '../../world/build';
 import { COLORS } from '../../config/site';
 import { interiorMaterial } from '../../world/interior';
 import { panelize } from '../../world/panels';
@@ -229,7 +229,7 @@ function strip(rows: Row[], across: number): THREE.BufferGeometry {
   return g;
 }
 
-export function buildCity(): CityModel {
+export async function buildCity(): Promise<CityModel> {
   const r = seeded(20261110);
   const root = new THREE.Group();
   root.scale.setScalar(CITY.SCALE);
@@ -240,6 +240,7 @@ export function buildCity(): CityModel {
   const rooms: THREE.MeshStandardMaterial[] = [];
   let tris = 0;
 
+  await pause();
   // ---- materials ---------------------------------------------------------------------------------
   const P = (o: THREE.MeshPhysicalMaterialParameters, name: string) => { const m = new THREE.MeshPhysicalMaterial(o); m.name = name; return m; };
   const ivory = panelize(P({ color: 0xd9ceba, roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.3 }, 'ivory'), { scale: CITY.SCALE, size: [16, 10], depth: 0.3 });
@@ -282,6 +283,7 @@ export function buildCity(): CityModel {
   };
   let facadeSeed = 1;
 
+  await pause();
   // ---- the disc and its terraces ---------------------------------------------------------------------
   const base = new Builder();
   base.add(ring(0, 104, L3, 96), plazaM, undefined, { uv: 'box', tile: 1 });
@@ -321,6 +323,7 @@ export function buildCity(): CityModel {
   base.build(baseGroup, 'base');
   tris += base.tris;
 
+  await pause();
   // ---- light water: the moat, five canals with cascades, falls off the rim --------------------------------
   const water: THREE.ShaderMaterial[] = [];
   const canalM = waterMaterial(0.8);
@@ -377,6 +380,7 @@ export function buildCity(): CityModel {
     b.build(canalGroup, `canal${ci}`);
     tris += b.tris;
   });
+  await pause();
   // From the front pool a shallow run of light-water flows over the ground toward the viewer and out of the first
   // screen: where it leaves the hero, the page's own stream takes over.
   {
@@ -391,6 +395,7 @@ export function buildCity(): CityModel {
     m.userData.noWire = true;
     root.add(m);
   }
+  await pause();
   // The moat round the spire.
   {
     // The moat fills before the canals: its distances run up to 0, where the canals start.
@@ -412,6 +417,7 @@ export function buildCity(): CityModel {
   const deckFolk: [number, number, number][] = [];
   const roofTrees: [number, number, number][] = [];
 
+  await pause();
   // ---- buildings ------------------------------------------------------------------------------------
   const building = (name: string, t0: number, dur = 1.1) => {
     const g = new THREE.Group();
@@ -445,6 +451,7 @@ export function buildCity(): CityModel {
     b.add(new THREE.SphereGeometry(1.1, 10, 8), beacon, at(cx, y + h + 1, cz), { shadow: false });
   };
 
+  await pause();
   // The spire: ribbed glass shaft, five swept ivory blades with brass edges, a rotunda, a ring deck, a lens lantern,
   // a needle. About as tall as the disc is wide, as in the reference.
   {
@@ -520,6 +527,7 @@ export function buildCity(): CityModel {
     S.done(L3 + N0 + 132);
   }
 
+  await pause();
   // Six large structures that differ in shape, between the canals on the middle terrace.
   // 1 · the twisted tower: each floor plate turned a little more.
   {
@@ -535,6 +543,7 @@ export function buildCity(): CityModel {
     facade(B.b, [{ y: L2, rx: 30, rz: 22, n: 3 }, { y: L2 + 16, rx: 30, rz: 22, n: 3 }], { bays: 24, floor: 16, rooms: roomsM(22, 0.85, 0.9), frame: ivory, cx, cz });
     B.done(L2 + H + 46);
   }
+  await pause();
   // 2 · the stepped tower: three setbacks with garden ledges.
   {
     const [cx, cz] = pol(200, -40), B = building('stepped', 2.75, 1.3);
@@ -550,6 +559,7 @@ export function buildCity(): CityModel {
     roofTrees.push([cx + 7, L2 + 332, cz + 3], [cx - 6, L2 + 332, cz - 4], [cx + 1, L2 + 332, cz - 7]);
     B.done(L2 + 375);
   }
+  await pause();
   // 3 · the lens tower: an ellipsoid of glass on a slim neck.
   {
     const [cx, cz] = pol(196, 112), B = building('lens', 2.9, 1.3);
@@ -564,6 +574,7 @@ export function buildCity(): CityModel {
     B.b.add(cyl(0.5, 12, 6), brass, at(cx, L2 + NECK + BODY + 11, cz));
     B.done(L2 + NECK + BODY + 28);
   }
+  await pause();
   // 4 · the drums: offset cylinders stacked with lit gaps between.
   {
     const [cx, cz] = pol(198, -112), B = building('drums', 3.05, 1.3);
@@ -580,6 +591,7 @@ export function buildCity(): CityModel {
     B.b.add(new THREE.SphereGeometry(1, 10, 8), beacon, at(cx + 2, L2 + 305, cz + 2), { shadow: false });
     B.done(L2 + 306);
   }
+  await pause();
   // 5 · the twin gates: two slim square towers joined by two glass sky bridges, astride the back canal.
   {
     const B = building('gates', 3.2, 1.3);
@@ -607,6 +619,7 @@ export function buildCity(): CityModel {
     }
     B.done(L2 + H + 12);
   }
+  await pause();
   // 6 · the forum: a ribbed dome on a colonnade, by the main canal on the plaza's edge.
   {
     const [cx, cz] = pol(130, -22), B = building('forum', 2.45, 0.9);
@@ -621,6 +634,7 @@ export function buildCity(): CityModel {
     B.b.add(cyl(5, 2, 32), glowWarm, at(cx, L2 + 39, cz), { shadow: false });
     B.done(L2 + 42);
   }
+  await pause();
   // 7 · the ring house: a saucer of rooms on a stalk.
   {
     const [cx, cz] = pol(150, 82), B = building('ring', 3.35, 1.2);
@@ -637,6 +651,7 @@ export function buildCity(): CityModel {
     B.done(L2 + Y + 22);
   }
 
+  await pause();
   // Mid-rise balcony towers on the middle terrace: every floor a balcony whose edge swells and recedes up the
   // tower, so the outline ripples. They step the skyline down from the towers toward the rim.
   {
@@ -654,6 +669,7 @@ export function buildCity(): CityModel {
     });
     B.done(L2 + 140);
   }
+  await pause();
   // Transit stations under the ring train's track on the boulevard ring: curved halls with glass faces and a
   // ribbed brass roof, one per sector.
   {
@@ -670,6 +686,7 @@ export function buildCity(): CityModel {
     B.done(L1 + 14);
   }
 
+  await pause();
   // The outer lawn ring: one landmark in the middle of each sector, terraced blocks either side of it.
   {
     const B = building('outer', 1.9, 1.1);
@@ -783,6 +800,7 @@ export function buildCity(): CityModel {
     B.done(110);
   }
 
+  await pause();
   // ---- parks: trees in three species, people, lamps --------------------------------------------------
   const folk = new THREE.Group();
   city.add(folk);
@@ -831,6 +849,7 @@ export function buildCity(): CityModel {
     for (const mm of [im, tm]) { mm.castShadow = true; mm.receiveShadow = true; folk.add(mm); }
     tris += (vg.leaf.getAttribute('position').count / 3 + vg.bark.getAttribute('position').count / 3) * spots.length;
   });
+  await pause();
   // People: standing on the plaza and the promenade, in small groups.
   {
     const pm = person(0);
@@ -852,6 +871,7 @@ export function buildCity(): CityModel {
     im.castShadow = true;
     folk.add(im);
   }
+  await pause();
   // Footpaths on the lawn: a ring between the tree lines and radial paths from the boulevard to the promenade.
   {
     const b = new Builder();
@@ -873,6 +893,7 @@ export function buildCity(): CityModel {
     sim.castShadow = true; sim.receiveShadow = true;
     folk.add(sim);
   }
+  await pause();
   // Lamps along the promenade.
   {
     const b = new Builder();
@@ -880,6 +901,7 @@ export function buildCity(): CityModel {
     b.build(folk, 'lamps');
   }
 
+  await pause();
   // ---- traffic: a ring train, pods on guideways, craft in the air, walkers ---------------------------
   // The ring train runs clockwise on an elevated track over the boulevard.
   {
@@ -907,6 +929,7 @@ export function buildCity(): CityModel {
       im.instanceMatrix.needsUpdate = true;
     } });
   }
+  await pause();
   // Pods on four radial guideways, going in and out.
   {
     const b = new Builder();
@@ -943,6 +966,7 @@ export function buildCity(): CityModel {
       im.instanceMatrix.needsUpdate = true;
     } });
   }
+  await pause();
   // Craft in the air: two loops at two heights, one each way, each craft with a warm running light.
   {
     const body = new THREE.SphereGeometry(1, 24, 14); body.scale(4.2, 1.5, 9);
@@ -976,6 +1000,7 @@ export function buildCity(): CityModel {
       im.instanceMatrix.needsUpdate = true;
     } });
   }
+  await pause();
   // Walkers on the promenade, both ways.
   {
     const im = new THREE.InstancedMesh(person(1), new THREE.MeshStandardMaterial({ color: 0xd9cbb4, roughness: 0.7, vertexColors: true }), 36);
@@ -995,6 +1020,7 @@ export function buildCity(): CityModel {
     } });
   }
 
+  await pause();
   // ---- the slab under the city, with its grid and the pools where the falls land -----------------------
   // The slab fades into the page with distance, so it has no edge and no horizon line.
   const slabG = new THREE.CircleGeometry(4000, 128); slabG.rotateX(-Math.PI / 2);

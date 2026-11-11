@@ -161,7 +161,7 @@ export function createCamera(): Piece {
       if (!areaLib) { RectAreaLightUniformsLib.init(); areaLib = true; }
       await Promise.all(['600 20px "Sora Variable"', '600 20px "JetBrains Mono Variable"'].map((f) => document.fonts.load(f).catch(() => null)));
       stage = new Stage(h, canvas, { tier: opts.tier, fov: 26, near: 0.02, far: 6, env: 'studio', envIntensity: ENV, exposure: 1.3, bloom: { strength: 0.06, threshold: 2.2, radius: 0.12 }, ao: 0.006, aoIntensity: 1, lampTarget: [0, -0.02, 0], lampAngle: 0.9 });
-      model = buildCamera();
+      model = await buildCamera();
       stage.wireDensity = 0.5;
       stage.wireEdges = 7;
       const s = stage.scene;
@@ -199,7 +199,7 @@ export function createCamera(): Piece {
       pending = opts.entrance && !clock.isFrozen();
       frameOpt = { shift: opts.frame?.shift ?? 0, scale: opts.frame?.scale ?? 1, x: opts.frame?.x ?? 0 };
       apply();
-      await stage.renderer.compileAsync(s, stage.camera);
+      await stage.warm();
       stage.render();
       ro = new ResizeObserver(() => { stage?.resize(); frame(true); });
       ro.observe(h);
