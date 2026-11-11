@@ -17,6 +17,10 @@ const pieces = new Map<string, PieceHandle>();
 let water: WaterHandle | null = null;
 let opening: ((t: number) => void) | null = null;
 const pending = new Set<Promise<unknown>>();
+const freezers = new Set<(t: number | null) => Promise<void> | void>();
+
+// Numbers the site measures about itself (milliseconds), read by tests and by scripts/measure.mjs.
+export const stats: Record<string, number> = {};
 
 export const registry = {
   piece(name: string, handle: PieceHandle | null): void {
@@ -37,6 +41,17 @@ export const registry = {
   },
   getOpening(): ((t: number) => void) | null {
     return opening;
+  },
+  // Things with a clock of their own (video) follow freeze(t) through these.
+  onFreeze(fn: (t: number | null) => Promise<void> | void): () => void {
+    freezers.add(fn);
+    return () => freezers.delete(fn);
+  },
+  freezeAll(t: number | null): void {
+    for (const fn of freezers) {
+      const r = fn(t);
+      if (r) registry.track(r);
+    }
   },
   // Anything still loading (a picture, a piece, a shader) is tracked here, and settle() waits for all of it.
   track<T>(p: Promise<T>): Promise<T> {

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { site } from '../../content/site';
+import { MetalLink } from '../../components/MetalLink';
 import page from '../../components/Page.module.css';
 import styles from './resume.module.css';
 
@@ -15,7 +16,7 @@ export default function Resume() {
           <h1 className={page.title}>{r.name}</h1>
           <p className={styles.titles}>{r.titles}</p>
           <p className={styles.place}>{r.place}</p>
-          <a href={r.file} className={page.more} download>{site.ui.resumeDownload}</a>
+          <MetalLink href={r.file} label={site.ui.resumeDownload} finish="aged" download />
         </header>
         <p className={styles.summary}>{r.summary}</p>
 

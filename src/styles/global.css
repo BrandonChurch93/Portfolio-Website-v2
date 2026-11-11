@@ -114,6 +114,14 @@ button {
   border: 0;
 }
 
+/* Test hooks on: CSS transitions do not read the one clock, so they are off and a frozen page is truly frozen. */
+html[data-hook='1'] *,
+html[data-hook='1'] *::before,
+html[data-hook='1'] *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

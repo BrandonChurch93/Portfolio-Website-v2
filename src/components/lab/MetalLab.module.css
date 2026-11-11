@@ -1,0 +1,71 @@
+.lab {
+  display: grid;
+  gap: 0;
+}
+
+.spec {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-8) 0;
+}
+
+.plate {
+  width: min(100%, 42rem);
+}
+
+.windowPlate {
+  width: min(100%, 62rem);
+  aspect-ratio: 960 / 440;
+}
+
+.textRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 18rem));
+  gap: var(--space-7);
+}
+
+.placardSmall {
+  width: 100%;
+}
+
+.bar {
+  width: min(100%, 72rem);
+}
+
+.trio {
+  width: min(100%, 72rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 3rem);
+}
+
+.eight {
+  width: min(100%, 80rem);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  justify-content: center;
+}
+
+.control {
+  width: 15rem;
+}
+
+@media (max-width: 820px) {
+  .windowPlate {
+    aspect-ratio: 4 / 4.6;
+  }
+
+  .textRow,
+  .trio {
+    grid-template-columns: 1fr;
+    width: min(100%, 22rem);
+  }
+}

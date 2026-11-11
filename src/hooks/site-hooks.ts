@@ -2,7 +2,7 @@ import { HOOK_PARAM, SETTLE, TIERS, type Tier } from '../config/site';
 import { lamp } from '../lamp/lamp';
 import { clock } from '../world/clock';
 import { tiers } from '../world/tier';
-import { registry, type PieceHandle } from './registry';
+import { registry, stats, type PieceHandle } from './registry';
 
 export interface SiteHooks {
   settle(): Promise<true>;
@@ -13,7 +13,7 @@ export interface SiteHooks {
   opening(t: number): void;
   water: { head(v: number | string): void; move(name: string, t: number): void };
   piece(name: string): PieceHandle;
-  info(): { tier: Tier; frozen: boolean; time: number; scrollY: number; probeMs: number | null; lamp: { x: number; y: number } };
+  info(): { tier: Tier; frozen: boolean; time: number; scrollY: number; probeMs: number | null; lamp: { x: number; y: number }; stats: Record<string, number> };
 }
 
 declare global {
@@ -63,21 +63,28 @@ export function installHooks(): void {
     settle,
     freeze(t) {
       clock.freeze(t);
+      registry.freezeAll(t);
     },
     lamp(x, y) {
       lamp.force({ x, y });
     },
+    // Settles first, so late layout cannot move the target after the jump; lands on a whole pixel; checks once more.
     async scrollTo(idOrY) {
-      let y = 0;
-      if (typeof idOrY === 'number') y = idOrY;
-      else {
+      await settle();
+      const target = () => {
+        if (typeof idOrY === 'number') return Math.round(idOrY);
         const el = document.getElementById(idOrY);
         if (!el) throw new Error(`scrollTo: no element with id ${idOrY}`);
-        y = el.getBoundingClientRect().top + scrollY;
+        return Math.round(el.getBoundingClientRect().top + scrollY);
+      };
+      for (let i = 0; i < 3; i++) {
+        const y = target();
+        if (Math.abs(scrollY - y) < 0.5 && i > 0) break;
+        window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+        dispatchEvent(new Event('scroll'));
+        await settle();
       }
-      window.scrollTo({ top: y, left: 0, behavior: 'instant' });
-      dispatchEvent(new Event('scroll'));
-      return settle();
+      return true;
     },
     tier(name) {
       if (name !== null && !TIERS.includes(name)) throw new Error(`tier: ${name} is not one of ${TIERS.join(', ')}`);
@@ -106,7 +113,7 @@ export function installHooks(): void {
     },
     info() {
       const l = lamp.get();
-      return { tier: tiers.get(), frozen: clock.isFrozen(), time: clock.now(), scrollY, probeMs: tiers.probeMs, lamp: { x: l.x, y: l.y } };
+      return { tier: tiers.get(), frozen: clock.isFrozen(), time: clock.now(), scrollY, probeMs: tiers.probeMs, lamp: { x: l.x, y: l.y }, stats: { ...stats } };
     },
   };
 }

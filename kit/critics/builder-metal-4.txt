@@ -1,0 +1,23 @@
+metal/aged-lamp-1 | PASS | - | Aged brass: lit band from the studio key, darker tarnished rim and rivet surrounds, gold highlight following the lamp, crisp enamel words throughout.
+metal/aged-lamp-2 | PASS | - | Aged brass: lit band from the studio key, darker tarnished rim and rivet surrounds, gold highlight following the lamp, crisp enamel words throughout.
+metal/aged-lamp-3 | PASS | - | Aged brass: lit band from the studio key, darker tarnished rim and rivet surrounds, gold highlight following the lamp, crisp enamel words throughout.
+metal/polished-lamp-1 | PASS | - | Polished brass: tight gold highlight under the lamp, a soft room reflection, a scattered light floor keeps every word readable, slotted screws outside the border.
+metal/polished-lamp-2 | PASS | - | Polished brass: smooth gold highlight under the lamp with no clipped plateau, key and bounce reflections give form, slotted screws and border crisp.
+metal/polished-lamp-3 | PASS | - | Polished brass: smooth gold highlight under the lamp with no clipped plateau, key and bounce reflections give form, slotted screws and border crisp.
+metal/bronze-lamp-1 | PASS | - | Dark brown bronze, not copper, with flush brass inlay; warm brushed sheen follows the lamp; inlay and small labels legible at every lamp position.
+metal/bronze-lamp-2 | PASS | - | Dark brown bronze, not copper, with flush brass inlay; warm brushed sheen follows the lamp; inlay and small labels legible at every lamp position.
+metal/bronze-lamp-3 | PASS | - | Dark brown bronze, not copper, with flush brass inlay; warm brushed sheen follows the lamp; inlay and small labels legible at every lamp position.
+metal/panel-lamp-1 | PASS | - | Brushed brass frame with streak highlights, bead blasted sunk panel, raised brass letters with flat tops and crisp rims, small labels readable.
+metal/panel-lamp-2 | PASS | - | Brushed brass frame with streak highlights, bead blasted sunk panel, raised brass letters with flat tops and crisp rims, small labels readable.
+metal/panel-lamp-3 | PASS | - | Brushed brass frame with streak highlights, bead blasted sunk panel, raised brass letters with flat tops and crisp rims, small labels readable.
+metal/window-lamp-1 | PASS | - | A watch render under glass in a recessed window with a raised lip; the rim shadow moves from the top left to the bottom left with the lamp; soft warm glare; rivets clear of the lip; nothing cut at the window edges.
+metal/window-lamp-2 | PASS | - | A watch render under glass in a recessed window with a raised lip; the rim shadow moves from the top left to the bottom left with the lamp; soft warm glare; rivets clear of the lip; nothing cut at the window edges.
+metal/window-lamp-3 | PASS | - | A watch render under glass in a recessed window with a raised lip; the rim shadow moves from the top left to the bottom left with the lamp; soft warm glare; rivets clear of the lip; nothing cut at the window edges.
+metal/text-1x | PASS | - | Pixel ratio 1: shallower cut at this density keeps strokes single; body text, mono labels and dates read clearly; four fasteners per placard.
+metal/text-2x | PASS | - | Pixel ratio 2: sharp engraving with visible lips, balanced placard text, no orphans.
+metal/window-video | PASS | - | Recorded plate fills most of the window under glass with a warm glare; frame repeatable when frozen.
+metal/bar | PASS | - | Polished header bar, spaced engraved words, slotted screws, highlight follows the lamp.
+metal/placard | PASS | - | Three placards in polished, bronze and panel: balanced text, four fasteners on the polished one, all words readable.
+metal/controls | PASS | - | Three brass controls with domed brushed faces and enamel words, readable at any lamp position.
+metal/phone | PASS | - | Phone at 3x: crisp words, the window stacked above the words shows the watch cleanly, rivets clear of text and lip.
+metal/lamp-strip | PASS | - | Eight frames: the highlight moves across the plate with the lamp, smooth and continuous, staying gold.

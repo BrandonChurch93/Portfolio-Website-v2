@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import { ROUTES } from '../config/site';
 import { projectBySlug, site, type Project } from '../content/site';
 import { ContactLinks } from '../components/ContactLinks';
 import { Doors } from '../components/Doors';
 import { Ledger } from '../components/Ledger';
 import { Letter } from '../components/Letter';
+import { MetalLink } from '../components/MetalLink';
 import { Placards } from '../components/Placards';
 import { ProjectPlate } from '../components/ProjectPlate';
 import page from '../components/Page.module.css';
@@ -37,7 +37,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <Link href={ROUTES.work} className={page.more}>{site.work.link}</Link>
+          <MetalLink href={ROUTES.work} label={site.work.link} />
         </div>
       </section>
 

@@ -8,6 +8,18 @@
   -webkit-backdrop-filter: blur(6px);
 }
 
+/* A brass rule under the bar that catches the lamp where the cursor is. */
+.bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: radial-gradient(18rem 1px at var(--lamp-x) 50%, rgba(255, 196, 120, 0.75), rgba(212, 165, 116, 0.14) 60%, rgba(212, 165, 116, 0.08));
+  pointer-events: none;
+}
+
 .skip {
   position: absolute;
   left: var(--gut);
@@ -76,7 +88,7 @@
   right: var(--space-2);
   bottom: 0.7rem;
   height: 1px;
-  background: var(--amber);
+  background: linear-gradient(90deg, var(--accent), var(--amber), var(--accent));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--dur-2) var(--ease-settle);

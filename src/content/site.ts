@@ -512,6 +512,10 @@ export const site = {
       placardBig: 'Mortgage CRM',
       placardFacts: '2026',
       bar: 'CLIENT WORK',
+      windowLabel: '07 · MERIDIAN · CALIBRE 01',
+      windowFacts: 'NO IMPORTED MODELS · 60 TO 1 GEAR TRAIN',
+      videoLabel: 'THIS SITE',
+      videoFacts: 'RECORDED IN A BROWSER',
     },
   },
 } as const;

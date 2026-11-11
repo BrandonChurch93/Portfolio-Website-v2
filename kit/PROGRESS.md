@@ -1,4 +1,4 @@
-IN PROGRESS · Phase 2 · start
+IN PROGRESS · Phase 3 · start
 
 Replace the line above with `IN PROGRESS · Phase <n> · <step>` while working, `BLOCKED: <what, what you tried>` on a true blocker, and `BUILD COMPLETE` at the end.
 
@@ -8,9 +8,9 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 
 ## Where things stand
 
-- Phase: 2 Metal and the lamp
-- Step: start (re-read 07, 02 Metal and The lamp, the two reference pages)
-- Next action: research real time metal on the web, log it; then the plate renderer on /lab/metal
+- Phase: 3 The water
+- Step: start (re-read 03, 07, the two reference pages' water code)
+- Next action: research real time water and light trails, try two approaches for body and splash on /lab/water
 - Background tasks running (id, what): none
 - Files changed since the last commit: none
 
@@ -20,7 +20,7 @@ This file is the Builder's memory. Write in it like a lab notebook: what you did
 |---|---|---|---|
 | 0 | Setup | done | 2026-11-10, first commit "Phase 0 setup and harness" |
 | 1 | Foundations | done | 2026-11-11, commit "Phase 1 foundations" |
-| 2 | Metal and the lamp | | |
+| 2 | Metal and the lamp | done | 2026-11-11, commit "Phase 2 metal and the lamp" |
 | 3 | The water | | |
 | 4 | The city | | |
 | 5 | Selected work and client work | | |
@@ -48,6 +48,12 @@ One heading per gate, added as each passes: `### Gate <n>`, then each line of th
 - Hooks: `tests/e2e/hooks.spec.ts` proves no `window.__site` without ?hook=1; with it, the clock runs, `freeze(2.5)` holds exactly 2.5 for 400 ms and `freeze(null)` resumes from there; `lamp(0.2, 0.75)` puts the lamp exactly there; `scrollTo('clients')` lands the section at the top with no smooth scroll; `tier('low')` is reported and marked on the page; a frozen page screenshotted twice 500 ms apart is byte identical. Passed.
 - SHOW_3D_ART: `node scripts/build-flags.mjs SHOW_3D_ART=false` built out-flags/ with out/ untouched; `tests/e2e/flags.spec.ts` loads that build in a browser, waits for hooks and settle (so hydration is done), and finds no link to /3d-art/, no art door, no "3D art" in the nav, and /3d-art/ answers 404; the normal build still has all three. `src/config/site.ts` still reads true by default. Passed.
 - Visual check (peek, not gate shots): home at phone and 4K, a project page at desktop, the résumé at phone, all readable with real type and spacing.
+
+### Gate 2
+- `npm run typecheck` clean; `npm run build` from sources 35a978272675; `npm run test` 29 passed (adds the exact distance transform tests); `npm run check:copy` 0 problems (90 files, 30 pages); Chromium suite 146 passed.
+- Shots pass: `node scripts/check-shots.mjs metal` passed 23 of 23 (with ref, 27 of 27). Every metal shot had critic verdicts from three rounds (001 and 002, 003 and 004, 005 and 006); bar and text-2x got critic PASSes; the rest pass on my own PASS of the latest image after fixing every real fault named. Disputed and unfixed points are under For review.
+- Plate text is in the DOM, tested: `tests/e2e/metal.spec.ts` finds 20+ `[data-plate-text]` nodes holding each plate's label, words and facts, not hidden and not aria-hidden, and checks the plate on screen drew (canvas centre mean above 30 levels). Passed.
+- Frame time with eight plates on screen (/lab/metal #eight, eight placards plus the plates around it, lamp moved every frame so every visible plate redraws), Apple M4 Pro, ANGLE Metal, tier high, 1440x900 at pixel ratio 2: headed 597 frames, interval median 8.3 ms (120 Hz display), p95 9.6 ms, one worst frame 33.4 ms at start; plate renderer CPU a frame median 0.5 ms, p95 0.6 ms. Headless (vsync 60): median 16.7 ms, p95 16.7, worst 16.8; renderer CPU median 1.6 ms.
 
 ## Environment
 
@@ -153,6 +159,14 @@ One line each: the question, the choice, the rule from `kit/07-QUALITY-BAR.md` t
 - Lab pages are bare benches until their phase; the smoke test asks them for 3 characters of text, content pages for 20.
 - Old project "why" lines are written from what the old site says (its sublines and first sentences), never a motive it does not state. Rule 1 (no invented fact).
 - Résumé page: "twelve years" (the old site's About notes say Brandon ruled twelve and the PDF's eleven is stale); the PDF itself says eleven. Under For review.
+- Plates render at up to 2x device pixels on high and mid tiers and 1.5x on low, not at the 3D tier caps: their words must stay crisp on a 3x phone that measures mid, and a plate redraws only when something changes. Rule 1 (kit 07 Metal minimums: crisp text at 1x and 2x).
+- Plate geometry: the lamp sits at 0.42 of the larger of the viewport width and 0.8 of its height in front of the page, and its falloff scales with the larger side, so a narrow phone is lit like a desktop. Rule 2.
+- Enamel is satin (roughness 0.42, a small lamp sheen), not mirror, and its surface is flat over the cut: a glossy enamel washed the words out as the lamp passed. Rule 1 (the lamp never makes text harder to read).
+- Window plates are designed 960 wide (words at the same size as on a 640 plate); a window plate taller than 0.9 of its width stacks the window above the words. Mono lines shrink their letter spacing, then their size, to fit their column.
+- The metal/window-video shot plays `public/media/site-recording.mp4`: six seconds of the lamp sweeping a plate on /lab/metal, recorded by `scripts/record-site.mjs` with Playwright and encoded with ffmpeg (H.264, 578 KB). No project video exists (kit 05).
+- Harness "same image" tolerance widened in `scripts/shots.mjs` (not a gate script): a frozen plate flipped one pixel of 1.9 million by 17 levels between runs (GPU float noise), one level over the old limit, which threw its verdicts away. Later flips were traced to real causes and fixed, so the tolerance stays at that tight setting: (1) the GPU timing probe could drop the tier on a busy run, so the harness now pins the tier (high unless a shot names one); (2) the plate canvas faded in with a 0.9 s CSS transition, which does not read the one clock, so CSS transitions and animations are off whenever the test hooks are on; (3) plate seeds now hash the plate's words, and scrollTo settles before and after jumping. After these, the 23 metal shots retook identically three times in a row. Rule 4.
+- Plate seeds (scratch and patina placement) come from a hash of the plate's words and finish, not from mount order. `scrollTo` settles before jumping, lands on a whole pixel and corrects once.
+- Controls (MetalLink, buttons) use only polished or aged brass with enamel words: a bronze or panel control could fall below readable contrast away from the lamp, and a button must always be readable. Bronze and panel stay for larger plates in lists (kit 02). Rule 1 (the lamp never makes text harder to read).
 - Résumé page text leaves out the phone number; the PDF download carries it as Brandon made it. Rule 1 (kit 01: never add a phone number from anywhere else to contact).
 - The Ask the Claude Docs image is cropped above its bottom line, which shows a model version string. Rule 1 (kit 01: no model version strings).
 - Framework and model versions in the old site's project data ("Next.js 16", "React 19", model names with numbers) are written without the numbers in the content file. Rule 1.
@@ -172,6 +186,11 @@ Name, exact version, why.
 
 What you looked up, where, and what you took from it.
 
+- Phase 2, metal. Anisotropic GGX for brushed metal: glTF KHR_materials_anisotropy (tangent alpha raised, bitangent kept, separate D and V), Cesium pbrLighting.js `GGX_anisotropic` with anisotropic Smith visibility (Heitz), Unity HDRP `D_GGXAnisotropic`, Unreal BRDF.ush (Burley 2012). Took: brushed brass gets an anisotropic lobe with the tangent along the brushing, so the highlight stretches across the grain as on a real plaque; the reference faked brushing by jittering the normal, which reads as noise up close.
+- Phase 2, engraving. TextMesh Pro computes bevels from the glyph's signed distance field like a normal map; Mapbox tiny-sdf builds SDFs from Canvas 2D text with the Felzenszwalb and Huttenlocher distance transform and seeds edge pixels from antialiased coverage for sub-pixel accuracy. Took: paint the plate's words on a 2D canvas, turn coverage into a signed distance field (exact EDT, seeded by coverage), and build the engraving height from distance, so every cut has a crisp lip, a sloped wall and a flat floor at any size, instead of the reference's blurred 1 px mask (25 texture reads a pixel, soft small text).
+- Sources: https://wallabyway.github.io/Khronos-glTF-repo-GHPages-test/extensions/2.0/Khronos/KHR_materials_anisotropy , https://app.unpkg.com/@cesium/engine@26.1.0/files/Source/Shaders/Builtin/Functions/pbrLighting.js , https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.2/manual/ShadersDistanceField.html , https://npmjs.com/package/@mapbox/tiny-sdf , https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817
+- Plan for the plate renderer (src/metal/): one WebGL2 context, off the page. Per plate, once per size: paint the words and lines as coverage, distance transform in a worker, then a bake pass writes normal, height, cavity and material masks (brushed grain, patina, screws, the window lip all baked). Per frame only a light pass: anisotropic GGX from the lamp and the water, an analytic studio environment looked up with a view vector from a camera over the viewport center (so the reflection slides with scroll by real geometry, not a tilt fudge), enamel as glossy dielectric, the photo window with a visible wall, a lamp-cast rim shadow, contact darkening and glass glare. Result copied to the plate's own canvas. Shadows under plates are separate blurred layers moved by transform away from the lamp.
+
 ## Piece plans
 
 One heading per piece, written in phase 1 of that piece: parts list, the details that will sell it, the risks.
@@ -188,6 +207,8 @@ Every picture from `old-site/` or `incoming/` that the site uses: source path, w
 
 Things Brandon should look at first: faults a critic named that were not fixed and why, places where the result falls short of the bar and exactly how, choices he may want to reverse.
 
+- Metal critic points not acted on after three rounds (kit 07 allows my PASS to gate): (a) "the lamp highlight is a round blob, not stretched along the grain" on polished brass and the lamp strip: polished brass is meant to give a round highlight; the brushed finishes (aged, panel frame) do stretch it. (b) "engraved letters and rivets look the same at every lamp position": the cut walls are 1 to 2 device pixels and enamel filled, so their shading change is real but small at shot size; at 3x zoom it is visible. (c) "the panel's small labels look hollow": at 4x zoom they are solid flat tops with a rim (checked); at sheet size the rim reads as an outline. (d) "large plain bronze field": the bronze is meant to be quiet; it has a cast face and grain. Brandon may want a busier bronze.
+- The lab photo window uses the Meridian render, zoomed 1.45x around the movement; real site windows will use Brandon's new pictures, which can set focus and zoom per picture.
 - The résumé PDF says "over eleven years"; the résumé page and the old site's About say twelve, per his earlier ruling. The PDF needs updating on his side.
 - Client work placards are built from the résumé (Property Claim Consulting, USAID through Leidit, Genius AI, Jobvite, G2i, small businesses, federal audits). The old site had no client list. He may want a different set.
 - Calendly is left off contact (kit allows profile links and a public email only).
@@ -212,6 +233,8 @@ One line per item of `kit/09-QA-GAUNTLET.md`: the id, pass or fail, the evidence
 Newest last. Date and time, what was done, what is next.
 
 - 2026-11-10, session 1: Phase 0. Machine checked, git init, stack installed exact, configs by hand, Next static export facts verified, harness ported (serve, free-port, shot-rules, shots, strips, verdict, check-shots, critic-list, crop, sheet, imgdiff, stamp-build), ref shots taken and judged, gate proven both ways, old site imported and inventoried, references read and noted. Brandon confirmed the orange-background portrait mid-build. Next: Gate 0 commit, then Phase 1 foundations.
+- 2026-11-11, Phase 2 done: plate renderer (exact SDF engraving baked per plate in a worker, anisotropic GGX lamp and water light, studio room reflection, patina, scratches, screws and rivets, photo and video windows with lamp cast rim shadow and glare), Plate, MetalLink, lamp CSS variables lighting the nav rule, determinism fixes in the harness and hooks, three critic rounds. Next: Phase 3.
+- 2026-11-11, Phase 2 critic round 1 (critics 001 and 002, 23 metal shots): 22 FAIL, bar PASS. Real faults fixed: cloudy patina smudges in highlights (patina now gathers at rims, grooves and fasteners with fine speckle, no clouds); flat tan fields (studio rebuilt as a dark room with a soft key, a strip and a bounce card, so plates carry real reflection bands); small features not answering the lamp (lamp 1.15 to 1.45, room darker); pale lemon cores (exposure curve on the brightest channel keeps hue); window rivets on the lip and uneven margins (window margin 50 design units); window shadow masked by a constant wall band (wall lit by the lamp, glare softened and warmed); placards with fasteners on one side, an orphaned last word (balanced wrapping), soft 1x labels (label 12, facts 11.5); hollow raised letters on the panel (narrow wall centered on the glyph edge, 0.6 relief); bronze flatness (faint cast face); photo crops cutting UI chips (lab window uses the portrait; site pictures are placeholders per Brandon). Disputed, not changed: the lamp strip "trailing then overshooting" is how a specular highlight behaves (it sits where lamp and camera directions bisect, and the right bevel lights when the lamp is right); kit 07 lets a wrong critic point be noted.
 - 2026-11-11, session 1: Phase 0 committed (63f7b11). Phase 1: constants, tokens with a fluid root, content file from drafts and the old site, every route as a plain readable page, nav with phone menu, footer, the one clock driving GSAP, the lamp store with drift, tier choice and GPU probe, test hooks and registry, media pipeline (8 pictures, résumé PDF), check:copy, vitest (25), Playwright smoke, hooks and flags tests (145). Brandon said mid-build that project pictures are placeholders and the design must not bend to them; recorded. Next: Phase 2, metal and the lamp.
 
 ## Handoff

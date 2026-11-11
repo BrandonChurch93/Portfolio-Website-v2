@@ -10,12 +10,13 @@
 // "same image" check and manifest as a still, so it goes through the verdict ledger and the gate.
 import fs from 'node:fs';
 import process from 'node:process';
-import { buildIfStale, grab, hook, keep, openBrowser, openSite, parseArgs, startPreview, substitute } from './shots.mjs';
+import { buildIfStale, grab, hook, keep, openBrowser, openSite, parseArgs, startPreview, substitute, targetClip } from './shots.mjs';
 import { buildId, fileOf, readManifest, writeManifest } from './shot-rules.mjs';
 import { SHOTS } from './shot-list.mjs';
 
-async function tile(browser, frames, times, cols, tileWidth) {
-  const cells = frames.map((buf, i) => `<figure><img src="data:image/jpeg;base64,${buf.toString('base64')}"><figcaption>${times[i].toFixed(2)} s</figcaption></figure>`).join('');
+async function tile(browser, frames, times, cols, tileWidth, caption) {
+  const say = caption || ((t) => `${t.toFixed(2)} s`);
+  const cells = frames.map((buf, i) => `<figure><img src="data:image/jpeg;base64,${buf.toString('base64')}"><figcaption>${say(times[i])}</figcaption></figure>`).join('');
   const html = `<!doctype html><html><head><style>
     html, body { margin: 0; background: #141110; color: #d8cfc4; font: 500 15px ui-monospace, Menlo, monospace; }
     main { display: grid; grid-template-columns: repeat(${cols}, ${tileWidth}px); gap: 8px; padding: 8px; width: max-content; }
@@ -45,7 +46,7 @@ async function main() {
   try {
     for (const name of wanted) {
       const shot = SHOTS[name];
-      const { times, frame = [['freeze', '$t']], cols = Math.min(4, times.length), tileWidth } = shot.strip;
+      const { times, frame = [["freeze", "$t"]], cols = Math.min(4, times.length), tileWidth, caption } = shot.strip;
       const page = await openSite(browser, preview, shot, errors, `${name}: `);
       const frames = [];
       for (const t of times) {
@@ -53,10 +54,10 @@ async function main() {
         await page.evaluate(() => window.__site.settle());
         frames.push(await grab(page, shot));
       }
-      const vpWidth = (shot.clip && shot.clip.width) || page.viewportSize()?.width || 1440;
+      const vpWidth = (shot.clip && shot.clip.width) || (shot.target && (await targetClip(page, shot.target, shot.pad)).width) || page.viewportSize()?.width || 1440;
       await page.close();
       const width = tileWidth || Math.min(640, vpWidth);
-      const strip = await tile(browser, frames, times, cols, width);
+      const strip = await tile(browser, frames, times, cols, width, caption);
       const sha = await keep(browser, strip, fileOf(name, SHOTS), flags.force);
       manifest[name] = { sha, build };
       writeManifest(manifest);

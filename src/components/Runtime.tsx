@@ -13,6 +13,12 @@ export function Runtime() {
     tiers.detect();
     lamp.bind();
     clock.start();
+    // The lamp as CSS variables, so interface metal (nav rules, link underlines) can catch it.
+    const root = document.documentElement.style;
+    return lamp.subscribe((s) => {
+      root.setProperty('--lamp-x', `${s.px.toFixed(0)}px`);
+      root.setProperty('--lamp-y', `${s.py.toFixed(0)}px`);
+    });
   }, []);
   return null;
 }

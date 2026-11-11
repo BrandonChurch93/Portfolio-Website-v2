@@ -69,6 +69,10 @@
   --dur-2: 0.45s;
   --dur-3: 0.9s;
 
+  /* The lamp, written every frame by the runtime (src/components/Runtime.tsx). */
+  --lamp-x: 50vw;
+  --lamp-y: 38vh;
+
   --z-water: 1;
   --z-content: 2;
   --z-nav: 20;

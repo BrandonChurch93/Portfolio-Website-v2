@@ -94,8 +94,9 @@ async function startPreview() {
   return startServer('out');
 }
 
-// Two captures count as the same image when no channel of any pixel differs by more than 16 levels
-// and at most one sample in a thousand differs by more than 6. That absorbs encoder and driver noise only.
+// Two captures count as the same image when at most one sample in a thousand differs by more than 6 levels,
+// at most one in 100,000 differs by more than 16, and none by more than 40. That absorbs encoder and GPU noise only
+// (a frozen plate was seen to flip a single pixel by 17 levels between runs); a real change moves thousands of pixels.
 function sameImage(page, a, b) {
   return page.evaluate(async ([x, y]) => {
     const pixels = async (b64) => {
@@ -109,12 +110,14 @@ function sameImage(page, a, b) {
     const [p, q] = [await pixels(x), await pixels(y)];
     if (p.width !== q.width || p.height !== q.height) return false;
     let soft = 0;
+    let hard = 0;
     for (let i = 0; i < p.data.length; i++) {
       const d = Math.abs(p.data[i] - q.data[i]);
-      if (d > 16) return false;
+      if (d > 40) return false;
+      if (d > 16) hard++;
       if (d > 6) soft++;
     }
-    return soft <= p.data.length * 0.001;
+    return soft <= p.data.length * 0.001 && hard <= p.data.length * 0.00001;
   }, [a.toString('base64'), b.toString('base64')]);
 }
 
@@ -136,9 +139,22 @@ async function keep(browser, fresh, out, force) {
   return sha12(fresh);
 }
 
+// target: a CSS selector. The shot is clipped to that element's box, with pad CSS px around it, inside the viewport.
+async function targetClip(page, target, pad = 48) {
+  return page.evaluate(([sel, pd]) => {
+    const el = document.querySelector(sel);
+    if (!el) throw new Error(`shot target ${sel} not found`);
+    const r = el.getBoundingClientRect();
+    const x = Math.max(0, Math.floor(r.left - pd));
+    const y = Math.max(0, Math.floor(r.top - pd));
+    return { x, y, width: Math.min(innerWidth, Math.ceil(r.right + pd)) - x, height: Math.min(innerHeight, Math.ceil(r.bottom + pd)) - y };
+  }, [target, pad]);
+}
+
 async function grab(page, shot) {
   const opts = { type: 'jpeg', quality: 90, timeout: 180000, animations: 'allow', caret: 'hide' };
   if (shot.clip) opts.clip = shot.clip;
+  if (shot.target) opts.clip = await targetClip(page, shot.target, shot.pad);
   if (shot.fullPage) opts.fullPage = true;
   return page.screenshot(opts);
 }
@@ -187,7 +203,10 @@ async function openSite(browser, preview, shot, errors, label) {
   const sep = route.includes('?') ? '&' : '?';
   await page.goto(`http://127.0.0.1:${preview.port}${route}${sep}hook=1${shot.query ? `&${shot.query}` : ''}`, { waitUntil: 'load' });
   await page.waitForFunction('window.__site && typeof window.__site.settle === "function"', null, { timeout: 300000 });
-  for (const [method, ...args] of shot.steps || []) await hook(page, method, args);
+  // The tier is pinned (high unless the shot names one), so a shot never depends on how busy the GPU was when the
+  // page measured it.
+  const steps = [['tier', shot.tier || 'high'], ...(shot.steps || [])];
+  for (const [method, ...args] of steps) await hook(page, method, args);
   await page.evaluate(() => window.__site.settle());
   return page;
 }
@@ -242,7 +261,7 @@ async function main() {
 }
 
 // Other scripts import these and reuse the same browser, server and capture logic.
-export { buildIfStale, capture, grab, hook, keep, openBrowser, openSite, parseArgs, startPreview, substitute, viewportOf, watch };
+export { buildIfStale, capture, grab, hook, keep, openBrowser, openSite, parseArgs, startPreview, substitute, targetClip, viewportOf, watch };
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((e) => { console.error(e.message); process.exit(1); });

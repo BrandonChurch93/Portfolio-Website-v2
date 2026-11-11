@@ -1,0 +1,23 @@
+metal/aged-lamp-1 | PASS | - | Aged brass with an anisotropic highlight stretched across the brushing up left under the lamp, even patina, domed rivets, double engraved border and crisp enamel words.
+metal/aged-lamp-2 | PASS | - | Highlight follows the lamp to the right half and stays gold, words stay dark and legible inside it, scratches and patina read at close range.
+metal/aged-lamp-3 | PASS | - | Lamp low and left lights the bottom left, the rest falls off into warm shade; bevel crest and rivets catch light from below.
+metal/polished-lamp-1 | PASS | - | Polished brass with a tight round highlight under the lamp, slotted screws, a fine single engraved border and enamel words.
+metal/polished-lamp-2 | PASS | - | The highlight sits right of center over the words without washing them out; hottest point stays pale gold.
+metal/polished-lamp-3 | PASS | - | Lamp below lights the lower edge and bevel; plate keeps form with reflection and shade.
+metal/bronze-lamp-1 | PASS | - | Dark bronze with flush brass inlay; inlay lights gold where the lamp passes and stays legible elsewhere, including the small label.
+metal/bronze-lamp-2 | PASS | - | Lamp at right turns the inlaid words under it bright gold while the bronze keeps a broad warm sheen.
+metal/bronze-lamp-3 | PASS | - | Lamp low left lights the bottom facts line and border; all words remain readable.
+metal/panel-lamp-1 | PASS | - | Brushed brass frame with long streak highlights, sunk bead blasted bronze panel, raised brass letters lit on their lamp side.
+metal/panel-lamp-2 | PASS | - | Frame highlights move to the right with the lamp; raised letters keep contrast against the dark panel.
+metal/panel-lamp-3 | PASS | - | Bottom frame catches the low lamp; panel floor shows fine grain, letters legible.
+metal/window-lamp-1 | PASS | - | Recessed photo window with raised brass lip, picture under glass, rim shadow along the top and left from the upper left lamp.
+metal/window-lamp-2 | PASS | - | Lamp over the window: shadow nearly gone, soft warm glare, picture reads clearly in its recess.
+metal/window-lamp-3 | PASS | - | Lamp low left moves the rim shadow to the bottom and left of the picture; words on the plate stay crisp.
+metal/text-1x | PASS | - | At pixel ratio 1 the small mono labels and the Sora words are crisp, no stair steps, clean enamel edges.
+metal/text-2x | PASS | - | At pixel ratio 2 the engraving is sharp with visible lips; long placard text is evenly set and readable.
+metal/window-video | PASS | - | Video window plays the recorded site under glass in the recess; frame repeatable at frozen time.
+metal/bar | PASS | - | Full width polished header bar with spaced engraved CLIENT WORK, slotted screws at the ends and a lamp highlight.
+metal/placard | PASS | - | Three client placards in polished, bronze and panel finishes, all words legible, varied metals read differently.
+metal/controls | PASS | - | Three brass controls with enamel words, readable at every position, aged one shows scratches.
+metal/phone | PASS | - | Phone at 3x: window plate stacks the picture above the words, everything crisp at device resolution.
+metal/lamp-strip | PASS | - | Eight frames: the highlight tracks the lamp left to right smoothly with no lag or jump, never turns white.
